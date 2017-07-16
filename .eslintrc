@@ -7,6 +7,8 @@
     "mocha": true
   },
   "rules": {
+  "no-plusplus": ["error", { "allowForLoopAfterthoughts": true }],
+  "no-console": ["warn"],
 
   }
 }
