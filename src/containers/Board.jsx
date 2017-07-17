@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import * as utils from '../utils';
+import * as utils from '../utils/mapgen';
 
 class Board extends Component {
   constructor() {
