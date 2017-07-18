@@ -1,15 +1,31 @@
 import React, {Component} from 'react';
-import * as utils from '../utils/mapgen';
+import * as utils from '../utils';
+import generateMap from '../utils/mapGen';
+import loadImages from '../utils/loadImages';
 
 class Board extends Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {}
   }
   componentDidMount() {
-  	utils.generateMap();
+  	loadImages.load([
+    '../img/sprites.png',
+    '../img/terrain.png'
+]);
+loadImages.onReady(this.startGame);
+  	generateMap();
   }
+
+  startGame() {
+  	console.log('started game');
+  }
+
   render() {
+  	// let { entities,playerPosition } = this.props.entities;
+   //  const [ playerX, playerY ] = playerPosition;
+
+
     return (
   <div>
     <h2>Board</h2>
