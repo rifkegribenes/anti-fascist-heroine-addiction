@@ -1,7 +1,9 @@
 import React, {Component} from 'react';
 import * as utils from '../utils';
 import generateMap from '../utils/mapGen';
-import loadImages from '../utils/loadImages';
+import * as loadImages from '../utils/loadImages';
+import fox from '../img/baby-fox.gif';
+import hippo from '../img/baby-hippo.gif';
 
 class Board extends Component {
   constructor(props) {
@@ -10,15 +12,15 @@ class Board extends Component {
   }
   componentDidMount() {
   	loadImages.load([
-    '../img/sprites.png',
-    '../img/terrain.png'
+    '../img/baby-fox.gif',
+    '../img/baby-hippo.gif'
 ]);
 loadImages.onReady(this.startGame);
   	generateMap();
   }
 
   startGame() {
-  	console.log('started game');
+  	console.log('images loaded.');
   }
 
   render() {
@@ -29,6 +31,8 @@ loadImages.onReady(this.startGame);
     return (
   <div>
     <h2>Board</h2>
+    <img src ={fox} />
+    <img src ={hippo} />
     <canvas
           id="board"
           className="board"
