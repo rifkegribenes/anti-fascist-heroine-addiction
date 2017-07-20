@@ -116,8 +116,6 @@ const generateMap = () => {
 	const initialGrid = growMap(grid, [firstRoom]);
 
 
-
-drawCells(initialGrid);
 fillGrid(initialGrid);
 
 };

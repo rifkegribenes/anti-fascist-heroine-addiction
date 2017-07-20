@@ -332,24 +332,35 @@ const fillGrid = (gameMap, level = 1) => {
 
 	// 2. randomly place all the entities on to floor cells on the game map.
 
-	let playerPosition = [];
+	let heroPosition = [];
 	[foods, monsters, animals, staircases, heroes, finalMonsters].forEach(entities => {
 		while (entities.length) {
 			const x = Math.floor(Math.random() * utils.gridWidth);
 			const y = Math.floor(Math.random() * utils.gridHeight);
 			if (gameMap[y][x].type === 'floor') {
-				if (entities[0].type === 'player') {
-					playerPosition = [x, y];
+				if (entities[0].type === 'hero') {
+					heroPosition = [x, y];
 				}
 				gameMap[y][x] = entities.pop();
 			}
 		}
 	});
 
-	// render to canvas
-	utils.drawCells(gameMap);
+	// narrow visibility
+  const [ heroX, heroY ] = heroPosition;
+  let torchPower = 10;
+	let torchRadius = gameMap.map((row, i) => row.map((cell, j) => {
+		if (Math.sqrt((j-heroX)*(j-heroX) + (i-heroY)*(i-heroY)) < torchPower)
+		{ cell.torch = 1 } else { cell.torch = 0};
+		return cell;
+	}));
 
-	return {entities: gameMap, playerPosition};
+
+	// render to canvas
+	utils.drawCells(torchRadius);
+
+
+	return {gameMap, heroPosition};
 
 };
 
