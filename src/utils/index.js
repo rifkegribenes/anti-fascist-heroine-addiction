@@ -12,7 +12,7 @@ import fox from '../img/baby-fox.gif';
 import hippo from '../img/baby-hippo.gif';
 
 // render to canvas
-const drawCell = (x, y, cellType, torch, img) => {
+const drawCell = (x, y, cellType, torch, iconUrl) => {
 const canvas = document.getElementById('board');
 const ctx = canvas.getContext('2d');
 const hue = ((x+y) / 10) % 360;
@@ -40,16 +40,22 @@ switch (cellType) {
     break;
   case 'animal':
     var img = new Image();
-    img.src = 'https://s3-us-west-2.amazonaws.com/s.cdpn.io/1018136/baby-hippo.gif';
+    img.src = iconUrl // || 'https://s3-us-west-2.amazonaws.com/s.cdpn.io/1018136/baby-hippo.gif';
     img.onload = function() {
       ctx.save();
       ctx.globalAlpha = torch;
       ctx.drawImage(img, x, y, cellSize, cellSize);
       ctx.restore();
     };
-    // ctx.strokeStyle="white";
-    // ctx.rect(x, y, cellSize, cellSize);
-    // ctx.stroke();
+    if (!iconUrl) {
+    ctx.strokeStyle="red";
+    ctx.rect(x, y, cellSize, cellSize);
+    ctx.stroke();
+    } else {
+    ctx.strokeStyle="green";
+    ctx.rect(x, y, cellSize, cellSize);
+    ctx.stroke();
+    }
     break;
   case 'boss':
     ctx.fillStyle = `hsla(30, 100%, 50%, ${torch})`;
@@ -72,8 +78,10 @@ arr.forEach((row, rowIdx) => {
     const x = cellSize * cellIdx;
     const y = cellSize * rowIdx;
     if (cell !== 'x') {
-    drawCell(x, y, cell.type, cell.torch);
+// change the hard coded 1 in 4th arg to cell.torch
+    drawCell(x, y, cell.type, 1, cell.iconUrl);
   }
 });
 })
 };
+

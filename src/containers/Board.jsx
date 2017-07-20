@@ -2,18 +2,20 @@ import React, {Component} from 'react';
 import * as utils from '../utils';
 import generateMap from '../utils/mapGen';
 import * as loadImages from '../utils/loadImages';
-import fox from '../img/baby-fox.gif';
-import hippo from '../img/baby-hippo.gif';
+import toggleTorch from '../utils/fillGrid';
+// import fox from '../img/baby-fox.gif';
+// import hippo from '../img/baby-hippo.gif';
 
 class Board extends Component {
   constructor(props) {
     super(props);
-    this.state = {}
+    this.state = {
+    }
   }
   componentDidMount() {
   	loadImages.load([
-    '../img/baby-fox.gif',
-    '../img/baby-hippo.gif'
+    // '../img/baby-fox.gif',
+    // '../img/baby-hippo.gif'
 ]);
 loadImages.onReady(this.startGame);
   	generateMap();
@@ -30,9 +32,7 @@ loadImages.onReady(this.startGame);
 
     return (
   <div>
-    <h2>Board</h2>
-    <img src ={fox} />
-    <img src ={hippo} />
+    <button onClick={e => {toggleTorch}} />
     <canvas
           id="board"
           className="board"

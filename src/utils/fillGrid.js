@@ -1,4 +1,15 @@
 import * as utils from '../utils';
+import generateMap from './mapGen';
+
+let torch = false;
+let torchPower = 10;
+let torchRadius = [];
+
+export const toggleTorch = (bool) => {
+	torch = bool;
+	generateMap();
+
+}
 
 const fillGrid = (gameMap, level = 1) => {
 	const finalMonsters = [];
@@ -260,7 +271,7 @@ const fillGrid = (gameMap, level = 1) => {
 		{
 			name: 'Baby Fox',
 			message: '',
-			iconUrl: '',
+			iconUrl: '../img/baby-fox.gif',
 			damage: 40
 		},
 		{
@@ -272,7 +283,7 @@ const fillGrid = (gameMap, level = 1) => {
 		{
 			name: 'Baby Hippo',
 			message: '',
-			iconUrl: '',
+			iconUrl: '../img/baby-hippo.gif',
 			damage: 19
 		},
 		{
@@ -284,13 +295,13 @@ const fillGrid = (gameMap, level = 1) => {
 		{
 			name: 'Froggie',
 			message: '',
-			iconUrl: '',
+			iconUrl: '../img/frog.gif',
 			damage: 33
 		},
 		{
 			name: 'Baby Octopus',
 			message: '',
-			iconUrl: '',
+			iconUrl: '../img/octopus.gif',
 			damage: 40
 		},
 		{
@@ -322,11 +333,12 @@ const fillGrid = (gameMap, level = 1) => {
 	const animals = [];
 	// animal types will vary based on the level passed to the parent function
 	const qualifying = animalTypes
-		.filter(animal => animal.damage < level * 10 + 10)
-			.filter(animal => animal.damage > level * 10 - 10);
-	for (let i = 0; i < 3; i++) {
+		.filter(animal => animal.damage < level * 20 + 10)
+			.filter(animal => animal.damage > level * 20 - 10);
+	for (let i = 0; i < 8; i++) {
 		const animal = Object.assign({}, qualifying[utils.randomInt(0, qualifying.length - 1)]);
 		animal.type = 'animal';
+		console.log(animal, animals);
 		animals.push(animal);
 	}
 
@@ -346,18 +358,22 @@ const fillGrid = (gameMap, level = 1) => {
 		}
 	});
 
-	// narrow visibility
-  const [ heroX, heroY ] = heroPosition;
-  let torchPower = 10;
-	let torchRadius = gameMap.map((row, i) => row.map((cell, j) => {
-		if (Math.sqrt((j-heroX)*(j-heroX) + (i-heroY)*(i-heroY)) < torchPower)
-		{ cell.torch = 1 } else { cell.torch = 0};
-		return cell;
-	}));
+	// narrow visibility (turned off temporarily; set torch to true to turn on)
+//   const [ heroX, heroY ] = heroPosition;
+//   console.log(torch);
+//   if (torch) {
+// 	gameMap.map((row, i) => row.map((cell, j) => {
+// 		if (Math.sqrt((j-heroX)*(j-heroX) + (i-heroY)*(i-heroY)) < torchPower)
+// 		{ cell.torch = 1 } else { cell.torch = 0};
+// 		return cell;
+// 	}));
+// } else {
+// 	return null;
+// }
 
 
 	// render to canvas
-	utils.drawCells(torchRadius);
+	utils.drawCells(gameMap);
 
 
 	return {gameMap, heroPosition};
