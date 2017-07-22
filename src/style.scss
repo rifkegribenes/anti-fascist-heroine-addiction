@@ -54,9 +54,15 @@
   }
 }
 
+$color_gray_text: #7a7a7a;
+$color_gray_lighter: lighten($color_gray_text,35%);
+
 body {
   background: black;
 }
 
-$color_gray_text: #7a7a7a;
-$color_gray_lighter: lighten($color_gray_text,35%);
+.message {
+  color: white;
+  font-size: 16px;
+
+}
