@@ -113,10 +113,11 @@ const generateMap = () => {
 		counter += grid.placedRooms.length;
 		return growMap(grid.grid, seedRooms, counter);
 	};
-	const initialGrid = growMap(grid, [firstRoom]);
+	// const initialGrid = growMap(grid, [firstRoom]);
+	return  growMap(grid, [firstRoom]);
 
 
-fillGrid(initialGrid);
+// fillGrid(initialGrid);
 
 };
 

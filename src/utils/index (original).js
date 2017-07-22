@@ -42,19 +42,18 @@ switch (cellType) {
     ctx.fillStyle = `hsla(0, 0%, 80%, ${torch})`;
     ctx.fillRect(x, y, cellSize, cellSize);
     var img = new Image();
-    img.src = iconUrl
+    img.src = iconUrl // || 'https://s3-us-west-2.amazonaws.com/s.cdpn.io/1018136/baby-hippo.gif';
     img.onload = function() {
       ctx.save();
       ctx.globalAlpha = torch;
       ctx.drawImage(img, x, y, cellSize, cellSize);
       ctx.restore();
     };
-    if (!iconUrl) {
-    ctx.strokeStyle="red";
-    ctx.rect(x, y, cellSize, cellSize);
-    ctx.stroke();
-    }
-    // else {
+    // if (!iconUrl) {
+    // ctx.strokeStyle="red";
+    // ctx.rect(x, y, cellSize, cellSize);
+    // ctx.stroke();
+    // } else {
     // ctx.strokeStyle="green";
     // ctx.rect(x, y, cellSize, cellSize);
     // ctx.stroke();
@@ -87,24 +86,4 @@ arr.forEach((row, rowIdx) => {
 });
 })
 };
-
-export const updateCells = (newArr, oldArr) => {
-newArr.forEach((row, rowIdx) => {
-  row.forEach((cell, cellIdx) => {
-    const x = cellSize * cellIdx;
-    const y = cellSize * rowIdx;
-
-    if (cell !== oldArr[rowIdx][cellIdx]) {
-// change the hard coded 1 in 4th arg to cell.torch
-    drawCell(x, y, cell.type, 1, cell.iconUrl);
-  }
-});
-})
-};
-
-
-
-
-
-
 

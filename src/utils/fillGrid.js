@@ -271,7 +271,7 @@ const fillGrid = (gameMap, level = 1) => {
 		{
 			name: 'Baby Fox',
 			message: '',
-			iconUrl: '../img/baby-fox.gif',
+			iconUrl: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/baby-fox.gif',
 			damage: 40
 		},
 		{
@@ -283,25 +283,25 @@ const fillGrid = (gameMap, level = 1) => {
 		{
 			name: 'Baby Hippo',
 			message: '',
-			iconUrl: '../img/baby-hippo.gif',
+			iconUrl: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/baby-hippo.gif',
 			damage: 19
 		},
 		{
 			name: 'Duckling',
 			message: '',
 			iconUrl: '',
-			damage: 26
+			damage: 33
 		},
 		{
 			name: 'Froggie',
 			message: '',
-			iconUrl: '../img/frog.gif',
-			damage: 33
+			iconUrl: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/frog.gif',
+			damage: 26
 		},
 		{
 			name: 'Baby Octopus',
 			message: '',
-			iconUrl: '../img/octopus.gif',
+			iconUrl: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/octopus.gif',
 			damage: 40
 		},
 		{
@@ -333,12 +333,11 @@ const fillGrid = (gameMap, level = 1) => {
 	const animals = [];
 	// animal types will vary based on the level passed to the parent function
 	const qualifying = animalTypes
-		.filter(animal => animal.damage < level * 20 + 10)
-			.filter(animal => animal.damage > level * 20 - 10);
+		.filter(animal => animal.damage < level * 20 + 20)
+			.filter(animal => animal.damage > level * 20 - 20);
 	for (let i = 0; i < 8; i++) {
 		const animal = Object.assign({}, qualifying[utils.randomInt(0, qualifying.length - 1)]);
 		animal.type = 'animal';
-		console.log(animal, animals);
 		animals.push(animal);
 	}
 
