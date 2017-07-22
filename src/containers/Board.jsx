@@ -44,18 +44,22 @@ class Board extends Component {
     switch (e.keyCode) {
       case 38:
       case 87:
+        e.preventDefault();
         this.userInput([0, -1]);
         break;
       case 39:
       case 68:
+        e.preventDefault();
         this.userInput([1, 0]);
         break;
       case 40:
       case 83:
+        e.preventDefault();
         this.userInput([0, 1]);
         break;
       case 37:
       case 65:
+        e.preventDefault();
         this.userInput([-1, 0]);
         break;
       default:
@@ -79,7 +83,7 @@ class Board extends Component {
     switch (destination.type) {
       case 'finalMonster':
       case 'monster':
-        this.handleCombat(destination);
+        this.handleCombat(destination, newPosition, newHero);
         break;
       case 'food':
         this.modifyHP(destination);
@@ -141,7 +145,15 @@ class Board extends Component {
     });
   }
 
-  // addXP() {}
+  modifyXP(delta) {
+    const hero = Object.assign({}, this.state.hero);
+    hero.xp += delta;
+    this.setState({
+      hero,
+    }, () => {
+      // console.log(hero);
+    });
+  }
 
   modifyHP(entity, delta) {
     const hero = Object.assign({}, this.state.hero);
@@ -152,6 +164,9 @@ class Board extends Component {
       messages.push(`You ate ${entity.name} and gained ${entity.healthBoost} health points!`);
     } else {
       hero.hp += delta;
+      if (hero.hp < 0) {
+        hero.hp = 0;
+      }
     }
     this.setState({
       hero,
@@ -161,12 +176,72 @@ class Board extends Component {
     });
   }
 
-  // restartGame() {}
+  restart() {
+  // reset state to default
+    this.startGame();
+  }
 
   // toggleTorch() {}
 
-  handleCombat(monster) {
-    console.log(this, `Your team is attacking ${monster.name}!`);
+  handleCombat(monster, newPosition, newHero) {
+    const hero = Object.assign({}, this.state.hero);
+    const messages = [...this.state.messages];
+    const currMonster = monster;
+    messages.push(`Your team is attacking ${monster.name}!`);
+    const heroLevel = Math.floor(hero.xp / 100) + 1;
+    // hero attacks monster
+    const monsterDamageTaken = Math.floor(hero.attack * utils.random(1, 1.3) * heroLevel);
+    currMonster.health -= monsterDamageTaken;
+    if (currMonster.health > 0) {
+      // monster attacks hero
+      const heroDamageTaken = Math.floor(utils.random(0.7, 1.3) * currMonster.damage);
+      this.changeEntity(monster, newPosition);
+      this.modifyHP(currMonster, 0 - heroDamageTaken);
+      messages.push(`Your team attacked ${currMonster.name} and did [${monsterDamageTaken}] damage.
+        ${currMonster.name} hits back with [${heroDamageTaken}] damage.
+        ${currMonster.name} HP remaining: [${currMonster.health}].`);
+      if (hero.health - heroDamageTaken <= 0) {
+        // you died!
+        setTimeout(() => this.setLevel('death'), 250);
+        setTimeout(() => messages.push(`You died! ${currMonster.youDiedMsg}.`), 1000);
+        setTimeout(() => {
+          this.restart();
+        }, 3000);
+        return;
+      }
+    } else if (currMonster.health <= 0) {
+      // monster dies, add XP & move hero
+      const [x, y] = this.state.heroPosition;
+      if (monster.type === 'finalMonster') {
+        this.modifyXP(10);
+        this.changeEntity({ type: 'floor' }, [x, y]);
+        this.changeEntity(newHero, newPosition);
+        this.changeHeroPosition(newPosition);
+        messages.push(`You did it! Your attack of [${monsterDamageTaken}] defeated ${currMonster.name}.`); // fix this msg later
+        setTimeout(() => this.setLevel('victory'), 250);
+        setTimeout(() => messages.push('You won! blah blah blah.'), 1000); // fix this msg later
+        setTimeout(() => {
+          this.restart();
+        }, 3000);
+        return;
+      }
+      this.modifyXP(10);
+      this.changeEntity({ type: 'floor' }, [x, y]);
+      this.changeEntity(newHero, newPosition);
+      this.changeHeroPosition(newPosition);
+      messages.push(`You did it! Your attack of [${monsterDamageTaken}] defeated ${currMonster.name}.`); // fix this msg later
+      setTimeout(() => messages.push('You gained 10XP.'), 1000); // fix this msg later
+      if ((hero.xp + 10) % 100 === 0) {
+        setTimeout(() => messages.push('LEVEL UP!'), 3000);
+      }
+    }
+
+    this.setState({
+      hero,
+      messages,
+    }, () => {
+      // console.log(hero);
+    });
   }
 
   // handleCollision() {}
