@@ -1,4 +1,4 @@
-import { gridHeight, gridWidth, randomInt } from './index';
+import { gridHeight, gridWidth, randomInt, random } from './index';
 
 // const maxRooms = 15;
 const roomSizeRange = [7, 12];
@@ -84,18 +84,20 @@ const generateMap = () => {
   for (let i = 0; i < gridHeight; i++) {
     newGrid.push([]);
     for (let j = 0; j < gridWidth; j++) {
-      newGrid[i].push({ type: 'wall' });
+      newGrid[i].push({ type: 'wall', opacity: random(0.3, 0.8) });
     }
   }
 
-  // first room
+  // hard code first room in center of viewport
   const [min, max] = roomSizeRange;
   const firstRoom = {
-    x: randomInt(1, gridWidth - max - 15),
-    y: randomInt(1, gridHeight - max - 15),
-    height: randomInt(min, max),
-    width: randomInt(min, max),
+    x: (gridWidth / 2) - Math.floor(max / 2),
+    y: (gridHeight / 2) - Math.floor(min / 2),
+    height: min,
+    width: max,
   };
+
+  // console.log(firstRoom);
 
   newGrid = placeCells(newGrid, firstRoom);
   // now newGrid = 2d array of mostly walls plus a single room
