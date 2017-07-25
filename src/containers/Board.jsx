@@ -1,14 +1,17 @@
 import React, { Component } from 'react';
+import shortid from 'shortid';
+
 import * as utils from '../utils/index';
 import generateMap from '../utils/mapGen';
 import fillGrid from '../utils/fillGrid';
+
 
 class Board extends Component {
   constructor(props) {
     super(props);
     this.state = {
       entities: [[]],
-      gameLevel: 0,
+      gameLevel: 1,
       heroPosition: [],
       hero: {
         hp: 100,
@@ -84,6 +87,7 @@ class Board extends Component {
       const grid1 = utils.changeEntity(this.state.entities, { type: 'floor' }, [x, y]);
       const grid2 = utils.changeEntity(grid1, newHero, newPosition);
       this.setState({
+        ...this.state,
         entities: grid2,
         heroPosition: newPosition,
       }, () => {
@@ -107,14 +111,6 @@ class Board extends Component {
         break;
       default:
     }
-  }
-
-  createLevel(level) {
-    const { gameMap, heroPosition } = fillGrid(generateMap(), level);
-    this.setState({
-      heroPosition,
-      entities: gameMap,
-    });
   }
 
   addAnimal(animal) {
@@ -162,8 +158,18 @@ class Board extends Component {
   }
 
   restart() {
-  // reset state to default here
-    this.startGame();
+    this.setState({
+      entities: [[]],
+      gameLevel: 1,
+      heroPosition: [],
+      hero: {
+        hp: 100,
+        xp: 0,
+        attack: 10,
+      },
+      messages: [],
+    }, () => this.startGame(),
+    );
   }
 
   handleCombat(monster, newPosition, newHero) {
@@ -180,9 +186,10 @@ class Board extends Component {
       const heroDamageTaken = Math.floor(utils.random(0.7, 1.3) * currMonster.damage);
       utils.changeEntity(this.state.entities, monster, newPosition);
       this.modifyHP(currMonster, 0 - heroDamageTaken);
+      // put this in combat card view
       messages.push(`Your team attacked ${currMonster.name} and did [${monsterDamageTaken}] damage.
-        ${currMonster.name} hits back with [${heroDamageTaken}] damage.
-        ${currMonster.name} HP remaining: [${currMonster.health}].`);
+      ${currMonster.name} hits back with [${heroDamageTaken}] damage.
+      ${currMonster.name} HP remaining: [${currMonster.health}].`);
       if (hero.health - heroDamageTaken <= 0) {
         // you died!
         setTimeout(() => this.setLevel('death'), 250);
@@ -228,11 +235,27 @@ class Board extends Component {
   }
 
   handleStaircase() {
-    console.log(`staircase to level ${this.state.gameLevel + 1}`);
+    const messages = this.state.messages;
+    const level = this.state.gameLevel;
+    messages.push(`You found the staircase down to level ${this.state.gameLevel + 1}!`);
+    this.setState({
+      messages,
+    }, () => {
+      const { newMap, heroPosition } = fillGrid(generateMap(level + 1), level + 1);
+      this.setState({
+        heroPosition,
+        entities: newMap,
+        gameLevel: level + 1,
+      }, () => {
+        setTimeout(() => {
+          utils.renderViewport(this.state.heroPosition, this.state.entities, true);
+        }, 1000);
+      });
+    });
   }
 
   startGame() {
-    const { newMap, heroPosition } = fillGrid(generateMap());
+    const { newMap, heroPosition } = fillGrid(generateMap(1), 1);
     this.setState({
       entities: newMap,
       heroPosition,
@@ -242,10 +265,19 @@ class Board extends Component {
   }
 
   render() {
-// render messages to a ul, return only 3 most recent, style
+    const messages = this.state.messages;
+    const messageList = messages.slice(messages.length - 3, messages.length).map(message => (
+      <li key={shortid.generate()}>
+        {message}
+      </li>));
+// return only 3 most recent message, style
     return (
       <div className="container">
-        <div className="message">{this.state.messages}</div>
+        <div className="message">
+          <ul>
+            {messageList.reverse()}
+          </ul>
+        </div>
         <canvas
           id="board"
           className="board clip-circle"

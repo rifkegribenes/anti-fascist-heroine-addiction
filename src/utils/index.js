@@ -10,8 +10,8 @@ export const random = (min, max) => (Math.random() * (max - min)) + min;
 export const randomInt = (min, max) => Math.floor(random(min, max));
 
 // render to canvas
-const drawCell = (ctx, x, y, vX, vY, firstRender, cellType, opacity, iconUrl) => {
-  const hue = ((x + y) / 10) % 360;
+const drawCell = (ctx, level, x, y, vX, vY, firstRender, cellType, opacity, iconUrl) => {
+  const hue = (((x + y) / (10 * level)) % 360);
   const img = new Image();
   if (firstRender && cellType === 'wall') {
     ctx.fillStyle = `hsla(${hue}, 100%, 50%, ${opacity})`;
@@ -94,8 +94,10 @@ export const renderViewport = (heroPosition, entities, firstRender) => {
         const x = cellSize * j;
         const y = cellSize * i;
         const newCell = Object.assign({}, c);
+        if (!newCell.level) { newCell.level = 1; }
         drawCell(
-            ctx, x, y, vX, vY, firstRender, newCell.type, newCell.opacity, newCell.iconUrl,
+            ctx, newCell.level, x, y, vX, vY,
+            firstRender, newCell.type, newCell.opacity, newCell.iconUrl,
             );
         return null;
       }));

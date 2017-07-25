@@ -3,7 +3,7 @@ import { gridHeight, gridWidth, randomInt, random } from './index';
 // const maxRooms = 15;
 const roomSizeRange = [7, 12];
 
-const generateMap = () => {
+const generateMap = (level) => {
   const isValid = (grid, { x, y, width = 1, height = 1 }) => {
     // check if on edge of or outside of grid
     if (y < 1 || y + height > grid.length - 1) {
@@ -84,7 +84,7 @@ const generateMap = () => {
   for (let i = 0; i < gridHeight; i++) {
     newGrid.push([]);
     for (let j = 0; j < gridWidth; j++) {
-      newGrid[i].push({ type: 'wall', opacity: random(0.3, 0.8) });
+      newGrid[i].push({ type: 'wall', opacity: random(0.3, 0.8), level });
     }
   }
 

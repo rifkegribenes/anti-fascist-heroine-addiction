@@ -3,7 +3,7 @@ import foodTypes from './foodTypes';
 import animalTypes from './animalTypes';
 import monsterTypes from './monsterTypes';
 
-const fillGrid = (gameMap, level = 1) => {
+const fillGrid = (gameMap, level) => {
   const finalMonsters = [];
   if (level === 3) {
     finalMonsters.push({
@@ -82,9 +82,6 @@ const fillGrid = (gameMap, level = 1) => {
       }
     }
   });
-  // console.log(`at the end of fillGrid: newMap =`);
-  // console.log(newMap);
-  // console.log(`heroPosition = ${heroPosition}`);
   return { newMap, heroPosition };
 };
 
