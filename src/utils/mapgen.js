@@ -84,7 +84,7 @@ const generateMap = (level) => {
   for (let i = 0; i < gridHeight; i++) {
     newGrid.push([]);
     for (let j = 0; j < gridWidth; j++) {
-      newGrid[i].push({ type: 'wall', opacity: random(0.3, 0.8), level });
+      newGrid[i].push({ type: 'wall', opacity: random(0.4, 0.8), level });
     }
   }
 

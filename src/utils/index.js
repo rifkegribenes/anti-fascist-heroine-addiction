@@ -11,62 +11,70 @@ export const randomInt = (min, max) => Math.floor(random(min, max));
 
 // render to canvas
 const drawCell = (ctx, level, x, y, vX, vY, firstRender, cellType, opacity, iconUrl) => {
-  const hue = (((x + y) / (10 * level)) % 360);
+  const hue = (((x + y) / 10) % 360);
   const img = new Image();
-  if (firstRender && cellType === 'wall') {
-    ctx.fillStyle = `hsla(${hue}, 100%, 50%, ${opacity})`;
-    ctx.fillRect(x, y, cellSize, cellSize);
-  } else {
-    switch (cellType) {
-      case 'wall':
-        ctx.clearRect(x, y, cellSize, cellSize);
-        ctx.fillStyle = `hsla(${hue}, 100%, 50%, ${opacity})`;
+  const radius = Math.floor((cellSize) * 0.2) || 2;
+  // if (firstRender && cellType === 'wall') {
+  //   ctx.fillStyle = `hsla(${hue}, 100%, 50%, ${opacity})`;
+  //   ctx.fillRect(x, y, cellSize, cellSize);
+  // } else {
+  switch (cellType) {
+    case 'wall':
+      ctx.clearRect(x, y, cellSize, cellSize);
+      ctx.lineJoin = 'round';
+      ctx.lineWidth = radius;
+      ctx.strokeStyle = `hsl(${hue}, ${100 - ((level - 1) * 10)}%, ${(opacity - (level / 10)) * 100}%)`;
+      ctx.strokeRect(x + (radius / 2), y + (radius / 2), cellSize - radius, cellSize - radius);
+        // ctx.fillStyle = `rgba(128, 128, 128, ${opacity})`; // gray
+      ctx.fillStyle = `hsl(${hue}, ${100 - ((level - 1) * 10)}%, ${(opacity - (level / 10)) * 100}%)`; // rainbow
+      ctx.fillRect(x + (radius / 2), y + (radius / 2), cellSize - radius, cellSize - radius);
+        // ctx.fillStyle = `hsla(${hue}, 100%, 50%, ${opacity})`;
+        // ctx.fillRect(x, y, cellSize, cellSize);
+      break;
+    case 'floor':
+      ctx.fillStyle = `hsl(0, 0%, ${80 - ((level - 1) * 15)}%)`;
+      ctx.fillRect(x, y, cellSize, cellSize);
+      break;
+    case 'hero':
+      ctx.fillStyle = 'hsla(60, 100%, 50%, 1)';
+      ctx.fillRect(x, y, cellSize, cellSize);
+      break;
+    case 'monster':
+      ctx.fillStyle = 'hsla(360, 100%, 50%, 1)';
+      ctx.fillRect(x, y, cellSize, cellSize);
+      break;
+    case 'food':
+      ctx.fillStyle = 'hsla(120, 100%, 50%, 1)';
+      ctx.fillRect(x, y, cellSize, cellSize);
+      break;
+    case 'animal':
+      ctx.fillStyle = 'hsla(0, 0%, 80%, 1)';
+      ctx.fillRect(x, y, cellSize, cellSize);
+      img.src = iconUrl;
+      img.onload = () => {
+        ctx.save();
+        ctx.drawImage(img, x, y, cellSize, cellSize);
+        ctx.restore();
+      };
+      if (!iconUrl) {
+        ctx.fillStyle = 'hsla(180, 100%, 50%, 1)';
         ctx.fillRect(x, y, cellSize, cellSize);
-        break;
-      case 'floor':
-        ctx.fillStyle = 'hsla(0, 0%, 80%, 1)';
-        ctx.fillRect(x, y, cellSize, cellSize);
-        break;
-      case 'hero':
-        ctx.fillStyle = 'hsla(60, 100%, 50%, 1)';
-        ctx.fillRect(x, y, cellSize, cellSize);
-        break;
-      case 'monster':
-        ctx.fillStyle = 'hsla(360, 100%, 50%, 1)';
-        ctx.fillRect(x, y, cellSize, cellSize);
-        break;
-      case 'food':
-        ctx.fillStyle = 'hsla(120, 100%, 50%, 1)';
-        ctx.fillRect(x, y, cellSize, cellSize);
-        break;
-      case 'animal':
-        ctx.fillStyle = 'hsla(0, 0%, 80%, 1)';
-        ctx.fillRect(x, y, cellSize, cellSize);
-        img.src = iconUrl;
-        img.onload = () => {
-          ctx.save();
-          ctx.drawImage(img, x, y, cellSize, cellSize);
-          ctx.restore();
-        };
-        if (!iconUrl) {
-          ctx.fillStyle = 'hsla(180, 100%, 50%, 1)';
-          ctx.fillRect(x, y, cellSize, cellSize);
-        }
-        break;
-      case 'boss':
-        ctx.fillStyle = 'hsla(30, 100%, 50%, 1)';
-        ctx.fillRect(x, y, cellSize, cellSize);
-        break;
-      case 'staircase':
-        ctx.clearRect(x, y, cellSize, cellSize);
-        ctx.fillStyle = 'black';
-        ctx.fillRect(x, y, cellSize, cellSize);
-        break;
-      default:
-        ctx.fillStyle = 'hsla(270, 100%, 50%, 1)';
-        ctx.fillRect(x, y, cellSize, cellSize);
-    }
+      }
+      break;
+    case 'boss':
+      ctx.fillStyle = 'hsla(30, 100%, 50%, 1)';
+      ctx.fillRect(x, y, cellSize, cellSize);
+      break;
+    case 'staircase':
+      ctx.clearRect(x, y, cellSize, cellSize);
+      ctx.fillStyle = 'black';
+      ctx.fillRect(x, y, cellSize, cellSize);
+      break;
+    default:
+      ctx.fillStyle = 'hsla(270, 100%, 50%, 1)';
+      ctx.fillRect(x, y, cellSize, cellSize);
   }
+  // }
 };
 
 const clamp = (val, min, max) => Math.min(Math.max(val, min), max);
