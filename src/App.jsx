@@ -1,7 +1,5 @@
 import React from 'react';
 
-import * as utils from './utils/index';
-
 // import Splash from './containers/Splash';
 // import Controls from './containers/Controls';
 // import Message from './containers/Message';

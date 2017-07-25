@@ -22,7 +22,7 @@ const fillGrid = (gameMap, level = 1) => {
   const qM = monsterTypes
 .filter(monster => monster.damage < (level * 20) + 20)
 .filter(monster => monster.damage > (level * 20) - 20);
-  for (let i = 0; i < 8; i++) {
+  for (let i = 0; i < 7; i++) {
     const monster = Object.assign({}, qM[utils.randomInt(0, qM.length - 1)]);
     monster.type = 'monster';
     monster.health = (level * 30) + 40;
@@ -59,7 +59,7 @@ const fillGrid = (gameMap, level = 1) => {
   const qA = animalTypes
 .filter(animal => animal.damage < (level * 20) + 20)
 .filter(animal => animal.damage > (level * 20) - 20);
-  for (let i = 0; i < 8; i++) {
+  for (let i = 0; i < 3; i++) {
     const animal = Object.assign({}, qA[utils.randomInt(0, qA.length - 1)]);
     animal.type = 'animal';
     animals.push(animal);
@@ -68,14 +68,11 @@ const fillGrid = (gameMap, level = 1) => {
 // hard code hero in center of viewport
   const heroPosition = [utils.gridWidth / 2, utils.gridHeight / 2];
   const [hX, hY] = heroPosition;
-  const newMap = gameMap.map((row) => {
-      return row.map((cell) => {
-        const newCell = Object.assign({}, cell);
-        return newCell;
-      })
-    });
+  const newMap = gameMap.map(row => row.map((cell) => {
+    const newCell = Object.assign({}, cell);
+    return newCell;
+  }));
   newMap[hY][hX] = heroes[0]; // change this when add skins to choose from
-  console.log(newMap[hY][hX]);
   [foods, monsters, animals, staircases, finalMonsters].forEach((entities) => {
     while (entities.length) {
       const x = Math.floor(Math.random() * utils.gridWidth);
