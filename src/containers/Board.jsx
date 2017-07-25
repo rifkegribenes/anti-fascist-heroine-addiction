@@ -16,7 +16,6 @@ class Board extends Component {
         attack: 10,
       },
       messages: [],
-      torch: true,
     };
 
     this.handleKeydown = this.handleKeydown.bind(this);
@@ -82,13 +81,13 @@ class Board extends Component {
     const destination = this.state.entities[y + changeY][x + changeX];
     // console.log('moving', x,y, destination);
     if (destination.type !== 'wall' && destination.type !== 'monster' && destination.type !== 'boss') {
-      const grid1 = utils.changeEntity(this.state.entities, { type: 'floor', torch: 1 }, [x, y]);
+      const grid1 = utils.changeEntity(this.state.entities, { type: 'floor' }, [x, y]);
       const grid2 = utils.changeEntity(grid1, newHero, newPosition);
       this.setState({
         entities: grid2,
         heroPosition: newPosition,
       }, () => {
-        utils.renderViewport(this.state.heroPosition, this.state.entities, this.state.torch, false);
+        utils.renderViewport(this.state.heroPosition, this.state.entities, false);
       });
     }
     // handle collisions
@@ -167,16 +166,6 @@ class Board extends Component {
     this.startGame();
   }
 
-  toggleTorch() {
-    let torch = this.state.torch;
-    torch = !torch;
-    this.setState({
-      torch,
-    }, () => {
-      utils.renderViewport(this.state.heroPosition, this.state.entities, this.state.torch, false);
-    });
-  }
-
   handleCombat(monster, newPosition, newHero) {
     const hero = Object.assign({}, this.state.hero);
     const messages = [...this.state.messages];
@@ -207,13 +196,13 @@ class Board extends Component {
       // monster dies, add XP & move hero
       const [x, y] = this.state.heroPosition;
       this.modifyXP(10);
-      const grid1 = utils.changeEntity(this.state.entities, { type: 'floor', torch: 1 }, [x, y]);
+      const grid1 = utils.changeEntity(this.state.entities, { type: 'floor' }, [x, y]);
       const grid2 = utils.changeEntity(grid1, newHero, newPosition);
       this.setState({
         entities: grid2,
         heroPosition: newPosition,
       }, () => {
-        utils.renderViewport(this.state.heroPosition, this.state.entities, this.state.torch, false);
+        utils.renderViewport(this.state.heroPosition, this.state.entities, false);
       });
       if (monster.type === 'finalMonster') {
         messages.push(`You did it! Your attack of [${monsterDamageTaken}] defeated ${currMonster.name}.`); // fix this msg later
@@ -248,7 +237,7 @@ class Board extends Component {
       entities: newMap,
       heroPosition,
     }, () => {
-      utils.renderViewport(this.state.heroPosition, this.state.entities, this.state.torch, false);
+      utils.renderViewport(this.state.heroPosition, this.state.entities, false);
     });
   }
 
@@ -257,10 +246,9 @@ class Board extends Component {
     return (
       <div className="container">
         <div className="message">{this.state.messages}</div>
-        <button className="toggleTorch" onClick={() => this.toggleTorch()} />
         <canvas
           id="board"
-          className="board"
+          className="board clip-circle"
           width={utils.vWidth * utils.cellSize}
           height={utils.vHeight * utils.cellSize}
         />
