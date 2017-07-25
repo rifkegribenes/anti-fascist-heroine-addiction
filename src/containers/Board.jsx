@@ -33,12 +33,6 @@ class Board extends Component {
     window.addEventListener('keydown', this.handleKeydown);
   }
 
-  // componentDidUpdate(prevProps, prevState) {
-  //   if(this.state.entities !== prevState.entities){
-  //     this.renderCanvas(this.state.entities, prevState.entities, false);
-  //         }
-  // }
-
   componentWillUnmount() {
     window.removeEventListener('keydown', this.handleKeydown);
   }
@@ -91,7 +85,7 @@ class Board extends Component {
         entities: grid2,
         heroPosition: newPosition,
       }, () => {
-        utils.renderViewport(this.state.heroPosition, this.state.entities, false);
+        utils.renderViewport(this.state.heroPosition, this.state.entities);
       });
     }
     // handle collisions
@@ -209,7 +203,7 @@ class Board extends Component {
         entities: grid2,
         heroPosition: newPosition,
       }, () => {
-        utils.renderViewport(this.state.heroPosition, this.state.entities, false);
+        utils.renderViewport(this.state.heroPosition, this.state.entities);
       });
       if (monster.type === 'finalMonster') {
         messages.push(`You did it! Your attack of [${monsterDamageTaken}] defeated ${currMonster.name}.`); // fix this msg later
@@ -248,7 +242,7 @@ class Board extends Component {
         gameLevel: level + 1,
       }, () => {
         setTimeout(() => {
-          utils.renderViewport(this.state.heroPosition, this.state.entities, true);
+          utils.renderViewport(this.state.heroPosition, this.state.entities);
         }, 1000);
       });
     });
@@ -260,7 +254,7 @@ class Board extends Component {
       entities: newMap,
       heroPosition,
     }, () => {
-      utils.renderViewport(this.state.heroPosition, this.state.entities, false);
+      utils.renderViewport(this.state.heroPosition, this.state.entities);
     });
   }
 

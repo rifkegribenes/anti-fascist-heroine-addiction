@@ -10,14 +10,10 @@ export const random = (min, max) => (Math.random() * (max - min)) + min;
 export const randomInt = (min, max) => Math.floor(random(min, max));
 
 // render to canvas
-const drawCell = (ctx, level, x, y, vX, vY, firstRender, cellType, opacity, iconUrl) => {
-  const hue = (((x + y) / 10) % 360);
+const drawCell = (ctx, level, x, y, vX, vY, cellType, opacity, iconUrl) => {
+  const hue = (((x + y) / 4) % 360);
   const img = new Image();
   const radius = Math.floor((cellSize) * 0.2) || 2;
-  // if (firstRender && cellType === 'wall') {
-  //   ctx.fillStyle = `hsla(${hue}, 100%, 50%, ${opacity})`;
-  //   ctx.fillRect(x, y, cellSize, cellSize);
-  // } else {
   switch (cellType) {
     case 'wall':
       ctx.clearRect(x, y, cellSize, cellSize);
@@ -74,12 +70,11 @@ const drawCell = (ctx, level, x, y, vX, vY, firstRender, cellType, opacity, icon
       ctx.fillStyle = 'hsla(270, 100%, 50%, 1)';
       ctx.fillRect(x, y, cellSize, cellSize);
   }
-  // }
 };
 
 const clamp = (val, min, max) => Math.min(Math.max(val, min), max);
 
-export const renderViewport = (heroPosition, entities, firstRender) => {
+export const renderViewport = (heroPosition, entities) => {
 // add oldGrid param and 'diff' grids before render ?
   const [hX, hY] = heroPosition;
   const newEntities = entities.map(row => row.map((cell) => {
@@ -105,7 +100,7 @@ export const renderViewport = (heroPosition, entities, firstRender) => {
         if (!newCell.level) { newCell.level = 1; }
         drawCell(
             ctx, newCell.level, x, y, vX, vY,
-            firstRender, newCell.type, newCell.opacity, newCell.iconUrl,
+            newCell.type, newCell.opacity, newCell.iconUrl,
             );
         return null;
       }));

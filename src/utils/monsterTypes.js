@@ -5,7 +5,7 @@ const monsterTypes = [
     youDiedMsg: '',
     iconUrl: '',
     type: 'monster',
-    damage: 15,
+    damage: 35,
   },
   {
     name: 'George W. Bush',
