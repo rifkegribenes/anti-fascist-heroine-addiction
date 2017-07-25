@@ -16,7 +16,7 @@ class Board extends Component {
         attack: 10,
       },
       messages: [],
-      torch: true,
+      torch: false,
       torchPower: 10,
     };
 
@@ -82,7 +82,7 @@ class Board extends Component {
     const newHero = this.state.entities[y][x];
     const destination = this.state.entities[y + changeY][x + changeX];
     // const entities = Object.assign({}, this.state.entities);
-    // console.log('moving', newHero, destination);
+    console.log('moving', x,y, destination);
     if (destination.type !== 'wall' && destination.type !== 'monster' && destination.type !== 'boss') {
       const grid1 = utils.changeEntity(this.state.entities, { type: 'floor', torch: 1 }, [x, y]);
       const grid2 = utils.changeEntity(grid1, newHero, newPosition);
@@ -92,7 +92,7 @@ class Board extends Component {
       }, () => {
       // console.log(this.state.entities[y][x]);
       // this.renderCanvas(this.state.entities, entities, false);
-        this.renderCanvas(this.state.entities);
+        utils.renderViewport(this.state.heroPosition, this.state.entities, false);
       });
     }
     // handle collisions
@@ -227,7 +227,7 @@ class Board extends Component {
       }, () => {
         // console.log(this.state.entities[y][x]);
         // this.renderCanvas(this.state.entities, entities, false);
-        this.renderCanvas(this.state.entities);
+        utils.renderViewport(this.state.heroPosition, this.state.entities, false);
       });
       if (monster.type === 'finalMonster') {
         messages.push(`You did it! Your attack of [${monsterDamageTaken}] defeated ${currMonster.name}.`); // fix this msg later
@@ -252,8 +252,6 @@ class Board extends Component {
     });
   }
 
-  // handleCollision() {}
-
   // handleStaircase() {}
 
   startGame() {
@@ -263,57 +261,54 @@ class Board extends Component {
       heroPosition,
     }, () => {
       // console.log('CDM', this.state.entities);
-      this.renderCanvas(this.state.entities, null, true);
+      // this.renderCanvas(this.state.entities, null, true);
+      // utils.draw(this.state.heroPosition, this.state.entities, true);
+      utils.renderViewport(this.state.heroPosition, this.state.entities, false);
     });
   }
 
-  renderCanvas(newGrid, oldGrid, firstRender) {
-    const [heroX, heroY] = this.state.heroPosition;
-    // console.log(this.state.heroPosition);
-    let grid2render = [];
-    if (this.state.torch) {
-      grid2render = newGrid.map((row, i) => row.map((cell, j) => {
-        const newCell = Object.assign({}, cell);
-        const a = j - heroX;
-        const b = i - heroY;
-        if (Math.sqrt((a * a) + (b * b)) < this.state.torchPower) {
-          newCell.torch = 1;
-        } else {
-          newCell.torch = 0;
-        }
-        return newCell;
-      }));
-    } else {
-      grid2render = newGrid.map(row => row.map((cell) => {
-        const newCell = Object.assign({}, cell);
-        newCell.torch = 1;
-        return newCell;
-      }));
-    }
-    const entities = grid2render;
-    this.setState({
-      entities,
-    }, () => {
-      if (oldGrid) {
-        utils.updateCells(grid2render, oldGrid, firstRender);
-      } else {
-        utils.drawCells(grid2render, firstRender);
-      }
-    });
-  }
+  // renderCanvas(newGrid, oldGrid, firstRender) {
+  //   const [heroX, heroY] = this.state.heroPosition;
+  //   // console.log(this.state.heroPosition);
+  //   let grid2render = [];
+  //   if (this.state.torch) {
+  //     grid2render = newGrid.map((row, i) => row.map((cell, j) => {
+  //       const newCell = Object.assign({}, cell);
+  //       const a = j - heroX;
+  //       const b = i - heroY;
+  //       if (Math.sqrt((a * a) + (b * b)) < this.state.torchPower) {
+  //         newCell.torch = 1;
+  //       } else {
+  //         newCell.torch = 0;
+  //       }
+  //       return newCell;
+  //     }));
+  //   } else {
+  //     grid2render = newGrid.map(row => row.map((cell) => {
+  //       const newCell = Object.assign({}, cell);
+  //       newCell.torch = 1;
+  //       return newCell;
+  //     }));
+  //   }
+  //   const entities = grid2render;
+  //   this.setState({
+  //     entities,
+  //   }, () => {
+  //       utils.renderViewport(this.state.heroPosition, grid2render, firstRender, this.state.torch);
+  //   });
+  // }
 
   render() {
 // render messages to a ul, return only 3 most recent, style
     return (
-      <div>
+      <div className="container">
         <div className="message">{this.state.messages}</div>
         <button className="toggleTorch" onClick={() => this.toggleTorch()} />
         <canvas
           id="board"
           className="board"
-          // onClick={e => this.handleClick(e)}
-          width={utils.gridWidth * utils.cellSize}
-          height={utils.gridHeight * utils.cellSize}
+          width={utils.vWidth * utils.cellSize}
+          height={utils.vHeight * utils.cellSize}
         />
       </div>
     );

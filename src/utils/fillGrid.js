@@ -68,8 +68,14 @@ const fillGrid = (gameMap, level = 1) => {
 // hard code hero in center of viewport
   const heroPosition = [utils.gridWidth / 2, utils.gridHeight / 2];
   const [hX, hY] = heroPosition;
-  const newMap = gameMap;
+  const newMap = gameMap.map((row) => {
+      return row.map((cell) => {
+        const newCell = Object.assign({}, cell);
+        return newCell;
+      })
+    });
   newMap[hY][hX] = heroes[0]; // change this when add skins to choose from
+  console.log(newMap[hY][hX]);
   [foods, monsters, animals, staircases, finalMonsters].forEach((entities) => {
     while (entities.length) {
       const x = Math.floor(Math.random() * utils.gridWidth);
@@ -79,6 +85,9 @@ const fillGrid = (gameMap, level = 1) => {
       }
     }
   });
+  // console.log(`at the end of fillGrid: newMap =`);
+  // console.log(newMap);
+  // console.log(`heroPosition = ${heroPosition}`);
   return { newMap, heroPosition };
 };
 

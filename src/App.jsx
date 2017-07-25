@@ -15,13 +15,6 @@ const App = () => (
       <Controls />
       <Message />
       <Info /> */}
-      <canvas
-        id="board"
-        className="board"
-          // onClick={e => this.handleClick(e)}
-        width={utils.gridWidth * utils.cellSize}
-        height={utils.gridHeight * utils.cellSize}
-      />
       <Board />
     </div>
   </main>

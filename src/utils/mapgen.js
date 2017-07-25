@@ -88,11 +88,11 @@ const generateMap = () => {
     }
   }
 
-  // hard code first room in center of viewport
+  // hard code first room
   const [min, max] = roomSizeRange;
   const firstRoom = {
-    x: (gridWidth / 2) - Math.floor(max / 2),
-    y: (gridHeight / 2) - Math.floor(min / 2),
+    x: (gridWidth / 2) - Math.floor(max / 2),  // center of grid
+    y: (gridHeight / 2) - Math.floor(min / 2), // center of grid
     height: min,
     width: max,
   };
