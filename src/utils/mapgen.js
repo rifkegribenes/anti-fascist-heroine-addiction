@@ -88,8 +88,8 @@ const generateMap = (level) => {
         type: 'wall',
         opacity: random(0.4, 0.8),
         level,
-        hue: (((i + j)*7) % 360),
-          });
+        hue: (((i + j) * 7) % 360),
+      });
     }
   }
 

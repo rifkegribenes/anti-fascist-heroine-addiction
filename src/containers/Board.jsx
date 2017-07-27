@@ -198,7 +198,7 @@ class Board extends Component {
     this.setState({
       currentEntity,
     });
-    if (currentEntity.health < 0) {currentEntity.health = 0};
+    if (currentEntity.health < 0) { currentEntity.health = 0; }
     if (currentEntity.health > 0) {
       // monster attacks hero
       const heroDamageTaken = Math.floor(utils.random(0.7, 1.3) * currentEntity.damage);
@@ -209,9 +209,9 @@ class Board extends Component {
       ${currentEntity.name} hits back with [${heroDamageTaken}] damage.
       ${currentEntity.name} HP remaining: [${currentEntity.health}].`);
       this.setState({
-      currentEntity,
-      messages,
-    });
+        currentEntity,
+        messages,
+      });
       if (hero.health - heroDamageTaken <= 0) {
         // you died!
         setTimeout(() => this.setLevel('death'), 250);
@@ -242,7 +242,7 @@ class Board extends Component {
         }, 3000);
         return;
       }
-      messages.push(`You did it! Your attack of [${monsterDamageTaken}] defeated ${currMonster.name}.`); // fix this msg later
+      messages.push(`You did it! Your attack of [${monsterDamageTaken}] defeated ${currentEntity.name}.`); // fix this msg later
       setTimeout(() => messages.push('You gained 10XP.'), 1000); // fix this msg later
       if ((hero.xp + 10) % 100 === 0) {
         setTimeout(() => messages.push('LEVEL UP!'), 3000);
@@ -295,13 +295,13 @@ class Board extends Component {
 // return only 3 most recent message, style
     return (
       <div className="container">
-      <div className="leftCol">
-        <canvas
-          id="board"
-          className="board clip-circle"
-          width={utils.vWidth * utils.cellSize}
-          height={utils.vHeight * utils.cellSize}
-        />
+        <div className="leftCol">
+          <canvas
+            id="board"
+            className="board clip-circle"
+            width={utils.vWidth * utils.cellSize}
+            height={utils.vHeight * utils.cellSize}
+          />
         </div>
         <div className="rightCol">
           <Info
@@ -310,10 +310,10 @@ class Board extends Component {
             gameLevel={this.state.gameLevel}
           />
           <div className="message">
-          <ul>
-            {messageList.reverse()}
-          </ul>
-        </div>
+            <ul>
+              {messageList.reverse()}
+            </ul>
+          </div>
         </div>
       </div>
     );
