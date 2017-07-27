@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import shortid from 'shortid';
 
+import Info from './Info';
 import * as utils from '../utils/index';
 import generateMap from '../utils/mapGen';
 import fillGrid from '../utils/fillGrid';
@@ -17,8 +18,14 @@ class Board extends Component {
         hp: 100,
         xp: 0,
         attack: 10,
+        name: '',
+        cardUrl: '',
+        bio: '',
+        team: [],
+        level: 1,
       },
       messages: [],
+      currentEntity: {},
     };
 
     this.handleKeydown = this.handleKeydown.bind(this);
@@ -110,13 +117,16 @@ class Board extends Component {
   addAnimal(animal) {
     const hero = Object.assign({}, this.state.hero);
     const messages = [...this.state.messages];
+    const currentEntity = animal;
     hero.attack += animal.damage;
+    hero.team.push(animal);
     messages.push(`You added ${animal.name} to your team! ${animal.message}, and adds ${animal.damage} points of damage to your team attack.`);
     this.setState({
       hero,
       messages,
+      currentEntity,
     }, () => {
-      // console.log(hero);
+      // console.log(hero.team, typeof(hero.team));
     });
   }
 
@@ -126,13 +136,14 @@ class Board extends Component {
     this.setState({
       hero,
     }, () => {
-      // console.log(hero);
+      console.log(`xp: ${this.state.hero.xp}`);
     });
   }
 
   modifyHP(entity, delta) {
     const hero = Object.assign({}, this.state.hero);
     const messages = [...this.state.messages];
+    const currentEntity = entity;
     if (entity.type === 'food') {
       const healthBoost = entity.healthBoost;
       hero.hp += healthBoost;
@@ -146,6 +157,7 @@ class Board extends Component {
     this.setState({
       hero,
       messages,
+      currentEntity,
     }, () => {
       // console.log(hero);
     });
@@ -160,8 +172,13 @@ class Board extends Component {
         hp: 100,
         xp: 0,
         attack: 10,
+        name: '',
+        cardUrl: '',
+        bio: '',
+        team: [],
       },
       messages: [],
+      currentEntity: {},
     }, () => this.startGame(),
     );
   }
@@ -169,34 +186,45 @@ class Board extends Component {
   handleCombat(monster, newPosition, newHero) {
     const hero = Object.assign({}, this.state.hero);
     const messages = [...this.state.messages];
-    const currMonster = monster;
+    const currentEntity = monster;
+    this.setState({
+      currentEntity,
+    });
     messages.push(`Your team is attacking ${monster.name}!`);
     const heroLevel = Math.floor(hero.xp / 100) + 1;
     // hero attacks monster
     const monsterDamageTaken = Math.floor(hero.attack * utils.random(1, 1.3) * heroLevel);
-    currMonster.health -= monsterDamageTaken;
-    if (currMonster.health > 0) {
+    currentEntity.health -= monsterDamageTaken;
+    this.setState({
+      currentEntity,
+    });
+    if (currentEntity.health < 0) {currentEntity.health = 0};
+    if (currentEntity.health > 0) {
       // monster attacks hero
-      const heroDamageTaken = Math.floor(utils.random(0.7, 1.3) * currMonster.damage);
+      const heroDamageTaken = Math.floor(utils.random(0.7, 1.3) * currentEntity.damage);
       utils.changeEntity(this.state.entities, monster, newPosition);
-      this.modifyHP(currMonster, 0 - heroDamageTaken);
+      this.modifyHP(currentEntity, 0 - heroDamageTaken);
       // put this in combat card view
-      messages.push(`Your team attacked ${currMonster.name} and did [${monsterDamageTaken}] damage.
-      ${currMonster.name} hits back with [${heroDamageTaken}] damage.
-      ${currMonster.name} HP remaining: [${currMonster.health}].`);
+      messages.push(`Your team attacked ${currentEntity.name} and did [${monsterDamageTaken}] damage.
+      ${currentEntity.name} hits back with [${heroDamageTaken}] damage.
+      ${currentEntity.name} HP remaining: [${currentEntity.health}].`);
+      this.setState({
+      currentEntity,
+      messages,
+    });
       if (hero.health - heroDamageTaken <= 0) {
         // you died!
         setTimeout(() => this.setLevel('death'), 250);
-        setTimeout(() => messages.push(`You died! ${currMonster.youDiedMsg}.`), 1000);
+        setTimeout(() => messages.push(`You died! ${currentEntity.youDiedMsg}.`), 1000);
         setTimeout(() => {
           this.restart();
         }, 3000);
         return;
       }
-    } else if (currMonster.health <= 0) {
+    } else if (currentEntity.health <= 0) {
       // monster dies, add XP & move hero
       const [x, y] = this.state.heroPosition;
-      this.modifyXP(10);
+      this.modifyXP(25);
       const grid1 = utils.changeEntity(this.state.entities, { type: 'floor' }, [x, y]);
       const grid2 = utils.changeEntity(grid1, newHero, newPosition);
       this.setState({
@@ -206,7 +234,7 @@ class Board extends Component {
         utils.renderViewport(this.state.heroPosition, this.state.entities);
       });
       if (monster.type === 'finalMonster') {
-        messages.push(`You did it! Your attack of [${monsterDamageTaken}] defeated ${currMonster.name}.`); // fix this msg later
+        messages.push(`You did it! Your attack of [${monsterDamageTaken}] defeated ${currentEntity.name}.`); // fix this msg later
         setTimeout(() => this.setLevel('victory'), 250);
         setTimeout(() => messages.push('You won! blah blah blah.'), 1000); // fix this msg later
         setTimeout(() => {
@@ -267,17 +295,26 @@ class Board extends Component {
 // return only 3 most recent message, style
     return (
       <div className="container">
-        <div className="message">
-          <ul>
-            {messageList.reverse()}
-          </ul>
-        </div>
+      <div className="leftCol">
         <canvas
           id="board"
           className="board clip-circle"
           width={utils.vWidth * utils.cellSize}
           height={utils.vHeight * utils.cellSize}
         />
+        </div>
+        <div className="rightCol">
+          <Info
+            hero={this.state.hero}
+            entity={this.state.currentEntity}
+            gameLevel={this.state.gameLevel}
+          />
+          <div className="message">
+          <ul>
+            {messageList.reverse()}
+          </ul>
+        </div>
+        </div>
       </div>
     );
   }

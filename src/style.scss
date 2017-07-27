@@ -70,14 +70,37 @@ body {
 
 canvas {
   margin: auto;
+  background: hsl(0, 0%, 80%);
 }
 
 .clip-circle {
   clip-path: circle(320px at center);
   }
 
-.message {
-  color: white;
-  font-size: 16px;
-  width: 200px;
+.rightCol {
+  background: white;
+  width: 300px;
+}
+
+.card-pic-wrapper {
+  display: flex;
+  justify-content: center;
+  border-radius: 100%;
+  border: 1px solid gray;
+}
+
+.card-pic {
+  padding: 50px;
+}
+
+.rightCol {
+  padding: 20px;
+}
+
+.hero-team__wrapper {
+  display: flex;
+  flex-direction: row;
+}
+.hero-team__item--attack {
+  text-align: center;
 }

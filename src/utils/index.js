@@ -10,8 +10,7 @@ export const random = (min, max) => (Math.random() * (max - min)) + min;
 export const randomInt = (min, max) => Math.floor(random(min, max));
 
 // render to canvas
-const drawCell = (ctx, level, x, y, vX, vY, cellType, opacity, iconUrl) => {
-  const hue = (((x + y) / 4) % 360);
+const drawCell = (ctx, level, x, y, vX, vY, cellType, opacity, hue, iconUrl) => {
   const img = new Image();
   const radius = Math.floor((cellSize) * 0.2) || 2;
   switch (cellType) {
@@ -36,8 +35,18 @@ const drawCell = (ctx, level, x, y, vX, vY, cellType, opacity, iconUrl) => {
       ctx.fillRect(x, y, cellSize, cellSize);
       break;
     case 'monster':
-      ctx.fillStyle = 'hsla(360, 100%, 50%, 1)';
+      ctx.fillStyle = 'hsla(0, 0%, 80%, 1)';
       ctx.fillRect(x, y, cellSize, cellSize);
+      img.src = iconUrl;
+      img.onload = () => {
+        ctx.save();
+        ctx.drawImage(img, x, y, cellSize, cellSize);
+        ctx.restore();
+      };
+      if (!iconUrl) {
+        ctx.fillStyle = 'hsla(360, 100%, 50%, 1)';
+        ctx.fillRect(x, y, cellSize, cellSize);
+      }
       break;
     case 'food':
       ctx.fillStyle = 'hsla(120, 100%, 50%, 1)';
@@ -98,9 +107,10 @@ export const renderViewport = (heroPosition, entities) => {
         const y = cellSize * i;
         const newCell = Object.assign({}, c);
         if (!newCell.level) { newCell.level = 1; }
+        if (!newCell.hue) { newCell.hue = 0; }
         drawCell(
             ctx, newCell.level, x, y, vX, vY,
-            newCell.type, newCell.opacity, newCell.iconUrl,
+            newCell.type, newCell.opacity, newCell.hue, newCell.iconUrl,
             );
         return null;
       }));

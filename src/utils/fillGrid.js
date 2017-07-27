@@ -20,10 +20,9 @@ const fillGrid = (gameMap, level) => {
 
   const monsters = [];
   const qM = monsterTypes
-.filter(monster => monster.damage < (level * 20) + 20)
-.filter(monster => monster.damage > (level * 20) - 20);
-  for (let i = 0; i < 7; i++) {
-    const monster = Object.assign({}, qM[utils.randomInt(0, qM.length - 1)]);
+.filter(monster => monster.damage = (level * 15));
+  for (let i = 0; i < 4; i++) {
+    const monster = Object.assign({}, qM[i]);
     monster.type = 'monster';
     monster.health = (level * 30) + 40;
     monster.level = utils.randomInt(
