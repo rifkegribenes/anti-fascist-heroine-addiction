@@ -63,7 +63,6 @@ body {
 
 .container {
   display: flex;
-  justify-content: center;
   width: 100vw;
   height: 100vh;
 }
@@ -79,7 +78,6 @@ canvas {
 
 .rightCol {
   background: white;
-  width: 300px;
 }
 
 .card-pic-wrapper {
@@ -87,14 +85,25 @@ canvas {
   justify-content: center;
   border-radius: 100%;
   border: 1px solid gray;
+  width: 240px;
+  height: 240px;
+  max-width: 100%;
+  margin: auto;
 }
 
 .card-pic {
   padding: 50px;
 }
 
+.leftCol {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
 .rightCol {
   padding: 20px;
+  width: 100%;
 }
 
 .hero-team__wrapper {

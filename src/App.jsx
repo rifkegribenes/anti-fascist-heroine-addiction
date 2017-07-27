@@ -7,7 +7,7 @@ import Board from './containers/Board';
 
 const App = () => (
   <main>
-    <div className="container">
+    <div>
       {/* <Splash />
       <Controls />
       <Message />

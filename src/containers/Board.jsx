@@ -178,6 +178,7 @@ class Board extends Component {
         team: [],
       },
       messages: [],
+      header: '',
       currentEntity: {},
     }, () => this.startGame(),
     );
@@ -308,6 +309,7 @@ class Board extends Component {
             hero={this.state.hero}
             entity={this.state.currentEntity}
             gameLevel={this.state.gameLevel}
+            header={this.state.header}
           />
           <div className="message">
             <ul>
