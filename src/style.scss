@@ -65,16 +65,24 @@ body {
   display: flex;
   width: 100vw;
   height: 100vh;
+  flex-wrap: wrap;
+  @include for-tablet-landscape-up {
+    flex-wrap: nowrap;
+  }
+}
+
+.info-container {
+  display: flex;
+}
+
+.col {
+  padding: 20px;
 }
 
 canvas {
   margin: auto;
   background: hsl(0, 0%, 80%);
 }
-
-.clip-circle {
-  clip-path: circle(320px at center);
-  }
 
 .rightCol {
   background: white;
@@ -85,14 +93,18 @@ canvas {
   justify-content: center;
   border-radius: 100%;
   border: 1px solid gray;
-  width: 240px;
-  height: 240px;
+  width: 100%;
+  height: auto;
   max-width: 100%;
   margin: auto;
+  z-index: 2;
 }
 
 .card-pic {
-  padding: 50px;
+  width: 80%;
+  height: auto;
+  margin: auto;
+  border-radius: 4%;
 }
 
 .leftCol {

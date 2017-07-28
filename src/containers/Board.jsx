@@ -26,10 +26,12 @@ class Board extends Component {
       },
       messages: [],
       currentEntity: {},
+      width: window.innerWidth,
     };
 
     this.handleKeydown = this.handleKeydown.bind(this);
     this.userInput = this.userInput.bind(this);
+    this.updateDimensions = this.updateDimensions.bind(this);
   }
   componentWillMount() {
 
@@ -38,15 +40,23 @@ class Board extends Component {
   componentDidMount() {
     this.startGame();
     window.addEventListener('keydown', this.handleKeydown);
+    window.addEventListener('resize', this.updateDimensions);
   }
 
   componentWillUnmount() {
     window.removeEventListener('keydown', this.handleKeydown);
+    window.removeEventListener('resize', this.updateDimensions);
   }
 
   setLevel(level) {
     this.setState({
       gameLevel: level,
+    });
+  }
+
+  updateDimensions() {
+    this.setState({ width: window.innerWidth }, () => {
+      utils.renderViewport(this.state.heroPosition, this.state.entities, this.state.width);
     });
   }
 
@@ -92,7 +102,7 @@ class Board extends Component {
         entities: grid2,
         heroPosition: newPosition,
       }, () => {
-        utils.renderViewport(this.state.heroPosition, this.state.entities);
+        utils.renderViewport(this.state.heroPosition, this.state.entities, this.state.width);
       });
     }
     // handle collisions
@@ -194,7 +204,8 @@ class Board extends Component {
     messages.push(`Your team is attacking ${monster.name}!`);
     const heroLevel = Math.floor(hero.xp / 100) + 1;
     // hero attacks monster
-    const monsterDamageTaken = Math.floor(hero.attack * utils.random(1, 1.3) * heroLevel);
+    const monsterDamageTaken = Math.floor(hero.attack *
+      utils.random(1, 1.3) * (((heroLevel - 1) * 0.5) + 1));
     currentEntity.health -= monsterDamageTaken;
     this.setState({
       currentEntity,
@@ -232,7 +243,7 @@ class Board extends Component {
         entities: grid2,
         heroPosition: newPosition,
       }, () => {
-        utils.renderViewport(this.state.heroPosition, this.state.entities);
+        utils.renderViewport(this.state.heroPosition, this.state.entities, this.state.width);
       });
       if (monster.type === 'finalMonster') {
         messages.push(`You did it! Your attack of [${monsterDamageTaken}] defeated ${currentEntity.name}.`); // fix this msg later
@@ -271,7 +282,7 @@ class Board extends Component {
         gameLevel: level + 1,
       }, () => {
         setTimeout(() => {
-          utils.renderViewport(this.state.heroPosition, this.state.entities);
+          utils.renderViewport(this.state.heroPosition, this.state.entities, this.state.width);
         }, 1000);
       });
     });
@@ -283,25 +294,32 @@ class Board extends Component {
       entities: newMap,
       heroPosition,
     }, () => {
-      utils.renderViewport(this.state.heroPosition, this.state.entities);
+      utils.renderViewport(this.state.heroPosition, this.state.entities, this.state.width);
     });
   }
 
   render() {
+    const width = this.state.width;
+    const cellSize = width > 640 ? 32 : Math.floor(width / 20);
+    const clipRadius = cellSize * 10;
     const messages = this.state.messages;
     const messageList = messages.slice(messages.length - 3, messages.length).map(message => (
       <li key={shortid.generate()}>
         {message}
       </li>));
+    const canvasStyle = {
+      clipPath: `circle(${clipRadius}px at center)`,
+    };
 // return only 3 most recent message, style
     return (
       <div className="container">
         <div className="leftCol">
           <canvas
             id="board"
-            className="board clip-circle"
-            width={utils.vWidth * utils.cellSize}
-            height={utils.vHeight * utils.cellSize}
+            className="board"
+            width={utils.vWidth * cellSize}
+            height={utils.vHeight * cellSize}
+            style={canvasStyle}
           />
         </div>
         <div className="rightCol">

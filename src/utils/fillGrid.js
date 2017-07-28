@@ -4,10 +4,11 @@ import animalTypes from './animalTypes';
 import monsterTypes from './monsterTypes';
 
 const fillGrid = (gameMap, level) => {
+  console.log(`filling grid for level ${level}`);
   const finalMonsters = [];
   if (level === 3) {
     finalMonsters.push({
-      health: 400,
+      health: 500,
       level: 5,
       type: 'finalMonster',
       name: 'Donald Trump',
@@ -20,14 +21,12 @@ const fillGrid = (gameMap, level) => {
 
   const monsters = [];
   const qM = monsterTypes
-.filter(monster => monster.damage === (level * 15));
+.filter(monster => monster.level === level);
   for (let i = 0; i < 4; i++) {
     const monster = Object.assign({}, qM[i]);
     monster.type = 'monster';
-    monster.health = (level * 30) + 40;
-    monster.level = utils.randomInt(
-    level, utils.randomInt(level - 1 ? level - 1 : level, level + 1),
-    );
+    monster.health = Math.floor(((level * 0.75) ** 2) * 90)
+    + utils.randomInt(10 * level, 20 * level);
     monsters.push(monster);
   }
 
@@ -46,20 +45,19 @@ const fillGrid = (gameMap, level) => {
 
   const foods = [];
   const qF = foodTypes
- .filter(food => food.healthBoost < (level * 20) + 20)
-.filter(food => food.healthBoost > (level * 20) - 20);
+ .filter(food => food.healthBoost < (level * 10) + 10)
+.filter(food => food.healthBoost > (level * 10) - 10);
   for (let i = 0; i < 5; i++) {
-    const food = Object.assign({}, qF[utils.randomInt(0, qF.length - 1)]);
+    const food = Object.assign({}, qF[i]);
     food.type = 'food';
     foods.push(food);
   }
 
   const animals = [];
   const qA = animalTypes
-.filter(animal => animal.damage < (level * 20) + 20)
-.filter(animal => animal.damage > (level * 20) - 20);
-  for (let i = 0; i < 3; i++) {
-    const animal = Object.assign({}, qA[utils.randomInt(0, qA.length - 1)]);
+.filter(animal => animal.level === level);
+  for (let i = 0; i < 4; i++) {
+    const animal = Object.assign({}, qA[i]);
     animal.type = 'animal';
     animals.push(animal);
   }

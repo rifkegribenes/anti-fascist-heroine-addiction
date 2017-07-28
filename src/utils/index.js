@@ -1,16 +1,16 @@
 // global constants
-export const cellSize = 32;
 export const gridHeight = 60;
 export const gridWidth = 80;
 export const vHeight = 20;
 export const vWidth = 20;
+
 
 // helper functions
 export const random = (min, max) => (Math.random() * (max - min)) + min;
 export const randomInt = (min, max) => Math.floor(random(min, max));
 
 // render to canvas
-const drawCell = (ctx, level, x, y, vX, vY, cellType, opacity, hue, iconUrl) => {
+const drawCell = (cellSize, ctx, level, x, y, vX, vY, cellType, opacity, hue, iconUrl) => {
   const img = new Image();
   const radius = Math.floor((cellSize) * 0.2) || 2;
   switch (cellType) {
@@ -49,8 +49,18 @@ const drawCell = (ctx, level, x, y, vX, vY, cellType, opacity, hue, iconUrl) => 
       }
       break;
     case 'food':
-      ctx.fillStyle = 'hsla(120, 100%, 50%, 1)';
+      ctx.fillStyle = 'hsla(0, 0%, 80%, 1)';
       ctx.fillRect(x, y, cellSize, cellSize);
+      img.src = iconUrl;
+      img.onload = () => {
+        ctx.save();
+        ctx.drawImage(img, x, y, cellSize, cellSize);
+        ctx.restore();
+      };
+      if (!iconUrl) {
+        ctx.fillStyle = 'hsla(120, 100%, 50%, 1)';
+        ctx.fillRect(x, y, cellSize, cellSize);
+      }
       break;
     case 'animal':
       ctx.fillStyle = 'hsla(0, 0%, 80%, 1)';
@@ -83,8 +93,13 @@ const drawCell = (ctx, level, x, y, vX, vY, cellType, opacity, hue, iconUrl) => 
 
 const clamp = (val, min, max) => Math.min(Math.max(val, min), max);
 
-export const renderViewport = (heroPosition, entities) => {
-// add oldGrid param and 'diff' grids before render ?
+export const renderViewport = (heroPosition, entities, width) => {
+  let cellSize;
+  if (width > 640) {
+    cellSize = 32;
+  } else {
+    cellSize = Math.floor(width / 20);
+  }
   const [hX, hY] = heroPosition;
   const newEntities = entities.map(row => row.map((cell) => {
     const newCell = Object.assign({}, cell);
@@ -109,7 +124,7 @@ export const renderViewport = (heroPosition, entities) => {
         if (!newCell.level) { newCell.level = 1; }
         if (!newCell.hue) { newCell.hue = 0; }
         drawCell(
-            ctx, newCell.level, x, y, vX, vY,
+            cellSize, ctx, newCell.level, x, y, vX, vY,
             newCell.type, newCell.opacity, newCell.hue, newCell.iconUrl,
             );
         return null;
