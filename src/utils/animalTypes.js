@@ -2,105 +2,117 @@
 
 // Giraffe 1 5
 // Penguin 1 5
-// Duckling 1 5
+// Lamb 1 5
 // Frog 1 5
 // TOTAL: 30
 
 // Hippo 2 10
-// Turtle 2 10
+// Bear 2 10
 // Kitty 2 10
 // Octopus 2 10
 // TOTAL: 70 * 1.5 = 135
 
-// Fox 3 10
-// Snake 3 10
-// Whale 3 10
-// Devil K 3 20
+// Lion 3 10
+// Pig 3 10
+// Panda 3 10
+// Red Panda 3 20
 // TOTAL: 166 * 2 = 332
 
 const animalTypes = [
   {
-    name: 'Baby Giraffe',
+    name: 'Giraffe',
     message: 'Baby Giraffe can chew off monster hair and ears',
-    iconUrl: '',
+    iconUrl: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/giraffe.svg',
+    cardUrl: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/giraffe.svg',
     damage: 5,
     level: 1,
   },
   {
-    name: 'Baby Penguin',
+    name: 'Penguin',
     message: 'Baby Penguin can slap monsters with her flippers',
-    iconUrl: '',
+    iconUrl: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/penguin.svg',
+    cardUrl: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/penguin.svg',
     damage: 5,
     level: 1,
   },
   {
-    name: 'Duckling',
-    message: 'Duckling can nip at monsters with her beak',
-    iconUrl: '',
+    name: 'Lamb',
+    message: 'Lamb can headbutt monsters and knock them over',
+    iconUrl: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/lamb.svg',
+    cardUrl: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/lamb.svg',
     damage: 5,
     level: 1,
   },
   {
     name: 'Froggie',
     message: 'Froggie can lash monsters with her long tongue',
-    iconUrl: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/frog.gif',
+    iconUrl: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/frog.svg',
+    cardUrl: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/frog.svg',
     damage: 5,
     level: 1,
   },
   {
     name: 'Kitty',
-    message: 'Kitty has sharp claws',
-    iconUrl: '',
+    message: 'Kitty can scratch monsters with her sharp claws',
+    iconUrl: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/kitty.svg',
+    cardUrl: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/kitty.svg',
     damage: 10,
     level: 2,
   },
   {
-    name: 'Baby Hippo',
+    name: 'Hippo',
     message: 'Baby Hippo can roll over and squash monsters flat',
-    iconUrl: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/baby-hippo.gif',
+    iconUrl: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/hippo.svg',
+    cardUrl: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/hippo.svg',
     damage: 10,
     level: 2,
   },
   {
-    name: 'Baby Octopus',
+    name: 'Octopus',
     message: 'Baby Octopus can strangle monsters with her tentacles',
-    iconUrl: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/octopus.gif',
+    iconUrl: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/octopus.svg',
+    cardUrl: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/octopus.svg',
     damage: 10,
     level: 2,
   },
   {
-    name: 'Baby Turtle',
-    message: 'Baby Turtle can bite monsters with her powerful beak',
-    iconUrl: '',
+    name: 'Bear',
+    message: 'Baby Bear can clobber monsters with her powerful paws',
+    iconUrl: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/bear.svg',
+    cardUrl: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/bear.svg',
     damage: 10,
     level: 2,
   },
   {
-    name: 'Baby Fox',
-    message: 'Baby Fox is sneaky and can bite monsters from behind',
-    iconUrl: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/baby-fox.gif',
+    name: 'Lion',
+    message: 'Lion has a ferocious roar that frightens monsters away',
+    iconUrl: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/lion.svg',
+    cardUrl: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/lion.svg',
     damage: 10,
     level: 3,
   },
   {
-    name: 'Baby Snake',
-    message: 'Baby Snake has a venomous bite',
-    iconUrl: '',
+    name: 'Piglet',
+    message: 'Piglet has a powerful bite',
+    iconUrl: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/pig.svg',
+    cardUrl: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/pig.svg',
     damage: 10,
     level: 3,
   },
 
   {
-    name: 'Baby Whale',
-    message: 'Baby Whale can blow saltwater out of her blowhole',
-    iconUrl: '',
+    name: 'Panda',
+    message: 'Baby Panda can hug monsters to death',
+    iconUrl: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/panda.svg',
+    cardUrl: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/panda.svg',
     damage: 10,
     level: 3,
   },
   {
-    name: 'Devil Kitty',
-    message: 'Devil Kitty is quick and smart, her claws and teeth are sharp',
-    iconUrl: '',
+    name: 'Red Panda',
+    message: 'Red Panda is quick and smart, her claws and teeth are sharp',
+    iconUrl: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/red-panda.svg',
+    cardUrl: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/red-panda.svg',
     damage: 20,
     level: 3,
   },
