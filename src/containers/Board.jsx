@@ -142,7 +142,7 @@ class Board extends Component {
 
   modifyXP(delta) {
     const hero = Object.assign({}, this.state.hero);
-    hero.xp = hero.xp + delta;
+    hero.xp += delta;
     console.log(hero.xp);
     this.setState({
       hero,
