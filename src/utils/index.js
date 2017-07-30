@@ -68,6 +68,7 @@ const drawCell = (cellSize, ctx, level, x, y, vX, vY, cellType, opacity, hue, ic
       img.src = iconUrl;
       img.onload = () => {
         ctx.save();
+        console.log(`drawing animal at ${x},${y}`);
         ctx.drawImage(img, x, y, cellSize, cellSize);
         ctx.restore();
       };
