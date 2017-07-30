@@ -45,9 +45,8 @@ const fillGrid = (gameMap, level) => {
 
   const foods = [];
   const qF = foodTypes
- .filter(food => food.healthBoost < (level * 10) + 10)
-.filter(food => food.healthBoost > (level * 10) - 10);
-  for (let i = 0; i < 5; i++) {
+ .filter(food => food.level === level);
+  for (let i = 0; i < 4; i++) {
     const food = Object.assign({}, qF[i]);
     food.type = 'food';
     foods.push(food);

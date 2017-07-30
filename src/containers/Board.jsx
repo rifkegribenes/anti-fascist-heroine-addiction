@@ -142,7 +142,8 @@ class Board extends Component {
 
   modifyXP(delta) {
     const hero = Object.assign({}, this.state.hero);
-    hero.xp += delta;
+    hero.xp = hero.xp + delta;
+    console.log(hero.xp);
     this.setState({
       hero,
     }, () => {
@@ -203,7 +204,7 @@ class Board extends Component {
     });
     messages.push(`Your team is attacking ${monster.name}!`);
     const heroLevel = Math.floor(hero.xp / 100) + 1;
-    // hero attacks monster
+    // hero attack
     const monsterDamageTaken = Math.floor(hero.attack *
       utils.random(1, 1.3) * (((heroLevel - 1) * 0.5) + 1));
     currentEntity.health -= monsterDamageTaken;
@@ -212,7 +213,7 @@ class Board extends Component {
     });
     if (currentEntity.health < 0) { currentEntity.health = 0; }
     if (currentEntity.health > 0) {
-      // monster attacks hero
+      // monster attack
       const heroDamageTaken = Math.floor(utils.random(0.7, 1.3) * currentEntity.damage);
       utils.changeEntity(this.state.entities, monster, newPosition);
       this.modifyHP(currentEntity, 0 - heroDamageTaken);
@@ -234,7 +235,7 @@ class Board extends Component {
         return;
       }
     } else if (currentEntity.health <= 0) {
-      // monster dies, add XP & move hero
+      // monster dies
       const [x, y] = this.state.heroPosition;
       this.modifyXP(25);
       const grid1 = utils.changeEntity(this.state.entities, { type: 'floor' }, [x, y]);
