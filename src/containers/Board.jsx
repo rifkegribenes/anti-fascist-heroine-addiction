@@ -41,6 +41,7 @@ class Board extends Component {
     this.startGame();
     window.addEventListener('keydown', this.handleKeydown);
     window.addEventListener('resize', this.updateDimensions);
+    document.getElementById('board').focus();
   }
 
   componentWillUnmount() {
@@ -112,7 +113,7 @@ class Board extends Component {
         this.handleCombat(destination, newPosition, newHero);
         break;
       case 'food':
-        this.modifyHP(destination);
+        this.healthBoost(destination);
         break;
       case 'animal':
         this.addAnimal(destination);
@@ -140,31 +141,13 @@ class Board extends Component {
     });
   }
 
-  modifyXP(delta) {
-    const hero = Object.assign({}, this.state.hero);
-    hero.xp += delta;
-    console.log(hero.xp);
-    this.setState({
-      hero,
-    }, () => {
-      console.log(`xp: ${this.state.hero.xp}`);
-    });
-  }
-
-  modifyHP(entity, delta) {
+  healthBoost(food) {
     const hero = Object.assign({}, this.state.hero);
     const messages = [...this.state.messages];
-    const currentEntity = entity;
-    if (entity.type === 'food') {
-      const healthBoost = entity.healthBoost;
-      hero.hp += healthBoost;
-      messages.push(`You ate ${entity.name} and gained ${entity.healthBoost} health points!`);
-    } else {
-      hero.hp += delta;
-      if (hero.hp < 0) {
-        hero.hp = 0;
-      }
-    }
+    const currentEntity = food;
+    const healthBoost = food.healthBoost;
+    hero.hp += healthBoost;
+    messages.push(`You ate ${food.name} and gained ${food.healthBoost} health points!`);
     this.setState({
       hero,
       messages,
@@ -216,18 +199,19 @@ class Board extends Component {
       // monster attack
       const heroDamageTaken = Math.floor(utils.random(0.7, 1.3) * currentEntity.damage);
       utils.changeEntity(this.state.entities, monster, newPosition);
-      this.modifyHP(currentEntity, 0 - heroDamageTaken);
-      // put this in combat card view
-      messages.push(`Your team attacked ${currentEntity.name} and did [${monsterDamageTaken}] damage.
-      ${currentEntity.name} hits back with [${heroDamageTaken}] damage.
-      ${currentEntity.name} HP remaining: [${currentEntity.health}].`);
+      hero.hp -= heroDamageTaken;
       this.setState({
-        currentEntity,
+        hero,
+      });
+      messages.push(`Your team attacked ${currentEntity.name} and did [${monsterDamageTaken}] damage.
+      ${currentEntity.name} hits back with [${heroDamageTaken}] damage.`);
+      this.setState({
         messages,
       });
-      if (hero.health - heroDamageTaken <= 0) {
+      if (hero.hp - heroDamageTaken <= 0) {
         // you died!
-        setTimeout(() => this.setLevel('death'), 250);
+        console.log('you died!');
+        setTimeout(() => this.setLevel(0), 250);
         setTimeout(() => messages.push(`You died! ${currentEntity.youDiedMsg}.`), 1000);
         setTimeout(() => {
           this.restart();
@@ -237,7 +221,12 @@ class Board extends Component {
     } else if (currentEntity.health <= 0) {
       // monster dies
       const [x, y] = this.state.heroPosition;
-      this.modifyXP(25);
+      hero.xp += 25;
+      hero.level = Math.floor(hero.xp / 100) + 1;
+      if (hero.xp % 100 === 0) { console.log('level up!'); }
+      this.setState({
+        hero,
+      });
       const grid1 = utils.changeEntity(this.state.entities, { type: 'floor' }, [x, y]);
       const grid2 = utils.changeEntity(grid1, newHero, newPosition);
       this.setState({
@@ -248,7 +237,7 @@ class Board extends Component {
       });
       if (monster.type === 'finalMonster') {
         messages.push(`You did it! Your attack of [${monsterDamageTaken}] defeated ${currentEntity.name}.`); // fix this msg later
-        setTimeout(() => this.setLevel('victory'), 250);
+        setTimeout(() => this.setLevel(4), 250);
         setTimeout(() => messages.push('You won! blah blah blah.'), 1000); // fix this msg later
         setTimeout(() => {
           this.restart();
