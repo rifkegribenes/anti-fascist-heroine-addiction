@@ -36,7 +36,7 @@ const drawCell = (cellSize, ctx, level, x, y, vX, vY, cellType, opacity, hue, ic
         ctx.save();
         ctx.drawImage(img, x, y, cellSize, cellSize);
         ctx.restore();
-        };
+      };
       if (!iconUrl) {
         ctx.fillStyle = 'hsla(60, 100%, 50%, 1)';
         ctx.fillRect(x, y, cellSize, cellSize);
