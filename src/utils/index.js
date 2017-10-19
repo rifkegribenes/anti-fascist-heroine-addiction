@@ -31,8 +31,16 @@ const drawCell = (cellSize, ctx, level, x, y, vX, vY, cellType, opacity, hue, ic
       ctx.fillRect(x, y, cellSize, cellSize);
       break;
     case 'hero':
-      ctx.fillStyle = 'hsla(60, 100%, 50%, 1)';
-      ctx.fillRect(x, y, cellSize, cellSize);
+      img.src = iconUrl;
+      img.onload = () => {
+        ctx.save();
+        ctx.drawImage(img, x, y, cellSize, cellSize);
+        ctx.restore();
+        };
+      if (!iconUrl) {
+        ctx.fillStyle = 'hsla(60, 100%, 50%, 1)';
+        ctx.fillRect(x, y, cellSize, cellSize);
+      }
       break;
     case 'monster':
       ctx.fillStyle = 'hsla(0, 0%, 80%, 1)';
@@ -82,9 +90,13 @@ const drawCell = (cellSize, ctx, level, x, y, vX, vY, cellType, opacity, hue, ic
       ctx.fillRect(x, y, cellSize, cellSize);
       break;
     case 'staircase':
-      ctx.clearRect(x, y, cellSize, cellSize);
-      ctx.fillStyle = 'black';
-      ctx.fillRect(x, y, cellSize, cellSize);
+      img.src = 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/staircase_32.png';
+      img.onload = () => {
+        ctx.save();
+        // console.log(`drawing animal at ${x},${y}`);
+        ctx.drawImage(img, x, y, cellSize, cellSize);
+        ctx.restore();
+      };
       break;
     default:
       ctx.fillStyle = 'hsla(270, 100%, 50%, 1)';

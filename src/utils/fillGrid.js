@@ -40,6 +40,10 @@ const fillGrid = (gameMap, level) => {
   const heroes = [
     {
       type: 'hero',
+      name: 'Kamala Khan',
+      bio: '',
+      iconUrl: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/kamala-k_32.png',
+      cardUrl: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/kamala-k_200.png',
     },
   ];
 

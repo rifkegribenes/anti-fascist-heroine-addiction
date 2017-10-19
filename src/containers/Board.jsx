@@ -94,7 +94,6 @@ class Board extends Component {
     const newPosition = [changeX + x, changeY + y];
     const newHero = this.state.entities[y][x];
     const destination = this.state.entities[y + changeY][x + changeX];
-    // console.log('moving', x,y, destination);
     if (destination.type !== 'wall' && destination.type !== 'monster' && destination.type !== 'boss') {
       const grid1 = utils.changeEntity(this.state.entities, { type: 'floor' }, [x, y]);
       const grid2 = utils.changeEntity(grid1, newHero, newPosition);
@@ -166,8 +165,9 @@ class Board extends Component {
         hp: 100,
         xp: 0,
         attack: 10,
-        name: '',
-        cardUrl: '',
+        name: 'Kamala Khan',
+        iconUrl: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/kamala-k_32.png',
+        cardUrl: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/kamala-k_200.png',
         bio: '',
         team: [],
       },

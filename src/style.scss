@@ -1,4 +1,20 @@
-/* MEDIA QUERIES */
+@font-face {
+  font-family: 'Videophreak';
+  src: url('fonts/Videophreak.eot');
+  src: url('fonts/Videophreak.eot?#iefix') format('embedded-opentype'), url('fonts/Videophreak.woff') format('woff'), url('fonts/Videophreak.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'G7 Silkworm TTF';
+  src: url('fonts/G7SilkwormTTF.eot');
+  src: url('fonts/G7SilkwormTTF.eot?#iefix') format('embedded-opentype'),     url('fonts/G7SilkwormTTF.woff') format('woff'), url('fonts/G7SilkwormTTF.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+////* MEDIA QUERIES *////
 
 @mixin for-phone-landscape-up {
   @media (min-width: 480px) {
@@ -57,8 +73,15 @@
 $color_gray_text: #7a7a7a;
 $color_gray_lighter: lighten($color_gray_text,35%);
 
+
 body {
   background: black;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
 .container {
@@ -71,11 +94,19 @@ body {
   }
 }
 
-.info-container {
-  display: flex;
+.info {
+
+  &__container {
+    display: flex;
+  }
+
+  &__subhead {
+    font-family: Videophreak;
+  }
+
 }
 
-.col {
+.col, .info__col {
   padding: 20px;
 }
 
@@ -118,15 +149,20 @@ canvas {
   width: 100%;
 }
 
-.hero-team__wrapper {
-  display: flex;
-  flex-direction: row;
-}
-.hero-team__item--attack {
-  text-align: center;
+.hero {
+  &__team-wrapper {
+    display: flex;
+    flex-direction: row;
+  }
+
+  &__team--item-attack {
+    text-align: center;
+  }
+
+  &__team--item-image img {
+    width: 32px;
+  height: auto;
+  }
 }
 
-.hero-team__item--image img {
-  width: 32px;
-  height: auto;
-}
+/////
