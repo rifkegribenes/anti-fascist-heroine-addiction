@@ -7,7 +7,6 @@ const teamList = (obj) => {
     return obj.map(val => (
       <div className="hero-team__item" key={shortid.generate()}>
         <div className="hero-team__item--image"><img src={val.iconUrl} alt={val.name} /></div>
-        <div className="hero-team__item--attack">{val.damage}</div>
       </div>
       ));
   }
@@ -17,12 +16,14 @@ const teamList = (obj) => {
 const Info = props => (
   <div className="info">
     <h2 className="info__header">{props.header}</h2>
-    <h3 className="info__subhead">Level: {props.gameLevel}</h3>
+    <div className="info__subhead-wrap">
+      <span className="info__subhead">Level:&nbsp;{props.gameLevel}</span>
+    </div>
     <div className="info__container">
       <div className="info__col">
         <h3 className="info__hero-title">{props.hero.name || 'Hero'}</h3>
         <div className="card-pic-wrapper">
-          <img src={props.hero.cardUrl} alt={props.hero.name} className="card-pic" />
+          <img src={props.hero.cardUrl} alt={props.hero.name} className="card-pic" id="hero" />
         </div>
         <div className="hero__stats">
           <div className="hero__level">Level: {props.hero.level}</div>
@@ -31,7 +32,7 @@ const Info = props => (
           <div className="hero__xp">XP: {props.hero.xp}</div>
           <div className="hero__health">Health: {props.hero.hp}</div>
           <div className="hero__team">
-            <h4>Team</h4>
+            <h4 className="info__hero-title">Team</h4>
             <div className="hero__team--wrapper">
               {teamList(props.hero.team)}
             </div>
@@ -39,20 +40,21 @@ const Info = props => (
         </div>
       </div>
       <div className="info__col">
-        <h3 className="entity__title">{props.entity.type === 'food' ? props.entity.title : props.entity.name || 'Title'}</h3>
+        <h3 className="entity__title">{props.entity.type === 'food' ? props.entity.title : props.entity.name || ''}</h3>
         <div className="card-pic-wrapper">
           <img
             src={props.entity.cardUrl}
             alt={props.entity.type === 'food' ? props.entity.title : props.entity.name}
             className="card-pic"
+            id="entity"
           />
         </div>
         <div className="entity__stats">
           {props.entity.level &&
           <div className="entity__level">Level: {props.entity.level}</div>
         }
-          {props.entity.attack &&
-          <div className="entity__attack">Attack: {props.entity.attack}</div>
+          {props.entity.damage &&
+          <div className="entity__attack">Attack: {props.entity.damage}</div>
         }
           {props.entity.bio &&
           <div className="entity__bio">Bio: {props.entity.bio}</div>
@@ -91,7 +93,7 @@ Info.propTypes = {
     title: PropTypes.string,
     cardUrl: PropTypes.string,
     level: PropTypes.number,
-    attack: PropTypes.number,
+    damage: PropTypes.number,
     bio: PropTypes.string,
     message: PropTypes.string,
     health: PropTypes.number,

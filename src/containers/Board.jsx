@@ -109,15 +109,19 @@ class Board extends Component {
     switch (destination.type) {
       case 'finalMonster':
       case 'monster':
+        document.getElementById('entity').classList.remove('spin', 'hidden');
         this.handleCombat(destination, newPosition, newHero);
         break;
       case 'food':
+        document.getElementById('entity').classList.remove('spin', 'hidden');
         this.healthBoost(destination);
         break;
       case 'animal':
+        document.getElementById('entity').classList.remove('spin', 'hidden');
         this.addAnimal(destination);
         break;
       case 'staircase':
+        document.getElementById('entity').classList.remove('spin', 'hidden');
         this.handleStaircase(destination);
         break;
       default:
@@ -211,15 +215,18 @@ class Board extends Component {
       if (hero.hp - heroDamageTaken <= 0) {
         // you died!
         console.log('you died!');
+        document.getElementById('hero').classList.add('spin', 'hidden');
         setTimeout(() => this.setLevel(0), 250);
         setTimeout(() => messages.push(`You died! ${currentEntity.youDiedMsg}.`), 1000);
         setTimeout(() => {
+          document.getElementById('hero').classList.remove('spin', 'hidden');
           this.restart();
         }, 3000);
         return;
       }
     } else if (currentEntity.health <= 0) {
       // monster dies
+      document.getElementById('entity').classList.add('spin', 'hidden');
       const [x, y] = this.state.heroPosition;
       hero.xp += 25;
       hero.level = Math.floor(hero.xp / 100) + 1;

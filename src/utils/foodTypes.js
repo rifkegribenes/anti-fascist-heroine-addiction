@@ -33,7 +33,7 @@ const foodTypes = [
   },
   {
     name: 'a Raspberry',
-    title: 'Strawberry',
+    title: 'Raspberry',
     iconUrl: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/raspberry_32.png',
     cardUrl: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/raspberry_200.png',
     healthBoost: 15,
