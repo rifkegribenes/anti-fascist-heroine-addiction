@@ -116,9 +116,9 @@ class Board extends Component {
         document.getElementById('entity').classList.remove('spin', 'hidden');
         this.healthBoost(destination);
         break;
-      case 'animal':
+      case 'teamHero':
         document.getElementById('entity').classList.remove('spin', 'hidden');
-        this.addAnimal(destination);
+        this.addTeamHero(destination);
         break;
       case 'staircase':
         document.getElementById('entity').classList.remove('spin', 'hidden');
@@ -128,13 +128,13 @@ class Board extends Component {
     }
   }
 
-  addAnimal(animal) {
+  addTeamHero(teamHero) {
     const hero = Object.assign({}, this.state.hero);
     const messages = [...this.state.messages];
-    const currentEntity = animal;
-    hero.attack += animal.damage;
-    hero.team.push(animal);
-    messages.push(`You added ${animal.name} to your team! ${animal.message}, and adds ${animal.damage} points of damage to your team attack.`);
+    const currentEntity = teamHero;
+    hero.attack += teamHero.damage;
+    hero.team.push(teamHero);
+    messages.push(`You added ${teamHero.name} to your team! ${teamHero.message}, and adds ${teamHero.damage} points of damage to your team attack.`);
     this.setState({
       hero,
       messages,

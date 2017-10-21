@@ -1,6 +1,6 @@
 import * as utils from '../utils';
 import foodTypes from './foodTypes';
-import animalTypes from './animalTypes';
+import teamHeroes from './teamHeroes';
 import monsterTypes from './monsterTypes';
 
 const fillGrid = (gameMap, level) => {
@@ -56,13 +56,13 @@ const fillGrid = (gameMap, level) => {
     foods.push(food);
   }
 
-  const animals = [];
-  const qA = animalTypes
-.filter(animal => animal.level === level);
+  const teamHeroArray = [];
+  const qA = teamHeroes
+.filter(teamHero => teamHero.level === level);
   for (let i = 0; i < 4; i++) {
-    const animal = Object.assign({}, qA[i]);
-    animal.type = 'animal';
-    animals.push(animal);
+    const teamHero = Object.assign({}, qA[i]);
+    teamHero.type = 'teamHero';
+    teamHeroArray.push(teamHero);
   }
 
 // hard code hero in center of viewport
@@ -73,7 +73,7 @@ const fillGrid = (gameMap, level) => {
     return newCell;
   }));
   newMap[hY][hX] = heroes[0]; // change this when add skins to choose from
-  [foods, monsters, animals, staircases, finalMonsters].forEach((entities) => {
+  [foods, monsters, teamHeroArray, staircases, finalMonsters].forEach((entities) => {
     while (entities.length) {
       const x = Math.floor(Math.random() * utils.gridWidth);
       const y = Math.floor(Math.random() * utils.gridHeight);

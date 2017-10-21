@@ -70,13 +70,13 @@ const drawCell = (cellSize, ctx, level, x, y, vX, vY, cellType, opacity, hue, ic
         ctx.fillRect(x, y, cellSize, cellSize);
       }
       break;
-    case 'animal':
+    case 'teamHero':
       ctx.fillStyle = 'hsla(0, 0%, 80%, 1)';
       ctx.fillRect(x, y, cellSize, cellSize);
       img.src = iconUrl;
       img.onload = () => {
         ctx.save();
-        // console.log(`drawing animal at ${x},${y}`);
+        // console.log(`drawing teamHero at ${x},${y}`);
         ctx.drawImage(img, x, y, cellSize, cellSize);
         ctx.restore();
       };
@@ -93,7 +93,7 @@ const drawCell = (cellSize, ctx, level, x, y, vX, vY, cellType, opacity, hue, ic
       img.src = 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/staircase_32.png';
       img.onload = () => {
         ctx.save();
-        // console.log(`drawing animal at ${x},${y}`);
+        // console.log(`drawing staircase at ${x},${y}`);
         ctx.drawImage(img, x, y, cellSize, cellSize);
         ctx.restore();
       };
