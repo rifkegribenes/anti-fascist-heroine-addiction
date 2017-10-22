@@ -3,7 +3,7 @@ import foodTypes from './foodTypes';
 import teamHeroes from './teamHeroes';
 import monsterTypes from './monsterTypes';
 
-const fillGrid = (gameMap, level) => {
+const fillGrid = (gameMap, level, hero) => {
   console.log(`filling grid for level ${level}`);
   const finalMonsters = [];
   if (level === 3) {
@@ -37,16 +37,6 @@ const fillGrid = (gameMap, level) => {
     });
   }
 
-  const heroes = [
-    {
-      type: 'hero',
-      name: 'Kamala Khan',
-      bio: '',
-      iconUrl: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/kamala-k_32.png',
-      cardUrl: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/kamala-k_200.png',
-    },
-  ];
-
   const foods = [];
   const qF = foodTypes
  .filter(food => food.level === level);
@@ -57,10 +47,12 @@ const fillGrid = (gameMap, level) => {
   }
 
   const teamHeroArray = [];
-  const qA = teamHeroes
-.filter(teamHero => teamHero.level === level);
+  const qH = teamHeroes
+.filter(teamHero => teamHero.level === level && teamHero.name !== hero.name);
   for (let i = 0; i < 4; i++) {
-    const teamHero = Object.assign({}, qA[i]);
+    const teamHero = Object.assign({}, qH[i]);
+    console.log('fillGrid.js > 54');
+    console.log(teamHero.name);
     teamHero.type = 'teamHero';
     teamHeroArray.push(teamHero);
   }
@@ -72,7 +64,8 @@ const fillGrid = (gameMap, level) => {
     const newCell = Object.assign({}, cell);
     return newCell;
   }));
-  newMap[hY][hX] = heroes[0]; // change this when add skins to choose from
+  hero.type = 'hero';
+  newMap[hY][hX] = hero;
   [foods, monsters, teamHeroArray, staircases, finalMonsters].forEach((entities) => {
     while (entities.length) {
       const x = Math.floor(Math.random() * utils.gridWidth);

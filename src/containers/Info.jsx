@@ -5,8 +5,8 @@ import shortid from 'shortid';
 const teamList = (obj) => {
   if (obj.length) {
     return obj.map(val => (
-      <div className="hero-team__item" key={shortid.generate()}>
-        <div className="hero-team__item--image"><img src={val.iconUrl} alt={val.name} /></div>
+      <div className="hero__team--item" key={shortid.generate()}>
+        <div className="hero__team--item-image"><img src={val.iconUrl} alt={val.name} /></div>
       </div>
       ));
   }
@@ -23,12 +23,13 @@ const Info = props => (
       <div className="info__col">
         <h3 className="info__hero-title">{props.hero.name || 'Hero'}</h3>
         <div className="card-pic-wrapper">
-          <img src={props.hero.cardUrl} alt={props.hero.name} className="card-pic" id="hero" />
+          <img src={props.hero.cardUrl} alt={props.hero.name} className="card-pic card-pic--round" id="hero" />
         </div>
         <div className="hero__stats">
+           <div className="hero__aliases">Aliases: {props.hero.aliases}</div>
           <div className="hero__level">Level: {props.hero.level}</div>
           <div className="hero__attack">Attack: {props.hero.attack}</div>
-          <div className="hero__bio">Bio: {props.hero.bio}</div>
+          <div className="hero__powers">Powers: {props.hero.powers}</div>
           <div className="hero__xp">XP: {props.hero.xp}</div>
           <div className="hero__health">Health: {props.hero.hp}</div>
           <div className="hero__team">
@@ -45,7 +46,7 @@ const Info = props => (
           <img
             src={props.entity.cardUrl}
             alt={props.entity.type === 'food' ? props.entity.title : props.entity.name}
-            className={props.entity.type === 'hero' || props.entity.type === 'teamHero' ? "card-pic" : "card-pic card-pic--round"}
+            className={props.entity.type === 'hero' || props.entity.type === 'teamHero' ? 'card-pic card-pic--round' : 'card-pic'}
             id="entity"
           />
         </div>

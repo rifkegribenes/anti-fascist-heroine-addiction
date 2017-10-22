@@ -1,13 +1,14 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 import shortid from 'shortid';
-import Modal from 'react-modal';
+import { withRouter } from 'react-router';
 
+import * as Actions from '../store/actions';
 import Info from './Info';
-import HeroPicker from './HeroPicker';
 import * as utils from '../utils/index';
 import generateMap from '../utils/mapGen';
 import fillGrid from '../utils/fillGrid';
-import teamHeroes from '../utils/teamHeroes';
 
 
 class Board extends Component {
@@ -17,16 +18,7 @@ class Board extends Component {
       entities: [[]],
       gameLevel: 1,
       heroPosition: [],
-      hero: {
-        hp: 100,
-        xp: 0,
-        attack: 10,
-        name: '',
-        cardUrl: '',
-        bio: '',
-        team: [],
-        level: 1,
-      },
+      hero: this.props.appState.hero,
       messages: [],
       modalOpen: true,
       currentEntity: {},
@@ -48,20 +40,20 @@ class Board extends Component {
     document.getElementById('board').focus();
   }
 
+  componentDidUpdate() {
+    if (this.props.appState.gridFilled) {
+      utils.renderViewport(this.props.appState.heroPosition, this.props.appState.entities, this.state.width);
+    }
+  }
+
   componentWillUnmount() {
     window.removeEventListener('keydown', this.handleKeydown);
     window.removeEventListener('resize', this.updateDimensions);
   }
 
-  setLevel(level) {
-    this.setState({
-      gameLevel: level,
-    });
-  }
-
   updateDimensions() {
     this.setState({ width: window.innerWidth }, () => {
-      utils.renderViewport(this.state.heroPosition, this.state.entities, this.state.width);
+      utils.renderViewport(this.props.appState.heroPosition, this.props.appState.entities, this.state.width);
     });
   }
 
@@ -93,21 +85,15 @@ class Board extends Component {
   }
 
   userInput(change) {
-    const [x, y] = this.state.heroPosition;
+    const [x, y] = this.props.appState.heroPosition;
     const [changeX, changeY] = change;
     const newPosition = [changeX + x, changeY + y];
-    const newHero = this.state.entities[y][x];
-    const destination = this.state.entities[y + changeY][x + changeX];
+    const newHero = this.props.appState.entities[y][x];
+    const destination = this.props.appState.entities[y + changeY][x + changeX];
     if (destination.type !== 'wall' && destination.type !== 'monster' && destination.type !== 'boss') {
-      const grid1 = utils.changeEntity(this.state.entities, { type: 'floor' }, [x, y]);
+      const grid1 = utils.changeEntity(this.props.appState.entities, { type: 'floor' }, [x, y]);
       const grid2 = utils.changeEntity(grid1, newHero, newPosition);
-      this.setState({
-        ...this.state,
-        entities: grid2,
-        heroPosition: newPosition,
-      }, () => {
-        utils.renderViewport(this.state.heroPosition, this.state.entities, this.state.width);
-      });
+      this.props.actions.userInput( grid2, newPosition );
     }
     // handle collisions
     switch (destination.type) {
@@ -138,7 +124,7 @@ class Board extends Component {
     const currentEntity = teamHero;
     hero.attack += teamHero.damage;
     hero.team.push(teamHero);
-    messages.push(`You added ${teamHero.name} to your team! ${teamHero.message}, and adds ${teamHero.damage} points of damage to your team attack.`);
+    messages.push(`You added ${teamHero.name} to your team! She adds ${teamHero.damage} points of damage to your team attack.`);
     this.setState({
       hero,
       messages,
@@ -164,29 +150,6 @@ class Board extends Component {
     });
   }
 
-  restart() {
-    this.setState({
-      entities: [[]],
-      gameLevel: 1,
-      heroPosition: [],
-      hero: {
-        hp: 100,
-        xp: 0,
-        attack: 10,
-        name: 'Kamala Khan',
-        iconUrl: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/kamala-k_32.png',
-        cardUrl: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/kamala-k_200.png',
-        bio: '',
-        team: [],
-      },
-      messages: [],
-      modalOpen: true,
-      header: '',
-      currentEntity: {},
-    }, () => this.startGame(),
-    );
-  }
-
   handleCombat(monster, newPosition, newHero) {
     const hero = Object.assign({}, this.state.hero);
     const messages = [...this.state.messages];
@@ -207,7 +170,7 @@ class Board extends Component {
     if (currentEntity.health > 0) {
       // monster attack
       const heroDamageTaken = Math.floor(utils.random(0.7, 1.3) * currentEntity.damage);
-      utils.changeEntity(this.state.entities, monster, newPosition);
+      utils.changeEntity(this.props.appState.entities, monster, newPosition);
       hero.hp -= heroDamageTaken;
       this.setState({
         hero,
@@ -221,38 +184,40 @@ class Board extends Component {
         // you died!
         console.log('you died!');
         document.getElementById('hero').classList.add('spin', 'hidden');
-        setTimeout(() => this.setLevel(0), 250);
+        setTimeout(() => this.props.actions.setLevel(0), 250);
         setTimeout(() => messages.push(`You died! ${currentEntity.youDiedMsg}.`), 1000);
         setTimeout(() => {
           document.getElementById('hero').classList.remove('spin', 'hidden');
-          this.restart();
+          this.props.actions.restart();
+          this.props.history.push('/');
         }, 3000);
         return;
       }
     } else if (currentEntity.health <= 0) {
       // monster dies
       document.getElementById('entity').classList.add('spin', 'hidden');
-      const [x, y] = this.state.heroPosition;
+      const [x, y] = this.props.appState.heroPosition;
       hero.xp += 25;
       hero.level = Math.floor(hero.xp / 100) + 1;
       if (hero.xp % 100 === 0) { console.log('level up!'); }
       this.setState({
         hero,
       });
-      const grid1 = utils.changeEntity(this.state.entities, { type: 'floor' }, [x, y]);
+      const grid1 = utils.changeEntity(this.props.appState.entities, { type: 'floor' }, [x, y]);
       const grid2 = utils.changeEntity(grid1, newHero, newPosition);
       this.setState({
         entities: grid2,
         heroPosition: newPosition,
       }, () => {
-        utils.renderViewport(this.state.heroPosition, this.state.entities, this.state.width);
+        utils.renderViewport(this.props.appState.heroPosition, this.props.appState.entities, this.state.width);
       });
       if (monster.type === 'finalMonster') {
         messages.push(`You did it! Your attack of [${monsterDamageTaken}] defeated ${currentEntity.name}.`); // fix this msg later
-        setTimeout(() => this.setLevel(4), 250);
+        setTimeout(() => this.props.actions.setLevel(4), 250);
         setTimeout(() => messages.push('You won! blah blah blah.'), 1000); // fix this msg later
         setTimeout(() => {
-          this.restart();
+          this.props.actions.restart();
+          this.props.history.push('/');
         }, 3000);
         return;
       }
@@ -284,49 +249,16 @@ class Board extends Component {
         gameLevel: level + 1,
       }, () => {
         setTimeout(() => {
-          utils.renderViewport(this.state.heroPosition, this.state.entities, this.state.width);
+          utils.renderViewport(this.props.appState.heroPosition, this.props.appState.entities, this.state.width);
         }, 1000);
       });
     });
   }
 
   startGame() {
-    const { newMap, heroPosition } = fillGrid(generateMap(1), 1);
-    this.setState({
-      entities: newMap,
-      heroPosition,
-    }, () => {
-      utils.renderViewport(this.state.heroPosition, this.state.entities, this.state.width);
-      console.log(this.state.hero);
-    });
-  }
-
-  closeModal() {
-    const newState = { ...this.state };
-    newState.modalOpen = false;
-    newState.modalTitle = '';
-    this.setState({
-      ...newState,
-    });
-  }
-
-  openModal() {
-    const newState = { ...this.state };
-    newState.modalOpen = true;
-    this.setState({
-      ...newState,
-    });
-  }
-
-  setHero(hero) {
-    console.log(hero);
-    const newState = { ...this.state };
-    newState.hero = hero;
-    newState.modalOpen = false;
-    this.setState({
-      ...newState,
-    });
-  }
+    const { newMap, heroPosition } = fillGrid(generateMap(1), 1, this.props.appState.hero);
+    this.props.actions.start(newMap, heroPosition);
+    }
 
   render() {
     const width = this.state.width;
@@ -340,23 +272,9 @@ class Board extends Component {
     const canvasStyle = {
       clipPath: `circle(${clipRadius}px at center)`,
     };
-    const modalStyles = { overlay: { zIndex: 1001, backgroundColor: 'rgba(0,0,0,.7)', } };
 // return only 3 most recent message, style
     return (
       <div>
-        <Modal
-          style={modalStyles}
-          isOpen={this.state.modalOpen}
-          onRequestClose={this.closeModal}
-          className="modal"
-          contentLabel="Choose player"
-        >
-          <HeroPicker
-            items={teamHeroes}
-            active={0}
-            closeModal={this.closeModal}
-            setHero={this.setHero}/>
-        </Modal>
         <div className="container">
           <div className="leftCol">
             <canvas
@@ -369,7 +287,7 @@ class Board extends Component {
           </div>
           <div className="rightCol">
             <Info
-              hero={this.state.hero}
+              hero={this.props.appState.hero}
               entity={this.state.currentEntity}
               gameLevel={this.state.gameLevel}
               header={this.state.header}
@@ -386,4 +304,12 @@ class Board extends Component {
   }
 }
 
-export default Board;
+const mapStateToProps = state => ({
+  appState: state.appState,
+});
+
+const mapDispatchToProps = dispatch => ({
+  actions: bindActionCreators({ ...Actions }, dispatch),
+});
+
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Board));

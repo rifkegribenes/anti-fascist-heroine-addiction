@@ -1,20 +1,30 @@
 import React from 'react';
+import { Switch, Route, BrowserRouter } from 'react-router-dom';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 
-// import Splash from './containers/Splash';
-// import Controls from './containers/Controls';
-// import Message from './containers/Message';
+import Splash from './containers/Splash';
 import Board from './containers/Board';
+import * as Actions from './store/actions';
 
 const App = () => (
-  <main>
-    <div>
-      {/* <Splash />
-      <Controls />
-      <Message />
-      <Info /> */}
-      <Board />
-    </div>
-  </main>
+  <BrowserRouter>
+    <main className="main" id="main">
+      <Switch>
+        <Route exact path="/" component={Splash} />
+        <Route path="/play" component={Board} />
+      </Switch>
+    </main>
+  </BrowserRouter>
   );
 
-export default App;
+
+const mapStateToProps = state => ({
+  appState: state.appState,
+});
+
+const mapDispatchToProps = dispatch => ({
+  actions: bindActionCreators({ ...Actions }, dispatch),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(App);

@@ -62,6 +62,7 @@ module.exports = {
     filename: 'index.js',
     path: path.join(__dirname, '/build'),
   },
+  devtool: 'cheap-module-source-map',
   plugins: dev ?
   [
     HTMLWebpackPluginConfig,
