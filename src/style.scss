@@ -94,7 +94,7 @@ body {
   font-family: 'Roboto Condensed', sans-serif;
 }
 
-* {
+*, *:before, *:after {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
@@ -209,6 +209,12 @@ canvas {
   height: auto;
   margin: auto;
   // border-radius: 4%;
+  //
+
+  &--round {
+    border-radius: 100%;
+    border: 1px solid Lime;
+  }
 }
 
 .leftCol {
@@ -244,4 +250,274 @@ canvas {
   }
 }
 
-/////
+///// carousel styles /////
+
+#carousel {
+    height: 100vh; // was 200
+    max-height: 600px;
+    width: 600px;
+    min-width: 600px;
+    margin: auto;
+
+    @include for-tablet-portrait-up {
+      width: 98vw;
+    }
+
+}
+
+.carousel {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 100%;
+  max-height: 480px;
+
+  &__card {
+    border: 1px solid Lime;
+    background: black;
+    padding: 20px;
+    font-weight: 200;
+    height: 100%;
+    max-height: 480px;
+    max-width: 320px;
+  }
+
+  &__card-pic {
+    border-radius: 100%;
+    border: 1px solid white;
+    max-width: 100%;
+  }
+
+  &__card-pic-wrapper {
+  }
+
+  &__card-wrap {
+    height: 416px;
+    margin: auto;
+  }
+
+  &__wrap {
+    height: 416px;
+    margin: auto;
+    position: relative;
+  }
+
+
+}
+
+.arrow {
+    position: absolute;
+    width: 30px;
+    height: 30px;
+    background-color: white;
+    text-align: center;
+    font-size: 25px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 20px;
+    color: #228291;
+    line-height: 30px;
+    margin-top: 85px;
+    z-index: 1060;
+    top: 73px;
+}
+
+.arrow-right {
+  left: 170px;
+}
+
+.arrow-left {
+  left: -200px;
+}
+
+.item {
+    text-align: center;
+    color: white;
+    position: absolute;
+    top: 0;
+    transition: height 1s, width 1s, left 1s, margin-top 1s, line-height 1s, background-color 1s;
+}
+
+$carousel-max: 98vw;
+$carousel-min: 600px;
+
+$level2-width: 225px;
+$level2-height: $level2-width * 1.3; // 292.5px
+$level1-width: 270px;
+$level1-height: $level1-width * 1.3; // 360px
+$level0-width: 320px;
+$level0-height: $level0-width * 1.3; // 416px
+
+
+$level-2-left: 183px;
+$level-1-left: 23px;
+$level0-left: -160px;
+$level1-left: -295px;
+$level2-left: -407px;
+
+
+.level-2 {
+    height: $level2-height;
+    width: $level2-width;
+    left: $level-2-left;
+    margin-top: 25px;
+    opacity: .75;
+    z-index: 1030;
+
+}
+
+.level-1 {
+    height: $level1-height;
+    width: $level1-width;
+    left: $level-1-left;
+    margin-top: 10px;
+    opacity: .9;
+    z-index: 1040;
+}
+
+.level0 {
+    height: $level0-height;
+    width: $level0-width;
+    left: $level0-left;
+    opacity: 1;
+    z-index: 1050;
+}
+
+.level1 {
+    height: $level1-height;
+    width: $level1-width;
+    margin-top: 10px;
+    left: $level1-left;
+    opacity: .9;
+    z-index: 1040;
+}
+
+.level2 {
+    height: $level2-height;
+    width: $level2-width;
+    margin-top: 25px;
+    left: $level2-left;
+    opacity: .75;
+    z-index: 1030;
+}
+
+.left-enter {
+    opacity: 0;
+    left: calc($level2-left - $level2-width);
+    height: $level2-height - 30;
+    width: $level2-width - 20;
+    line-height: $level2-height - 30;
+    margin-top: 40px;
+}
+
+.left-enter.left-enter-active {
+    opacity: 1;
+    left: $level2-left;
+    height: $level2-height;
+    width: $level2-width;
+    line-height: $level2-height;
+    margin-top: 25px;
+    transition: left 1s, opacity 1s, height 1s, width 1s, margin-top 1s, line-height 1s;
+}
+
+.left-leave {
+    opacity: 1;
+    left: $level-2-left;
+    height: $level2-height;
+    width: $level2-width;
+    line-height: $level2-height;
+    margin-top: 25px;
+}
+
+.left-leave.left-leave-active {
+    left: calc($level-2-left + $level2-width + 20);
+    opacity: 0;
+    height: $level2-height - 30;
+    line-height: 120px;
+    margin-top: 40px;
+    width: $level2-width - 20;
+    transition: left 1s, opacity 1s, height 1s, width 1s, margin-top 1s, line-height 1s;
+}
+
+.right-enter {
+    opacity: 0;
+    left: calc($level-2-left + $level2-width);
+    height: $level2-height - 30;
+    width: $level2-width - 20;
+    line-height: $level2-height - 30;
+    margin-top: 40px;
+}
+
+.right-enter.right-enter-active {
+    left: $level-2-left;
+    opacity: 1;
+    height: $level2-height;
+    margin-top: 25px;
+    line-height: $level2-height;
+    width: $level2-width;
+    transition: left 1s, opacity 1s, height 1s, width 1s, margin-top 1s, line-height 1s;
+}
+
+.right-leave {
+    left: $level2-left;
+    height: $level2-height;
+    opacity: 1;
+    margin-top: 25px;
+    line-height: $level2-height;
+    width: $level2-width;
+}
+
+.right-leave.right-leave-active {
+    left: calc($level2-left - $level2-width);
+    opacity: 0;
+    height: $level2-height - 30;
+    width: $level2-width - 20;
+    line-height: $level2-height - 30;
+    margin-top: 40px;
+    transition: left 1s, opacity 1s, height 1s, width 1s, margin-top 1s, line-height 1s;
+}
+
+///// modal styles ////
+
+.modal {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border: none;
+    padding: 0;
+    margin: -20px 0 0 -20px;
+    background-color: transparent;
+    z-index: 6;
+    width: 100%;
+
+    @include for-tablet-portrait-up {
+      margin: 0 0 0 0;
+    }
+
+    &__close {
+    margin-top: -2px;
+    -webkit-appearance: none;
+    appearance: none;
+    padding: 0;
+    cursor: pointer;
+    background: 0 0;
+    border: 0;
+    float: right;
+    font-size: 21px;
+    font-weight: 700;
+    line-height: 1;
+    color: #000;
+    text-shadow: 0 1px 0 #fff;
+    filter: alpha(opacity=20);
+    opacity: .2;
+    font-family: inherit;
+    text-transform: none;
+    overflow: visible;
+    margin: 0;
+    font: inherit;
+    align-items: flex-start;
+    text-align: center;
+    display: inline-block;
+  }
+}

@@ -1,10 +1,13 @@
 import React, { Component } from 'react';
 import shortid from 'shortid';
+import Modal from 'react-modal';
 
 import Info from './Info';
+import HeroPicker from './HeroPicker';
 import * as utils from '../utils/index';
 import generateMap from '../utils/mapGen';
 import fillGrid from '../utils/fillGrid';
+import teamHeroes from '../utils/teamHeroes';
 
 
 class Board extends Component {
@@ -25,6 +28,7 @@ class Board extends Component {
         level: 1,
       },
       messages: [],
+      modalOpen: true,
       currentEntity: {},
       width: window.innerWidth,
     };
@@ -176,6 +180,7 @@ class Board extends Component {
         team: [],
       },
       messages: [],
+      modalOpen: true,
       header: '',
       currentEntity: {},
     }, () => this.startGame(),
@@ -292,6 +297,34 @@ class Board extends Component {
       heroPosition,
     }, () => {
       utils.renderViewport(this.state.heroPosition, this.state.entities, this.state.width);
+      console.log(this.state.hero);
+    });
+  }
+
+  closeModal() {
+    const newState = { ...this.state };
+    newState.modalOpen = false;
+    newState.modalTitle = '';
+    this.setState({
+      ...newState,
+    });
+  }
+
+  openModal() {
+    const newState = { ...this.state };
+    newState.modalOpen = true;
+    this.setState({
+      ...newState,
+    });
+  }
+
+  setHero(hero) {
+    console.log(hero);
+    const newState = { ...this.state };
+    newState.hero = hero;
+    newState.modalOpen = false;
+    this.setState({
+      ...newState,
     });
   }
 
@@ -307,29 +340,45 @@ class Board extends Component {
     const canvasStyle = {
       clipPath: `circle(${clipRadius}px at center)`,
     };
+    const modalStyles = { overlay: { zIndex: 1001, backgroundColor: 'rgba(0,0,0,.7)', } };
 // return only 3 most recent message, style
     return (
-      <div className="container">
-        <div className="leftCol">
-          <canvas
-            id="board"
-            className="board"
-            width={utils.vWidth * cellSize}
-            height={utils.vHeight * cellSize}
-            style={canvasStyle}
-          />
-        </div>
-        <div className="rightCol">
-          <Info
-            hero={this.state.hero}
-            entity={this.state.currentEntity}
-            gameLevel={this.state.gameLevel}
-            header={this.state.header}
-          />
-          <div className="message">
-            <ul>
-              {messageList.reverse()}
-            </ul>
+      <div>
+        <Modal
+          style={modalStyles}
+          isOpen={this.state.modalOpen}
+          onRequestClose={this.closeModal}
+          className="modal"
+          contentLabel="Choose player"
+        >
+          <HeroPicker
+            items={teamHeroes}
+            active={0}
+            closeModal={this.closeModal}
+            setHero={this.setHero}/>
+        </Modal>
+        <div className="container">
+          <div className="leftCol">
+            <canvas
+              id="board"
+              className="board"
+              width={utils.vWidth * cellSize}
+              height={utils.vHeight * cellSize}
+              style={canvasStyle}
+            />
+          </div>
+          <div className="rightCol">
+            <Info
+              hero={this.state.hero}
+              entity={this.state.currentEntity}
+              gameLevel={this.state.gameLevel}
+              header={this.state.header}
+            />
+            <div className="message">
+              <ul>
+                {messageList.reverse()}
+              </ul>
+            </div>
           </div>
         </div>
       </div>

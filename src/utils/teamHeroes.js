@@ -66,7 +66,7 @@ const teamHeroes = [
     level: 2,
   },
   {
-    name: 'La Borinqueña',
+    name: 'La Borinquena',
     message: 'Superhuman strength, Flight, Control over storms',
     aliases: 'Marisol Rios De La Luz',
     iconUrl: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/la-borinquena_32.png',
