@@ -14,7 +14,7 @@ export function setLevel(level) {
 }
 
 export function setHero(hero) {
-	console.log(`setHero: ${hero.name}`)
+  console.log(`setHero: ${hero.name}`);
   return ({
     type: SET_HERO,
     payload: hero,
@@ -38,23 +38,23 @@ export function openModal(title, list) {
 }
 
 export function userInput(entities, heroPosition) {
-	return ({
+  return ({
     type: USER_INPUT,
     payload: {
     	entities,
     	heroPosition,
-    }
+    },
   });
 }
 
 export function restart() {
-	return ({
+  return ({
     type: RESTART,
   });
 }
 
 export function start(entities, heroPosition) {
-	return ({
+  return ({
     type: START,
     payload: {
     	entities,

@@ -19,13 +19,13 @@ class Item extends React.Component {
     return (
       <button
         className={`${className} aria-button`}
-        onClick={()=>{
+        onClick={() => {
           this.props.actions.setHero(this.props.id);
           this.props.actions.closeModal();
           this.props.history.push('/play');
-          }
         }
-        >
+        }
+      >
         <div className="carousel__card">
           <h3 className="carousel__title">{this.props.id.name}</h3>
           <div className="carousel__card-pic-wrapper">
@@ -33,7 +33,7 @@ class Item extends React.Component {
           </div>
           <div className="carousel__stats">
             <div className="carousel__aliases">Aliases: {this.props.id.aliases}</div>
-            <div className="carousel__powers">Powers: {this.props.id.message}</div>
+            <div className="carousel__powers">Powers: {this.props.id.powers}</div>
           </div>
         </div>
       </button>

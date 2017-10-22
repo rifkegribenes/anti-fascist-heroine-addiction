@@ -311,6 +311,15 @@ canvas {
     outline: 0;
   }
 
+  &__title {
+    text-transform: uppercase;
+    font-family: 'G7 Silkworm TTF';
+    @include rainbow;
+    line-height: 1.1em;
+    letter-spacing: 2.5px;
+    margin-bottom: 15px;
+  }
+
   &__card {
     border: 1px solid Lime;
     background: black;
@@ -321,10 +330,15 @@ canvas {
     max-width: 320px;
   }
 
+  &__aliases {
+    margin: 10px 0;
+    color: Lime;
+  }
+
   &__card-pic {
     border-radius: 100%;
     border: 1px solid white;
-    max-width: 100%;
+    max-width: 80%;
   }
 
   &__card-pic-wrapper {
@@ -344,29 +358,74 @@ canvas {
 
 }
 
+.level1 .carousel__stats, .level-1 .carousel__stats {
+  font-size: .8em;
+}
+
+.level1 .carousel__card-pic, .level-1 .carousel__card-pic {
+  max-width: 70%;
+}
+
+.level2 .carousel__stats, .level-2 .carousel__stats {
+  font-size: .6em;
+}
+
+.level2 .carousel__card-pic, .level-2 .carousel__card-pic {
+  max-width: 60%;
+}
+
+
+
 .arrow {
     position: absolute;
     width: 30px;
     height: 30px;
-    background-color: white;
     text-align: center;
     font-size: 25px;
-    border-radius: 50%;
     cursor: pointer;
-    font-size: 20px;
-    color: #228291;
     line-height: 30px;
     margin-top: 85px;
     z-index: 1060;
     top: 73px;
+    -webkit-appearance: none;
+    appearance: none;
+    border: none;
+    background: transparent;
+    color: inherit;
+    cursor: pointer;
+
+    &__icon {
+      color: black !important;
+      font-size: 20px;
+    }
 }
 
 .arrow-right {
-  left: 170px;
+  left: 422px;
+  width: 0;
+  height: 0;
+  border-top: 30px solid transparent;
+  border-bottom: 30px solid transparent;
+  border-left: 30px solid Lime;
+  transition: border 300ms ease-in-out;
+
+  &:hover, &:focus {
+    border-left: 30px solid white;
+  }
 }
 
 .arrow-left {
-  left: -200px;
+  left: -452px;
+  width: 0;
+  height: 0;
+  border-top: 30px solid transparent;
+  border-bottom: 30px solid transparent;
+  border-right: 30px solid Lime;
+  transition: all 300ms ease-in-out;
+
+  &:hover, &:focus {
+    border-right: 30px solid white;
+  }
 }
 
 .item {
@@ -450,7 +509,7 @@ $level2-left: -407px;
 }
 
 .left-enter.left-enter-active {
-    opacity: 1;
+    opacity: 0;
     left: $level2-left;
     height: $level2-height;
     width: $level2-width;
@@ -460,7 +519,7 @@ $level2-left: -407px;
 }
 
 .left-leave {
-    opacity: 1;
+    opacity: 0;
     left: $level-2-left;
     height: $level2-height;
     width: $level2-width;

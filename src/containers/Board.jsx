@@ -93,7 +93,7 @@ class Board extends Component {
     if (destination.type !== 'wall' && destination.type !== 'monster' && destination.type !== 'boss') {
       const grid1 = utils.changeEntity(this.props.appState.entities, { type: 'floor' }, [x, y]);
       const grid2 = utils.changeEntity(grid1, newHero, newPosition);
-      this.props.actions.userInput( grid2, newPosition );
+      this.props.actions.userInput(grid2, newPosition);
     }
     // handle collisions
     switch (destination.type) {
@@ -258,7 +258,7 @@ class Board extends Component {
   startGame() {
     const { newMap, heroPosition } = fillGrid(generateMap(1), 1, this.props.appState.hero);
     this.props.actions.start(newMap, heroPosition);
-    }
+  }
 
   render() {
     const width = this.state.width;

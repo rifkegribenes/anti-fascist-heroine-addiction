@@ -18,13 +18,13 @@ class Splash extends React.Component {
           className="modal"
           contentLabel="Choose player"
         >
-        <HeroPicker
-          items={this.props.appState.modalList}
-          active={0}
-          closeModal={this.props.actions.closeModal}
-          setHero={this.props.actions.setHero}
-        />
-      </Modal>
+          <HeroPicker
+            items={this.props.appState.modalList}
+            active={0}
+            closeModal={this.props.actions.closeModal}
+            setHero={this.props.actions.setHero}
+          />
+        </Modal>
         <h2>Splash</h2>
       </div>
     );

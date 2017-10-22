@@ -26,7 +26,7 @@ const Info = props => (
           <img src={props.hero.cardUrl} alt={props.hero.name} className="card-pic card-pic--round" id="hero" />
         </div>
         <div className="hero__stats">
-           <div className="hero__aliases">Aliases: {props.hero.aliases}</div>
+          <div className="hero__aliases">Aliases: {props.hero.aliases}</div>
           <div className="hero__level">Level: {props.hero.level}</div>
           <div className="hero__attack">Attack: {props.hero.attack}</div>
           <div className="hero__powers">Powers: {props.hero.powers}</div>

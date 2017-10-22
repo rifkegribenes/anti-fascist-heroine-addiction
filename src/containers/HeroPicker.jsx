@@ -56,7 +56,7 @@ class HeroPicker extends React.Component {
       <div id="carousel" className="carousel">
         <div className="carousel__wrap">
           <button className="modal__close" onClick={this.props.actions.closeModal} aria-label="close">&times;</button>
-          <button className="arrow arrow-left" onClick={this.leftClick}><i className="fi-arrow-left" /></button>
+          <button className="aria-button carousel__button" onClick={this.leftClick} aria-label="previous"><span className="arrow arrow-left" /></button>
           <CSSTransitionGroup
             transitionName={this.state.direction}
             transitionEnterTimeout={300}
@@ -65,7 +65,7 @@ class HeroPicker extends React.Component {
           >
             {this.generateItems()}
           </CSSTransitionGroup>
-          <button className="arrow arrow-right" onClick={this.rightClick}><i className="fi-arrow-right" /></button>
+          <button className="aria-button carousel__button" onClick={this.rightClick} aria-label="next"><span className="arrow arrow-right" /></button>
         </div>
       </div>
     );

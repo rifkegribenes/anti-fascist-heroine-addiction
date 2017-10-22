@@ -29,7 +29,6 @@ const INITIAL_STATE = {
 };
 
 function appState(state = INITIAL_STATE, action) {
-
   switch (action.type) {
 
     case SET_LEVEL:
@@ -51,7 +50,7 @@ function appState(state = INITIAL_STATE, action) {
             aliases: { $set: action.payload.aliases },
             powers: { $set: action.payload.powers },
           },
-        }
+        },
       );
 
     case CLOSE_MODAL:
@@ -95,7 +94,7 @@ function appState(state = INITIAL_STATE, action) {
     case RESTART:
       return INITIAL_STATE;
 
-        default:
+    default:
       return state;
   }
 }
