@@ -30,7 +30,7 @@ export function updateHero(hero) {
   return ({
     type: UPDATE_HERO,
     payload: hero,
-  })
+  });
 }
 
 export function closeModal() {
@@ -43,8 +43,8 @@ export function openModal(title, list) {
   return ({
     type: OPEN_MODAL,
     payload: {
-    	title,
-    	list,
+      title,
+      list,
     },
   });
 }
@@ -53,8 +53,8 @@ export function userInput(entities, heroPosition) {
   return ({
     type: USER_INPUT,
     payload: {
-    	entities,
-    	heroPosition,
+      entities,
+      heroPosition,
     },
   });
 }
@@ -86,8 +86,8 @@ export function start(entities, heroPosition) {
   return ({
     type: START,
     payload: {
-    	entities,
-    	heroPosition,
+      entities,
+      heroPosition,
     },
   });
 }

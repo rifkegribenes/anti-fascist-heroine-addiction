@@ -9,6 +9,7 @@
   "rules": {
   "no-plusplus": ["error", { "allowForLoopAfterthoughts": true }],
   "no-console": ["warn"],
+  "react/prop-types": 0,
 
   }
 }

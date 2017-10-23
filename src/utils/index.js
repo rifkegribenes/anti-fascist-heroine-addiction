@@ -34,8 +34,8 @@ const drawCell = (cellSize, ctx, level, x, y, vX, vY, cellType, opacity, hue, ic
       img.src = iconUrl;
       img.onload = () => {
         ctx.save();
-        ctx.shadowBlur = 20
-        ctx.shadowColor = "yellow";
+        ctx.shadowBlur = 20;
+        ctx.shadowColor = 'yellow';
         ctx.drawImage(img, x, y, cellSize, cellSize);
         ctx.restore();
       };

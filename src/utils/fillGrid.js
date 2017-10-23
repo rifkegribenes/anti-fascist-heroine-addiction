@@ -61,8 +61,9 @@ const fillGrid = (gameMap, level, hero) => {
     const newCell = Object.assign({}, cell);
     return newCell;
   }));
-  hero.type = 'hero';
-  newMap[hY][hX] = hero;
+  const newHero = hero;
+  newHero.type = 'hero';
+  newMap[hY][hX] = newHero;
   [foods, monsters, teamHeroArray, staircases, finalMonsters].forEach((entities) => {
     while (entities.length) {
       const x = Math.floor(Math.random() * utils.gridWidth);

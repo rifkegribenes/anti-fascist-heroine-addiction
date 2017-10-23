@@ -42,7 +42,8 @@ class Board extends Component {
 
   componentDidUpdate() {
     if (this.props.appState.gridFilled) {
-      utils.renderViewport(this.props.appState.heroPosition, this.props.appState.entities, this.props.appState.width);
+      utils.renderViewport(this.props.appState.heroPosition,
+        this.props.appState.entities, this.props.appState.width);
     }
   }
 
@@ -53,7 +54,8 @@ class Board extends Component {
 
   updateDimensions() {
     this.props.actions.updateDimensions(window.innerWidth);
-    utils.renderViewport(this.props.appState.heroPosition, this.props.appState.entities, this.props.appState.width);
+    utils.renderViewport(this.props.appState.heroPosition,
+      this.props.appState.entities, this.props.appState.width);
   }
 
   handleKeydown(e) {
@@ -118,7 +120,7 @@ class Board extends Component {
   }
 
   addTeamHero(teamHero) {
-    const hero = { ...this.props.appState.hero};
+    const hero = { ...this.props.appState.hero };
     const messages = [...this.props.appState.messages];
     const currentEntity = teamHero;
     hero.attack += teamHero.damage;
@@ -130,7 +132,7 @@ class Board extends Component {
   }
 
   healthBoost(food) {
-    const hero = { ...this.props.appState.hero};
+    const hero = { ...this.props.appState.hero };
     const messages = [...this.props.appState.messages];
     const currentEntity = food;
     const healthBoost = food.healthBoost;
@@ -143,7 +145,7 @@ class Board extends Component {
 
   handleCombat(monster, newPosition, newHero) {
     // get values for hero and messages from app state
-    const hero = { ...this.props.appState.hero};
+    const hero = { ...this.props.appState.hero };
     const messages = [...this.props.appState.messages];
 
     // set current entity
@@ -158,26 +160,21 @@ class Board extends Component {
     // HERO ATTACK //
     const monsterDamageTaken = Math.floor(hero.attack *
       utils.random(1, 1.3) * (((heroLevel - 1) * 0.5) + 1));
-    const currentEntity = { ...this.props.appState.currentEntity};
+    let currentEntity = { ...this.props.appState.currentEntity };
     currentEntity.health -= monsterDamageTaken;
-    console.log('Board.jsx > 163:');
-    console.log(currentEntity.health);
 
     // update monster health in app state after attack
     this.props.actions.setCurrentEntity(currentEntity);
-    console.log('after health update:');
-    console.log(this.props.appState.currentEntity.health);
 
     // monster can't have negative health
     if (this.props.appState.currentEntity.health < 0) {
-      const currentEntity = { ...this.props.appState.currentEntity};
+      currentEntity = { ...this.props.appState.currentEntity };
       currentEntity.health = 0;
       this.props.actions.setCurrentEntity(currentEntity);
     }
 
     // if monster is still alive...
     if (this.props.appState.currentEntity.health > 0) {
-
       // MONSTER ATTACK //
       const heroDamageTaken = Math.floor(utils.random(0.7, 1.3) * currentEntity.damage);
       utils.changeEntity(this.props.appState.entities, monster, newPosition);
@@ -221,7 +218,8 @@ class Board extends Component {
       const grid1 = utils.changeEntity(this.props.appState.entities, { type: 'floor' }, [x, y]);
       const grid2 = utils.changeEntity(grid1, newHero, newPosition);
       this.props.actions.updateGrid(grid2, newPosition);
-      utils.renderViewport(this.props.appState.heroPosition, this.props.appState.entities, this.props.appState.width);
+      utils.renderViewport(this.props.appState.heroPosition,
+        this.props.appState.entities, this.props.appState.width);
 
       if (monster.type === 'finalMonster') {
         messages.push(`You did it! Your attack of [${monsterDamageTaken}] defeated ${currentEntity.name}.`); // fix this msg later
@@ -247,15 +245,16 @@ class Board extends Component {
 
   handleStaircase() {
     const messages = [...this.props.appState.messages];
-    const currentEntity = { type: staircase };
+    const currentEntity = { type: 'staircase' };
     const level = this.props.appState.gameLevel;
     messages.push(`You found the staircase down to level ${this.state.gameLevel + 1}!`);
     this.props.actions.updateMessages(messages);
     const { newMap, heroPosition } = fillGrid(generateMap(level + 1), level + 1);
     this.props.actions.handleStaircase(currentEntity, heroPosition, newMap, level + 1);
     setTimeout(() => {
-      utils.renderViewport(this.props.appState.heroPosition, this.props.appState.entities, this.props.appState.width);
-        }, 1000);
+      utils.renderViewport(this.props.appState.heroPosition,
+        this.props.appState.entities, this.props.appState.width);
+    }, 1000);
   }
 
   startGame() {
@@ -275,8 +274,6 @@ class Board extends Component {
     const canvasStyle = {
       clipPath: `circle(${clipRadius}px at center)`,
     };
-    console.log('Board.jsx > 270');
-    console.log(this.props.appState.currentEntity.health);
     return (
       <div>
         <div className="container">

@@ -146,7 +146,7 @@ function appState(state = INITIAL_STATE, action) {
           heroPosition: { $set: action.payload.heroPosition },
           entities: { $set: action.payload.entities },
           gameLevel: { $set: action.payload.gameLevel },
-        }
+        },
         );
 
     case RESTART:
