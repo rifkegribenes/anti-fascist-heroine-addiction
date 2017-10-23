@@ -160,18 +160,21 @@ class Board extends Component {
     // HERO ATTACK //
     const monsterDamageTaken = Math.floor(hero.attack *
       utils.random(1, 1.3) * (((heroLevel - 1) * 0.5) + 1));
-    let currentEntity = { ...this.props.appState.currentEntity };
+    let currentEntity = monster;
     currentEntity.health -= monsterDamageTaken;
 
-    // update monster health in app state after attack
-    this.props.actions.setCurrentEntity(currentEntity);
-
     // monster can't have negative health
-    if (this.props.appState.currentEntity.health < 0) {
-      currentEntity = { ...this.props.appState.currentEntity };
+    if (currentEntity.health < 0) {
       currentEntity.health = 0;
-      this.props.actions.setCurrentEntity(currentEntity);
     }
+
+    // update monster health in app state after attack
+    const entities = this.props.appState.entities;
+    const [my, mx] = newPosition;
+    entities[my][mx] = currentEntity;
+
+    this.props.actions.updateEntities(entities);
+    this.props.actions.setCurrentEntity(currentEntity);
 
     // if monster is still alive...
     if (this.props.appState.currentEntity.health > 0) {

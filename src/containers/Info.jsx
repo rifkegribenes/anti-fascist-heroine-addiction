@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import shortid from 'shortid';
 
 const teamList = (obj) => {
-  if (obj.length) {
+  if (obj && obj.length) {
     return obj.map(val => (
       <div className="hero__team--item" key={shortid.generate()}>
         <div className="hero__team--item-image"><img src={val.iconUrl} alt={val.name} /></div>

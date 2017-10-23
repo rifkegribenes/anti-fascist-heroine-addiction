@@ -10,6 +10,7 @@ export const SET_CURRENT_ENTITY = 'SET_CURRENT_ENTITY';
 export const UPDATE_MESSAGES = 'UPDATE_MESSAGES';
 export const UPDATE_GRID = 'UPDATE_GRID';
 export const UPDATE_DIMENSIONS = 'UPDATE_DIMENSIONS';
+export const UPDATE_ENTITIES = 'UPDATE_ENTITIES';
 export const HANDLE_STAIRCASE = 'HANDLE_STAIRCASE';
 
 export function setLevel(level) {
@@ -88,6 +89,15 @@ export function start(entities, heroPosition) {
     payload: {
       entities,
       heroPosition,
+    },
+  });
+}
+
+export function updateEntities(entities) {
+  return ({
+    type: UPDATE_ENTITIES,
+    payload: {
+      entities,
     },
   });
 }

@@ -1,7 +1,7 @@
 import update from 'immutability-helper';
 import teamHeroes from '../../utils/teamHeroes';
 
-import { SET_LEVEL, SET_HERO, UPDATE_HERO, CLOSE_MODAL, OPEN_MODAL, RESTART, START, USER_INPUT, SET_CURRENT_ENTITY, UPDATE_MESSAGES, UPDATE_DIMENSIONS, HANDLE_STAIRCASE, UPDATE_GRID } from '../actions';
+import { SET_LEVEL, SET_HERO, UPDATE_HERO, CLOSE_MODAL, OPEN_MODAL, RESTART, START, USER_INPUT, SET_CURRENT_ENTITY, UPDATE_ENTITIES, UPDATE_MESSAGES, UPDATE_DIMENSIONS, HANDLE_STAIRCASE, UPDATE_GRID } from '../actions';
 
 const INITIAL_STATE = {
   entities: [[]],
@@ -49,6 +49,11 @@ function appState(state = INITIAL_STATE, action) {
             iconUrl: { $set: action.payload.iconUrl },
             aliases: { $set: action.payload.aliases },
             powers: { $set: action.payload.powers },
+            hp: { $set: 100 },
+            xp: { $set: 0 },
+            attack: { $set: 10 },
+            team: { $set: [] },
+            level: { $set: 1 },
           },
         },
       );
@@ -111,6 +116,14 @@ function appState(state = INITIAL_STATE, action) {
         {
           entities: { $set: action.payload.entities },
           heroPosition: { $set: action.payload.heroPosition },
+        },
+      );
+
+    case UPDATE_ENTITIES:
+      return update(
+        state,
+        {
+          entities: { $set: action.payload.entities },
         },
       );
 
