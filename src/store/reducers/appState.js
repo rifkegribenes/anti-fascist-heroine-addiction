@@ -1,7 +1,7 @@
 import update from 'immutability-helper';
 import teamHeroes from '../../utils/teamHeroes';
 
-import { SET_LEVEL, SET_HERO, CLOSE_MODAL, OPEN_MODAL, RESTART, START, USER_INPUT } from '../actions';
+import { SET_LEVEL, SET_HERO, UPDATE_HERO, CLOSE_MODAL, OPEN_MODAL, RESTART, START, USER_INPUT, SET_CURRENT_ENTITY, UPDATE_MESSAGES, UPDATE_DIMENSIONS, HANDLE_STAIRCASE, UPDATE_GRID } from '../actions';
 
 const INITIAL_STATE = {
   entities: [[]],
@@ -53,6 +53,20 @@ function appState(state = INITIAL_STATE, action) {
         },
       );
 
+    case UPDATE_HERO:
+      return update(
+        state,
+        {
+          hero: {
+            hp: { $set: action.payload.hp },
+            xp: { $set: action.payload.xp },
+            attack: { $set: action.payload.attack },
+            team: { $set: action.payload.team },
+            level: { $set: action.payload.level },
+          },
+        },
+      );
+
     case CLOSE_MODAL:
       return update(
         state,
@@ -90,6 +104,50 @@ function appState(state = INITIAL_STATE, action) {
           heroPosition: { $set: action.payload.heroPosition },
         },
       );
+
+    case UPDATE_GRID:
+      return update(
+        state,
+        {
+          entities: { $set: action.payload.entities },
+          heroPosition: { $set: action.payload.heroPosition },
+        },
+      );
+
+    case SET_CURRENT_ENTITY:
+      return update(
+        state,
+        {
+          currentEntity: { $set: action.payload },
+        },
+      );
+
+    case UPDATE_MESSAGES:
+      return update(
+        state,
+        {
+          messages: { $set: action.payload },
+        },
+      );
+
+    case UPDATE_DIMENSIONS:
+      return update(
+        state,
+        {
+          width: { $set: action.payload },
+        },
+      );
+
+    case HANDLE_STAIRCASE:
+      return update(
+        state,
+        {
+          currentEntity: { $set: action.payload.currentEntity },
+          heroPosition: { $set: action.payload.heroPosition },
+          entities: { $set: action.payload.entities },
+          gameLevel: { $set: action.payload.gameLevel },
+        }
+        );
 
     case RESTART:
       return INITIAL_STATE;

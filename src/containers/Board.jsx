@@ -42,7 +42,7 @@ class Board extends Component {
 
   componentDidUpdate() {
     if (this.props.appState.gridFilled) {
-      utils.renderViewport(this.props.appState.heroPosition, this.props.appState.entities, this.state.width);
+      utils.renderViewport(this.props.appState.heroPosition, this.props.appState.entities, this.props.appState.width);
     }
   }
 
@@ -52,9 +52,8 @@ class Board extends Component {
   }
 
   updateDimensions() {
-    this.setState({ width: window.innerWidth }, () => {
-      utils.renderViewport(this.props.appState.heroPosition, this.props.appState.entities, this.state.width);
-    });
+    this.props.actions.updateDimensions(window.innerWidth);
+    utils.renderViewport(this.props.appState.heroPosition, this.props.appState.entities, this.props.appState.width);
   }
 
   handleKeydown(e) {
@@ -119,73 +118,87 @@ class Board extends Component {
   }
 
   addTeamHero(teamHero) {
-    const hero = Object.assign({}, this.state.hero);
-    const messages = [...this.state.messages];
+    const hero = { ...this.props.appState.hero};
+    const messages = [...this.props.appState.messages];
     const currentEntity = teamHero;
     hero.attack += teamHero.damage;
     hero.team.push(teamHero);
     messages.push(`You added ${teamHero.name} to your team! She adds ${teamHero.damage} points of damage to your team attack.`);
-    this.setState({
-      hero,
-      messages,
-      currentEntity,
-    }, () => {
-      // console.log(hero.team, typeof(hero.team));
-    });
+    this.props.actions.updateHero(hero);
+    this.props.actions.updateMessages(messages);
+    this.props.actions.setCurrentEntity(currentEntity);
   }
 
   healthBoost(food) {
-    const hero = Object.assign({}, this.state.hero);
-    const messages = [...this.state.messages];
+    const hero = { ...this.props.appState.hero};
+    const messages = [...this.props.appState.messages];
     const currentEntity = food;
     const healthBoost = food.healthBoost;
     hero.hp += healthBoost;
     messages.push(`You ate ${food.name} and gained ${food.healthBoost} health points!`);
-    this.setState({
-      hero,
-      messages,
-      currentEntity,
-    }, () => {
-      // console.log(hero);
-    });
+    this.props.actions.updateHero(hero);
+    this.props.actions.updateMessages(messages);
+    this.props.actions.setCurrentEntity(currentEntity);
   }
 
   handleCombat(monster, newPosition, newHero) {
-    const hero = Object.assign({}, this.state.hero);
-    const messages = [...this.state.messages];
-    const currentEntity = monster;
-    this.setState({
-      currentEntity,
-    });
+    // get values for hero and messages from app state
+    const hero = { ...this.props.appState.hero};
+    const messages = [...this.props.appState.messages];
+
+    // set current entity
+    this.props.actions.setCurrentEntity(monster);
+
+    // save message to display later in info panel
     messages.push(`Your team is attacking ${monster.name}!`);
+
+    // check hero level
     const heroLevel = Math.floor(hero.xp / 100) + 1;
-    // hero attack
+
+    // HERO ATTACK //
     const monsterDamageTaken = Math.floor(hero.attack *
       utils.random(1, 1.3) * (((heroLevel - 1) * 0.5) + 1));
+    const currentEntity = { ...this.props.appState.currentEntity};
     currentEntity.health -= monsterDamageTaken;
-    this.setState({
-      currentEntity,
-    });
-    if (currentEntity.health < 0) { currentEntity.health = 0; }
-    if (currentEntity.health > 0) {
-      // monster attack
+    console.log('Board.jsx > 163:');
+    console.log(currentEntity.health);
+
+    // update monster health in app state after attack
+    this.props.actions.setCurrentEntity(currentEntity);
+    console.log('after health update:');
+    console.log(this.props.appState.currentEntity.health);
+
+    // monster can't have negative health
+    if (this.props.appState.currentEntity.health < 0) {
+      const currentEntity = { ...this.props.appState.currentEntity};
+      currentEntity.health = 0;
+      this.props.actions.setCurrentEntity(currentEntity);
+    }
+
+    // if monster is still alive...
+    if (this.props.appState.currentEntity.health > 0) {
+
+      // MONSTER ATTACK //
       const heroDamageTaken = Math.floor(utils.random(0.7, 1.3) * currentEntity.damage);
       utils.changeEntity(this.props.appState.entities, monster, newPosition);
       hero.hp -= heroDamageTaken;
-      this.setState({
-        hero,
-      });
-      messages.push(`Your team attacked ${currentEntity.name} and did [${monsterDamageTaken}] damage.
-      ${currentEntity.name} hits back with [${heroDamageTaken}] damage.`);
-      this.setState({
-        messages,
-      });
+
+      // update hero health in app state after attack
+      this.props.actions.updateHero(hero);
+
+      // save and then display newest messages
+      messages.push(`Your team attacked ${currentEntity.name}. He lost ${monsterDamageTaken} HP.
+      ${currentEntity.name} hit back. You lost ${heroDamageTaken} HP.`);
+      this.props.actions.updateMessages(messages);
+
+      // HANDLE HERO DEATH //
       if (hero.hp - heroDamageTaken <= 0) {
-        // you died!
         console.log('you died!');
         document.getElementById('hero').classList.add('spin', 'hidden');
-        setTimeout(() => this.props.actions.setLevel(0), 250);
-        setTimeout(() => messages.push(`You died! ${currentEntity.youDiedMsg}.`), 1000);
+        setTimeout(() => {
+          messages.push(`You died! ${currentEntity.youDiedMsg}.`);
+          this.props.actions.updateMessages(messages);
+        }, 1000);
         setTimeout(() => {
           document.getElementById('hero').classList.remove('spin', 'hidden');
           this.props.actions.restart();
@@ -193,27 +206,27 @@ class Board extends Component {
         }, 3000);
         return;
       }
+
+       // HANDLE MONSTER DEATH //
     } else if (currentEntity.health <= 0) {
-      // monster dies
       document.getElementById('entity').classList.add('spin', 'hidden');
       const [x, y] = this.props.appState.heroPosition;
       hero.xp += 25;
       hero.level = Math.floor(hero.xp / 100) + 1;
       if (hero.xp % 100 === 0) { console.log('level up!'); }
-      this.setState({
-        hero,
-      });
+
+      // update hero xp, level, and health in app state after attack
+      this.props.actions.updateHero(hero);
+
       const grid1 = utils.changeEntity(this.props.appState.entities, { type: 'floor' }, [x, y]);
       const grid2 = utils.changeEntity(grid1, newHero, newPosition);
-      this.setState({
-        entities: grid2,
-        heroPosition: newPosition,
-      }, () => {
-        utils.renderViewport(this.props.appState.heroPosition, this.props.appState.entities, this.state.width);
-      });
+      this.props.actions.updateGrid(grid2, newPosition);
+      utils.renderViewport(this.props.appState.heroPosition, this.props.appState.entities, this.props.appState.width);
+
       if (monster.type === 'finalMonster') {
         messages.push(`You did it! Your attack of [${monsterDamageTaken}] defeated ${currentEntity.name}.`); // fix this msg later
         setTimeout(() => this.props.actions.setLevel(4), 250);
+        // TODO: YOU WON SCREEN
         setTimeout(() => messages.push('You won! blah blah blah.'), 1000); // fix this msg later
         setTimeout(() => {
           this.props.actions.restart();
@@ -223,36 +236,26 @@ class Board extends Component {
       }
       messages.push(`You did it! Your attack of [${monsterDamageTaken}] defeated ${currentEntity.name}.`); // fix this msg later
       setTimeout(() => messages.push('You gained 10XP.'), 1000); // fix this msg later
+      // TODO: level up screen
       if ((hero.xp + 10) % 100 === 0) {
         setTimeout(() => messages.push('LEVEL UP!'), 3000);
       }
     }
-    this.setState({
-      hero,
-      messages,
-    }, () => {
-      // console.log(hero);
-    });
+    this.props.actions.updateMessages(messages);
+    this.props.actions.updateHero(hero);
   }
 
   handleStaircase() {
-    const messages = this.state.messages;
-    const level = this.state.gameLevel;
+    const messages = [...this.props.appState.messages];
+    const currentEntity = { type: staircase };
+    const level = this.props.appState.gameLevel;
     messages.push(`You found the staircase down to level ${this.state.gameLevel + 1}!`);
-    this.setState({
-      messages,
-    }, () => {
-      const { newMap, heroPosition } = fillGrid(generateMap(level + 1), level + 1);
-      this.setState({
-        heroPosition,
-        entities: newMap,
-        gameLevel: level + 1,
-      }, () => {
-        setTimeout(() => {
-          utils.renderViewport(this.props.appState.heroPosition, this.props.appState.entities, this.state.width);
+    this.props.actions.updateMessages(messages);
+    const { newMap, heroPosition } = fillGrid(generateMap(level + 1), level + 1);
+    this.props.actions.handleStaircase(currentEntity, heroPosition, newMap, level + 1);
+    setTimeout(() => {
+      utils.renderViewport(this.props.appState.heroPosition, this.props.appState.entities, this.props.appState.width);
         }, 1000);
-      });
-    });
   }
 
   startGame() {
@@ -261,10 +264,10 @@ class Board extends Component {
   }
 
   render() {
-    const width = this.state.width;
+    const width = this.props.appState.width;
     const cellSize = width > 640 ? 32 : Math.floor(width / 20);
     const clipRadius = cellSize * 10;
-    const messages = this.state.messages;
+    const messages = [...this.props.appState.messages];
     const messageList = messages.slice(messages.length - 3, messages.length).map(message => (
       <li key={shortid.generate()}>
         {message}
@@ -272,7 +275,8 @@ class Board extends Component {
     const canvasStyle = {
       clipPath: `circle(${clipRadius}px at center)`,
     };
-// return only 3 most recent message, style
+    console.log('Board.jsx > 270');
+    console.log(this.props.appState.currentEntity.health);
     return (
       <div>
         <div className="container">
@@ -288,9 +292,9 @@ class Board extends Component {
           <div className="rightCol">
             <Info
               hero={this.props.appState.hero}
-              entity={this.state.currentEntity}
-              gameLevel={this.state.gameLevel}
-              header={this.state.header}
+              entity={this.props.appState.currentEntity}
+              gameLevel={this.props.appState.gameLevel}
+              header={this.props.appState.header}
             />
             <div className="message">
               <ul>

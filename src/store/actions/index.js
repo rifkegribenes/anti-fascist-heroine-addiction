@@ -1,10 +1,16 @@
 export const SET_LEVEL = 'SET_LEVEL';
 export const SET_HERO = 'SET_HERO';
+export const UPDATE_HERO = 'UPDATE_HERO';
 export const OPEN_MODAL = 'OPEN_MODAL';
 export const CLOSE_MODAL = 'CLOSE_MODAL';
 export const RESTART = 'RESTART';
 export const START = 'START';
 export const USER_INPUT = 'USER_INPUT';
+export const SET_CURRENT_ENTITY = 'SET_CURRENT_ENTITY';
+export const UPDATE_MESSAGES = 'UPDATE_MESSAGES';
+export const UPDATE_GRID = 'UPDATE_GRID';
+export const UPDATE_DIMENSIONS = 'UPDATE_DIMENSIONS';
+export const HANDLE_STAIRCASE = 'HANDLE_STAIRCASE';
 
 export function setLevel(level) {
   return ({
@@ -14,11 +20,17 @@ export function setLevel(level) {
 }
 
 export function setHero(hero) {
-  console.log(`setHero: ${hero.name}`);
   return ({
     type: SET_HERO,
     payload: hero,
   });
+}
+
+export function updateHero(hero) {
+  return ({
+    type: UPDATE_HERO,
+    payload: hero,
+  })
 }
 
 export function closeModal() {
@@ -47,6 +59,23 @@ export function userInput(entities, heroPosition) {
   });
 }
 
+export function updateGrid(entities, heroPosition) {
+  return ({
+    type: UPDATE_GRID,
+    payload: {
+      entities,
+      heroPosition,
+    },
+  });
+}
+
+export function updateDimensions(width) {
+  return ({
+    type: UPDATE_DIMENSIONS,
+    payload: width,
+  });
+}
+
 export function restart() {
   return ({
     type: RESTART,
@@ -60,5 +89,31 @@ export function start(entities, heroPosition) {
     	entities,
     	heroPosition,
     },
+  });
+}
+
+export function handleStaircase(currentEntity, heroPosition, entities, gameLevel) {
+  return ({
+    type: HANDLE_STAIRCASE,
+    payload: {
+      currentEntity,
+      heroPosition,
+      entities,
+      gameLevel,
+    },
+  });
+}
+
+export function setCurrentEntity(entity) {
+  return ({
+    type: SET_CURRENT_ENTITY,
+    payload: entity,
+  });
+}
+
+export function updateMessages(messages) {
+  return ({
+    type: UPDATE_MESSAGES,
+    payload: messages,
   });
 }

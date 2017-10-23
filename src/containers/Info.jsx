@@ -51,14 +51,17 @@ const Info = props => (
           />
         </div>
         <div className="entity__stats">
+          {props.entity.aliases &&
+          <div className="entity__aliases">Aliases: {props.entity.aliases}</div>
+        }
           {props.entity.level &&
           <div className="entity__level">Level: {props.entity.level}</div>
         }
           {props.entity.damage &&
           <div className="entity__attack">Attack: {props.entity.damage}</div>
         }
-          {props.entity.bio &&
-          <div className="entity__bio">Bio: {props.entity.bio}</div>
+          {props.entity.powers &&
+          <div className="entity__bio">Powers: {props.entity.powers}</div>
         }
           {props.entity.message &&
           <div className="entity__message">{props.entity.message}</div>

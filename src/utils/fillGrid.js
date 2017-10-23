@@ -4,7 +4,6 @@ import teamHeroes from './teamHeroes';
 import monsterTypes from './monsterTypes';
 
 const fillGrid = (gameMap, level, hero) => {
-  console.log(`filling grid for level ${level}`);
   const finalMonsters = [];
   if (level === 3) {
     finalMonsters.push({
@@ -51,8 +50,6 @@ const fillGrid = (gameMap, level, hero) => {
 .filter(teamHero => teamHero.level === level && teamHero.name !== hero.name);
   for (let i = 0; i < 4; i++) {
     const teamHero = Object.assign({}, qH[i]);
-    console.log('fillGrid.js > 54');
-    console.log(teamHero.name);
     teamHero.type = 'teamHero';
     teamHeroArray.push(teamHero);
   }

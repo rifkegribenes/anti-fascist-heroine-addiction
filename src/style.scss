@@ -35,19 +35,19 @@
 }
 
 @mixin for-tablet-portait-only {
-  @media (min-width: 600px) and (max-width: 909px) {
+  @media (min-width: 600px) and (max-width: 899px) {
     @content;
   }
 }
 
 @mixin for-tablet-landscape-up {
-  @media (min-width: 910px) {
+  @media (min-width: 900px) {
     @content;
   }
 }
 
 @mixin for-tablet-landscape-only {
-  @media (min-width: 910px) and (max-width: 1199px) {
+  @media (min-width: 900px) and (max-width: 1199px) {
     @content;
   }
 }
@@ -210,6 +210,9 @@ body {
 
 .col, .info__col {
   padding: 20px;
+  @include for-tablet-landscape-up {
+    width: 50%;
+  }
 }
 
 canvas {
@@ -235,6 +238,7 @@ canvas {
 
 .card-pic {
   width: 80%;
+  max-width: 200px;
   height: auto;
   margin: auto;
   // border-radius: 4%;
@@ -291,12 +295,8 @@ canvas {
     height: 100vh; // was 200
     max-height: 600px;
     width: 600px;
-    min-width: 600px;
+    max-width: 100%;
     margin: auto;
-
-    @include for-tablet-portrait-up {
-      width: 98vw;
-    }
 
 }
 
@@ -311,7 +311,13 @@ canvas {
     outline: 0;
   }
 
-  &__title {
+  &__header {
+    text-align: center;
+    position: absolute;
+    top: 40px;
+  }
+
+  &__title, &__header {
     text-transform: uppercase;
     font-family: 'G7 Silkworm TTF';
     @include rainbow;
@@ -401,30 +407,72 @@ canvas {
 }
 
 .arrow-right {
-  left: 422px;
+  left: 26px;
+  top: 338px;
   width: 0;
   height: 0;
-  border-top: 30px solid transparent;
-  border-bottom: 30px solid transparent;
-  border-left: 30px solid Lime;
+  border-top: 20px solid transparent;
+  border-bottom: 20px solid transparent;
+  border-left: 20px solid Lime;
   transition: border 300ms ease-in-out;
 
   &:hover, &:focus {
+    border-left: 20px solid white;
+  }
+
+  @media (min-width: 340px) {
+    left: 156px;
+    top: 40px;
+    border-top: 30px solid transparent;
+    border-bottom: 30px solid transparent;
+    border-left: 30px solid Lime;
+
+    &:hover, &:focus {
     border-left: 30px solid white;
+  }
+  }
+
+  @media (min-width: 690px) {
+    left: 312px;
+  }
+
+  @include for-tablet-landscape-up {
+    left: 422px;
   }
 }
 
 .arrow-left {
-  left: -452px;
+  left: -40px;
+  top: 338px;
   width: 0;
   height: 0;
-  border-top: 30px solid transparent;
-  border-bottom: 30px solid transparent;
-  border-right: 30px solid Lime;
+  border-top: 20px solid transparent;
+  border-bottom: 20px solid transparent;
+  border-right: 20px solid Lime;
   transition: all 300ms ease-in-out;
 
   &:hover, &:focus {
+    border-right: 20px solid white;
+  }
+
+  @media (min-width: 340px) {
+    left: -180px;
+    top: 40px;
+    border-top: 30px solid transparent;
+    border-bottom: 30px solid transparent;
+    border-right: 30px solid Lime;
+
+    &:hover, &:focus {
     border-right: 30px solid white;
+  }
+  }
+
+  @media (min-width: 690px) {
+    left: -344px;
+  }
+
+  @include for-tablet-landscape-up {
+    left: -452px;
   }
 }
 
@@ -436,16 +484,12 @@ canvas {
     transition: height 1s, width 1s, left 1s, margin-top 1s, line-height 1s, background-color 1s;
 }
 
-$carousel-max: 98vw;
-$carousel-min: 600px;
-
 $level2-width: 225px;
 $level2-height: $level2-width * 1.3; // 292.5px
 $level1-width: 270px;
 $level1-height: $level1-width * 1.3; // 360px
 $level0-width: 320px;
 $level0-height: $level0-width * 1.3; // 416px
-
 
 $level-2-left: 183px;
 $level-1-left: 23px;
@@ -459,8 +503,12 @@ $level2-left: -407px;
     width: $level2-width;
     left: $level-2-left;
     margin-top: 25px;
-    opacity: .75;
+    opacity: 0;
     z-index: 1030;
+
+    @include for-tablet-landscape-up {
+      opacity: .75;
+    }
 
 }
 
@@ -469,16 +517,25 @@ $level2-left: -407px;
     width: $level1-width;
     left: $level-1-left;
     margin-top: 10px;
-    opacity: .9;
+    opacity: 0;
     z-index: 1040;
+
+    @media (min-width: 690px) {
+      opacity: .9;
+    }
 }
 
 .level0 {
     height: $level0-height;
-    width: $level0-width;
-    left: $level0-left;
+    width: 290px;
+    left: -142px;
     opacity: 1;
     z-index: 1050;
+
+    @media (min-width: 690px) {
+      width: $level0-width;
+      left: $level0-left;
+    }
 }
 
 .level1 {
@@ -486,8 +543,12 @@ $level2-left: -407px;
     width: $level1-width;
     margin-top: 10px;
     left: $level1-left;
-    opacity: .9;
+    opacity: 0;
     z-index: 1040;
+
+    @media (min-width: 690px) {
+      opacity: .9;
+    }
 }
 
 .level2 {
@@ -495,8 +556,12 @@ $level2-left: -407px;
     width: $level2-width;
     margin-top: 25px;
     left: $level2-left;
-    opacity: .75;
+    opacity: 0;
     z-index: 1030;
+
+    @include for-tablet-landscape-up {
+      opacity: .75;
+    }
 }
 
 .left-enter {
@@ -548,7 +613,7 @@ $level2-left: -407px;
 
 .right-enter.right-enter-active {
     left: $level-2-left;
-    opacity: 1;
+    opacity: 0;
     height: $level2-height;
     margin-top: 25px;
     line-height: $level2-height;
@@ -559,7 +624,7 @@ $level2-left: -407px;
 .right-leave {
     left: $level2-left;
     height: $level2-height;
-    opacity: 1;
+    opacity: 0;
     margin-top: 25px;
     line-height: $level2-height;
     width: $level2-width;
@@ -584,7 +649,6 @@ $level2-left: -407px;
     transform: translate(-50%, -50%);
     border: none;
     padding: 0;
-    margin: -20px 0 0 -20px;
     background-color: transparent;
     z-index: 6;
     width: 100%;
@@ -594,7 +658,6 @@ $level2-left: -407px;
     }
 
     &__close {
-    margin-top: -2px;
     -webkit-appearance: none;
     appearance: none;
     padding: 0;
@@ -605,10 +668,7 @@ $level2-left: -407px;
     font-size: 21px;
     font-weight: 700;
     line-height: 1;
-    color: #000;
     text-shadow: 0 1px 0 #fff;
-    filter: alpha(opacity=20);
-    opacity: .2;
     font-family: inherit;
     text-transform: none;
     overflow: visible;
@@ -617,5 +677,13 @@ $level2-left: -407px;
     align-items: flex-start;
     text-align: center;
     display: inline-block;
+    position: absolute;
+    top: 5px;
+    right: 20px;
+    color: white;
+    filter: alpha(opacity=50);
+    opacity: .5;
+    font-size: 2em;
+
   }
 }
