@@ -217,7 +217,6 @@ class Board extends Component {
       hero.level = Math.floor(hero.xp / 100) + 1;
       if (hero.xp % 100 === 0) { console.log('level up!'); }
 
-      console.log('replacing previous hero position with floor:');
       const grid1 = utils.changeEntity(this.props.appState.entities, { type: 'floor' }, [x, y]);
       const grid2 = utils.changeEntity(grid1, newHero, newPosition);
       this.props.actions.updateGrid(grid2, newPosition);
@@ -253,11 +252,17 @@ class Board extends Component {
 
   handleStaircase() {
     const messages = [...this.props.appState.messages];
-    const currentEntity = { type: 'staircase' };
+    const currentEntity = {
+      type: 'staircase',
+      name: 'staircase',
+      cardUrl: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/staircase_200.png',
+      message: `Staircase down to level ${this.props.appState.gameLevel + 1}` };
+    this.props.actions.setCurrentEntity(currentEntity);
     const level = this.props.appState.gameLevel;
-    messages.push(`You found the staircase down to level ${this.state.gameLevel + 1}!`);
+    messages.push(`You found the staircase down to level ${this.props.appState.gameLevel + 1}!`);
     this.props.actions.updateMessages(messages);
-    const { newMap, heroPosition } = fillGrid(generateMap(level + 1), level + 1);
+    const { newMap, heroPosition } = fillGrid(generateMap(level + 1),
+      level + 1, this.props.appState.hero);
     this.props.actions.handleStaircase(currentEntity, heroPosition, newMap, level + 1);
     setTimeout(() => {
       utils.renderViewport(this.props.appState.heroPosition,

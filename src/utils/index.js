@@ -117,7 +117,7 @@ export const renderViewport = (heroPosition, entities, width) => {
   }
   const [hX, hY] = heroPosition;
   const newEntities = entities.map(row => row.map((cell) => {
-    const newCell = { ...cell};
+    const newCell = { ...cell };
     return newCell;
   }));
   const canvas = document.getElementById('board');
@@ -135,7 +135,7 @@ export const renderViewport = (heroPosition, entities, width) => {
       .map((c, j) => {
         const x = cellSize * j;
         const y = cellSize * i;
-        const newCell = { ...c};
+        const newCell = { ...c };
         if (!newCell.level) { newCell.level = 1; }
         if (!newCell.hue) { newCell.hue = 0; }
         drawCell(

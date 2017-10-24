@@ -46,7 +46,7 @@ const Info = props => (
           <img
             src={props.entity.cardUrl}
             alt={props.entity.type === 'food' ? props.entity.title : props.entity.name}
-            className={props.entity.type === 'hero' || props.entity.type === 'teamHero' ? 'card-pic card-pic--round' : 'card-pic'}
+            className={props.entity.type === 'hero' || props.entity.type === 'teamHero' || props.entity.type === 'staircase' ? 'card-pic card-pic--round' : 'card-pic'}
             id="entity"
           />
         </div>

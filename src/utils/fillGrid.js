@@ -5,6 +5,7 @@ import monsterTypes from './monsterTypes';
 
 const fillGrid = (gameMap, level, hero) => {
   const finalMonsters = [];
+  const tempHero = { ...hero };
   if (level === 3) {
     finalMonsters.push({
       health: 500,
@@ -33,6 +34,7 @@ const fillGrid = (gameMap, level, hero) => {
   if (level < 3) {
     staircases.push({
       type: 'staircase',
+      cardUrl: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/staircase_200.png',
     });
   }
 
@@ -47,7 +49,11 @@ const fillGrid = (gameMap, level, hero) => {
 
   const teamHeroArray = [];
   const qH = teamHeroes
-.filter(teamHero => teamHero.level === level && teamHero.name !== hero.name);
+.filter(teamHero =>
+  teamHero.level === level
+  && (teamHero.name !== tempHero.name),
+);
+  console.log(qH);
   for (let i = 0; i < 4; i++) {
     const teamHero = Object.assign({}, qH[i]);
     teamHero.type = 'teamHero';
