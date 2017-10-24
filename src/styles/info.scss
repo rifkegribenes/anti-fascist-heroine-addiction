@@ -1,0 +1,146 @@
+
+.info {
+
+  &__container {
+    display: flex;
+  }
+
+  &__subhead {
+    text-transform: uppercase;
+    text-align: center;
+    padding: 20px;
+    margin: 20px;
+    font-size: 3em;
+    font-family: 'G7 Silkworm TTF';
+    border: 1px solid Lime;
+    @include rainbow;
+    @include for-tablet-landscape-up {
+      font-size: 3vw;
+    }
+  }
+
+  &__subhead-wrap {
+    background: black;
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+  }
+
+  &__hero-title {
+    text-transform: uppercase;
+    font-family: 'G7 Silkworm TTF';
+    @include rainbow;
+    letter-spacing: 2.5px;
+    border-bottom: 1px solid Lime;
+    padding-bottom: 6px;
+    margin-bottom: 10px;
+  }
+
+}
+
+.entity {
+  &__title {
+    text-transform: uppercase;
+    font-family: 'G7 Silkworm TTF';
+    letter-spacing: 2.5px;
+    border-bottom: 1px solid Lime;
+    padding-bottom: 6px;
+    text-align: center;
+    margin: 0 auto 10px;
+    line-height: 1.2em;
+    height: 2.3em;
+    opacity: 1;
+    transition: opacity 1000ms ease-out;
+    @include rainbow;
+  }
+}
+
+.hidden {
+  opacity: 0;
+  transition: opacity 1000ms ease-out;
+}
+
+.spin {
+  -webkit-animation:spin .5s linear 5;
+    -moz-animation:spin .5s linear 5;
+    animation:spin 1s linear 5;
+  }
+@-moz-keyframes spin { 100% { -moz-transform: rotate(360deg); } }
+@-webkit-keyframes spin { 100% { -webkit-transform: rotate(360deg); } }
+@keyframes spin { 100% { -webkit-transform: rotate(360deg); transform:rotate(360deg); } }
+
+.col, .info__col {
+  padding: 20px;
+  @include for-tablet-landscape-up {
+    width: 50%;
+  }
+}
+
+.rightCol {
+  background: white;
+}
+
+.card-pic-wrapper {
+  display: flex;
+  justify-content: center;
+  // border-radius: 100%;
+  // border: 1px solid gray;
+  width: 100%;
+  height: auto;
+  max-width: 100%;
+  margin: auto;
+  // z-index: 2;
+}
+
+.card-pic {
+  width: 80%;
+  max-width: 200px;
+  height: auto;
+  margin: auto;
+  // border-radius: 4%;
+  //
+
+  &--round {
+    border-radius: 100%;
+    border: 1px solid Lime;
+  }
+}
+
+.leftCol {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.rightCol {
+  padding: 20px;
+  width: 100%;
+  background: black;
+  min-width: 300px;
+}
+
+.hero {
+  &__team--wrapper {
+    display: flex;
+    flex-direction: row;
+  }
+
+  &__team--item {
+    margin-right: 10px;
+  }
+
+  &__team--item-attack {
+    text-align: center;
+  }
+
+  &__team--item-image img {
+    width: 32px;
+    height: auto;
+    border-radius: 100%;
+    border: 1px solid Lime;
+  }
+
+  &__team {
+    padding: 20px 0;
+  }
+}

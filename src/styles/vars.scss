@@ -1,0 +1,80 @@
+@font-face {
+  font-family: 'G7 Silkworm TTF';
+  src: url('fonts/G7SilkwormTTF.eot');
+  src: url('fonts/G7SilkwormTTF.eot?#iefix') format('embedded-opentype'),     url('fonts/G7SilkwormTTF.woff') format('woff'), url('fonts/G7SilkwormTTF.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+////* MEDIA QUERIES *////
+
+@mixin for-phone-landscape-up {
+  @media (min-width: 480px) {
+    @content;
+  }
+}
+
+@mixin for-phone-landscape-only {
+  @media (min-width: 480px) and (max-width: 599px) {
+    @content;
+  }
+}
+
+@mixin for-tablet-portrait-up {
+  @media (min-width: 600px) {
+    @content;
+  }
+}
+
+@mixin for-tablet-portait-only {
+  @media (min-width: 600px) and (max-width: 899px) {
+    @content;
+  }
+}
+
+@mixin for-tablet-landscape-up {
+  @media (min-width: 900px) {
+    @content;
+  }
+}
+
+@mixin for-tablet-landscape-only {
+  @media (min-width: 900px) and (max-width: 1199px) {
+    @content;
+  }
+}
+
+@mixin for-desktop-up {
+  @media (min-width: 1200px) {
+    @content;
+  }
+}
+
+@mixin for-desktop-only {
+  @media (min-width: 1200px) and (max-width: 1799px) {
+    @content;
+  }
+}
+
+@mixin for-big-desktop-up {
+  @media (min-width: 1800px) {
+    @content;
+  }
+}
+
+@mixin rainbow {
+  background-image: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxkZWZzPjxsaW5lYXJHcmFkaWVudCBpZD0iZ3JhZGllbnQiIHgxPSIwJSIgeTE9IjAlIiB4Mj0iMCUiIHkyPSIxMDAlIj48c3RvcCBvZmZzZXQ9IjAlIiBzdHlsZT0ic3RvcC1jb2xvcjojRTYwNUMxOyIgLz48c3RvcCBvZmZzZXQ9IjE1JSIgc3R5bGU9InN0b3AtY29sb3I6I0FENzlGQzsiIC8+PHN0b3Agb2Zmc2V0PSIzMCUiIHN0eWxlPSJzdG9wLWNvbG9yOiM4MDZCRjc7IiAvPjxzdG9wIG9mZnNldD0iNDUlIiBzdHlsZT0ic3RvcC1jb2xvcjojMDlFNkU2OyIgLz48c3RvcCBvZmZzZXQ9IjYwJSIgc3R5bGU9InN0b3AtY29sb3I6IzE0RTYwOTsiIC8+PHN0b3Agb2Zmc2V0PSI3NCUiIHN0eWxlPSJzdG9wLWNvbG9yOiNGRkZGMDA7IiAvPjxzdG9wIG9mZnNldD0iODglIiBzdHlsZT0ic3RvcC1jb2xvcjojRkY4QzAwOyIgLz48c3RvcCBvZmZzZXQ9Ijk5JSIgc3R5bGU9InN0b3AtY29sb3I6I0ZGMDAwMDsiIC8+PC9saW5lYXJHcmFkaWVudD48L2RlZnM+PHJlY3QgZmlsbD0idXJsKCNncmFkaWVudCkiIGhlaWdodD0iMTAwJSIgd2lkdGg9IjEwMCUiIC8+PC9zdmc+);
+  background-image: -webkit-gradient(linear, left top, -45deg, color-stop(0%, #E605C1), color-stop(15%, #AD79FC), color-stop(30%, #806BF7), color-stop(45%, #09E6E6), color-stop(60%, #14E609), color-stop(74%, #FFFF00), color-stop(88%, #FF8C00), color-stop(99%, #FF0000));
+  background-image: -moz-linear-gradient(-45deg,#E605C1 0%,#AD79FC 15%,#806BF7 30%,#09E6E6 45%,#14E609 60%,#FFFF00 74%,#FF8C00 88%,#FF0000 99%);
+  background-image: -webkit-linear-gradient(-45deg,#E605C1 0%,#AD79FC 15%,#806BF7 30%,#09E6E6 45%,#14E609 60%,#FFFF00 74%,#FF8C00 88%,#FF0000 99%);
+  background-image: -o-linear-gradient(-45deg,#E605C1 0%,#AD79FC 15%,#806BF7 30%,#09E6E6 45%,#14E609 60%,#FFFF00 74%,#FF8C00 88%,#FF0000 99%);
+  background-image: -ms-linear-gradient(-45deg,#E605C1 0%,#AD79FC 15%,#806BF7 30%,#09E6E6 45%,#14E609 60%,#FFFF00 74%,#FF8C00 88%,#FF0000 99%);
+  background-image: linear-gradient(-45deg,#E605C1 0%,#AD79FC 15%,#806BF7 30%,#09E6E6 45%,#14E609 60%,#FFFF00 74%,#FF8C00 88%,#FF0000 99%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  position:relative;
+  display:inline-block; /*required*/
+}
+
+$color_gray_text: #7a7a7a;
+$color_gray_lighter: lighten($color_gray_text,35%);
