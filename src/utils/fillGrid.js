@@ -14,7 +14,8 @@ const fillGrid = (gameMap, level, hero) => {
       name: 'Donald Trump',
       bio: '',
       youDiedMsg: '',
-      iconUrl: '',
+      iconUrl: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/donald-trump_64.png',
+      cardUrl: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/donald-trump_200.png',
       damage: 60,
     });
   }
@@ -53,7 +54,6 @@ const fillGrid = (gameMap, level, hero) => {
   teamHero.level === level
   && (teamHero.name !== tempHero.name),
 );
-  console.log(qH);
   for (let i = 0; i < 4; i++) {
     const teamHero = Object.assign({}, qH[i]);
     teamHero.type = 'teamHero';

@@ -13,6 +13,7 @@ export const randomInt = (min, max) => Math.floor(random(min, max));
 const drawCell = (cellSize, ctx, level, x, y, vX, vY, cellType, opacity, hue, iconUrl) => {
   const img = new Image();
   const radius = Math.floor((cellSize) * 0.2) || 2;
+  const size = cellSize * 2;
   ctx.clearRect(x, y, cellSize, cellSize);
   switch (cellType) {
     case 'wall':
@@ -87,9 +88,17 @@ const drawCell = (cellSize, ctx, level, x, y, vX, vY, cellType, opacity, hue, ic
         ctx.fillRect(x, y, cellSize, cellSize);
       }
       break;
-    case 'boss':
-      ctx.fillStyle = 'hsla(30, 100%, 50%, 1)';
-      ctx.fillRect(x, y, cellSize, cellSize);
+    case 'finalMonster':
+      img.src = iconUrl;
+      img.onload = () => {
+        ctx.save();
+        ctx.drawImage(img, x, y, size, size);
+        ctx.restore();
+      };
+      if (!iconUrl) {
+        ctx.fillStyle = 'black';
+        ctx.fillRect(x, y, size, size);
+      }
       break;
     case 'staircase':
       img.src = 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/staircase_32.png';
