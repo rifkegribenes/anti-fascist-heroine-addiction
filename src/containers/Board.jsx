@@ -160,7 +160,7 @@ class Board extends Component {
     // HERO ATTACK //
     const monsterDamageTaken = Math.floor(hero.attack *
       utils.random(1, 1.3) * (((heroLevel - 1) * 0.5) + 1));
-    let currentEntity = monster;
+    const currentEntity = monster;
     currentEntity.health -= monsterDamageTaken;
 
     // monster can't have negative health
@@ -170,7 +170,7 @@ class Board extends Component {
 
     // update monster health in app state after attack
     const entities = this.props.appState.entities;
-    const [my, mx] = newPosition;
+    const [mx, my] = newPosition;
     entities[my][mx] = currentEntity;
 
     this.props.actions.updateEntities(entities);
@@ -209,20 +209,25 @@ class Board extends Component {
 
        // HANDLE MONSTER DEATH //
     } else if (currentEntity.health <= 0) {
+      console.log('starting handle death function');
       document.getElementById('entity').classList.add('spin', 'hidden');
       const [x, y] = this.props.appState.heroPosition;
+      console.log(`hero position: ${x},${y}`);
       hero.xp += 25;
       hero.level = Math.floor(hero.xp / 100) + 1;
       if (hero.xp % 100 === 0) { console.log('level up!'); }
 
-      // update hero xp, level, and health in app state after attack
-      this.props.actions.updateHero(hero);
-
+      console.log('replacing previous hero position with floor:');
       const grid1 = utils.changeEntity(this.props.appState.entities, { type: 'floor' }, [x, y]);
       const grid2 = utils.changeEntity(grid1, newHero, newPosition);
       this.props.actions.updateGrid(grid2, newPosition);
       utils.renderViewport(this.props.appState.heroPosition,
         this.props.appState.entities, this.props.appState.width);
+
+      this.props.actions.updateHero(hero);
+      this.props.actions.updateMessages(messages);
+      this.props.actions.setCurrentEntity(currentEntity);
+
 
       if (monster.type === 'finalMonster') {
         messages.push(`You did it! Your attack of [${monsterDamageTaken}] defeated ${currentEntity.name}.`); // fix this msg later

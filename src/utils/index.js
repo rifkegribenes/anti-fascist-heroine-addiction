@@ -13,9 +13,9 @@ export const randomInt = (min, max) => Math.floor(random(min, max));
 const drawCell = (cellSize, ctx, level, x, y, vX, vY, cellType, opacity, hue, iconUrl) => {
   const img = new Image();
   const radius = Math.floor((cellSize) * 0.2) || 2;
+  ctx.clearRect(x, y, cellSize, cellSize);
   switch (cellType) {
     case 'wall':
-      ctx.clearRect(x, y, cellSize, cellSize);
       ctx.lineJoin = 'round';
       ctx.lineWidth = radius;
       ctx.strokeStyle = `hsl(${hue}, ${100 - ((level - 1) * 10)}%, ${(opacity - (level / 10)) * 100}%)`;
@@ -117,7 +117,7 @@ export const renderViewport = (heroPosition, entities, width) => {
   }
   const [hX, hY] = heroPosition;
   const newEntities = entities.map(row => row.map((cell) => {
-    const newCell = Object.assign({}, cell);
+    const newCell = { ...cell};
     return newCell;
   }));
   const canvas = document.getElementById('board');
@@ -135,7 +135,7 @@ export const renderViewport = (heroPosition, entities, width) => {
       .map((c, j) => {
         const x = cellSize * j;
         const y = cellSize * i;
-        const newCell = Object.assign({}, c);
+        const newCell = { ...c};
         if (!newCell.level) { newCell.level = 1; }
         if (!newCell.hue) { newCell.hue = 0; }
         drawCell(
