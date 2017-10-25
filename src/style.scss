@@ -113,3 +113,9 @@ canvas {
     -moz-animation: stspin 2s linear infinite;
     animation: stspin 2s linear infinite;
 }
+
+.powerUp {
+  -webkit-animation: rainbowglow 1s linear infinite;
+    -moz-animation: rainbowglow 1s linear infinite;
+    animation: rainbowglow 1s linear infinite;
+}

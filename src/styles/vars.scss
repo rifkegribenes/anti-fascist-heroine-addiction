@@ -90,8 +90,135 @@ $color_gray_lighter: lighten($color_gray_text,35%);
   50%  { opacity:0; }
   100% { opacity:1;  -moz-transform: rotate(360deg); }
 }
+
 @-webkit-keyframes stspin {
   0%   { opacity:1; }
   50%  { opacity:0; }
   100% { opacity:1; -webkit-transform: rotate(360deg);  }
+}
+
+@-keyframes rainbowglow {
+  0% {
+    box-shadow: 0 0 4px 4px #E605C1, 0 0 8px 8px #AD79FC, 0 0 12px 12px #806BF7;
+  }
+  8% {
+    box-shadow: 0 0 4px 4px #AD79FC, 0 0 8px 8px #806BF7, 0 0 12px 12px #09E6E6;
+  }
+  16% {
+    box-shadow: 0 0 4px 4px #806BF7, 0 0 8px 8px #09E6E6, 0 0 12px 12px #14E609;
+  }
+  25% {
+    box-shadow: 0 0 4px 4px #09E6E6, 0 0 8px 8px #14E609, 0 0 12px 12px #FFFF00;
+  }
+  33% {
+    box-shadow: 0 0 4px 4px #14E609, 0 0 8px 8px #FFFF00, 0 0 12px 12px #FF8C00;
+  }
+  41% {
+    box-shadow: 0 0 4px 4px #FFFF00, 0 0 8px 8px #FF8C00, 0 0 12px 12px #FF0000;
+  }
+  50% {
+    box-shadow: 0 0 4px 4px #FF8C00, 0 0 8px 8px #FF0000, 0 0 12px 12px #E605C1;
+  }
+  58% {
+    box-shadow: 0 0 4px 4px #FF0000, 0 0 8px 8px #E605C1, 0 0 12px 12px #AD79FC;
+  }
+  66% {
+    box-shadow: 0 0 4px 4px #E605C1, 0 0 8px 8px #AD79FC, 0 0 12px 12px #806BF7;
+  }
+  75% {
+    box-shadow: 0 0 4px 4px #AD79FC, 0 0 8px 8px #806BF7, 0 0 12px 12px #09E6E6;
+  }
+  83% {
+    box-shadow: 0 0 4px 4px #806BF7, 0 0 8px 8px #09E6E6, 0 0 12px 12px #14E609;
+  }
+  91% {
+    box-shadow: 0 0 4px 4px #09E6E6, 0 0 8px 8px #14E609, 0 0 12px 12px #FFFF00;
+  }
+  100% {
+    box-shadow: 0 0 4px 4px #14E609, 0 0 8px 8px #FFFF00, 0 0 12px 12px #FF8C00;
+  }
+}
+
+@-moz-keyframes rainbowglow {
+  0% {
+    box-shadow: 0 0 4px 4px #E605C1, 0 0 8px 8px #AD79FC, 0 0 12px 12px #806BF7;
+  }
+  8% {
+    box-shadow: 0 0 4px 4px #AD79FC, 0 0 8px 8px #806BF7, 0 0 12px 12px #09E6E6;
+  }
+  16% {
+    box-shadow: 0 0 4px 4px #806BF7, 0 0 8px 8px #09E6E6, 0 0 12px 12px #14E609;
+  }
+  25% {
+    box-shadow: 0 0 4px 4px #09E6E6, 0 0 8px 8px #14E609, 0 0 12px 12px #FFFF00;
+  }
+  33% {
+    box-shadow: 0 0 4px 4px #14E609, 0 0 8px 8px #FFFF00, 0 0 12px 12px #FF8C00;
+  }
+  41% {
+    box-shadow: 0 0 4px 4px #FFFF00, 0 0 8px 8px #FF8C00, 0 0 12px 12px #FF0000;
+  }
+  50% {
+    box-shadow: 0 0 4px 4px #FF8C00, 0 0 8px 8px #FF0000, 0 0 12px 12px #E605C1;
+  }
+  58% {
+    box-shadow: 0 0 4px 4px #FF0000, 0 0 8px 8px #E605C1, 0 0 12px 12px #AD79FC;
+  }
+  66% {
+    box-shadow: 0 0 4px 4px #E605C1, 0 0 8px 8px #AD79FC, 0 0 12px 12px #806BF7;
+  }
+  75% {
+    box-shadow: 0 0 4px 4px #AD79FC, 0 0 8px 8px #806BF7, 0 0 12px 12px #09E6E6;
+  }
+  83% {
+    box-shadow: 0 0 4px 4px #806BF7, 0 0 8px 8px #09E6E6, 0 0 12px 12px #14E609;
+  }
+  91% {
+    box-shadow: 0 0 4px 4px #09E6E6, 0 0 8px 8px #14E609, 0 0 12px 12px #FFFF00;
+  }
+  100% {
+    box-shadow: 0 0 4px 4px #14E609, 0 0 8px 8px #FFFF00, 0 0 12px 12px #FF8C00;
+  }
+}
+
+@-webkit-keyframes rainbowglow {
+    0% {
+    box-shadow: 0 0 4px 4px #E605C1, 0 0 8px 8px #AD79FC, 0 0 12px 12px #806BF7;
+  }
+  8% {
+    box-shadow: 0 0 4px 4px #AD79FC, 0 0 8px 8px #806BF7, 0 0 12px 12px #09E6E6;
+  }
+  16% {
+    box-shadow: 0 0 4px 4px #806BF7, 0 0 8px 8px #09E6E6, 0 0 12px 12px #14E609;
+  }
+  25% {
+    box-shadow: 0 0 4px 4px #09E6E6, 0 0 8px 8px #14E609, 0 0 12px 12px #FFFF00;
+  }
+  33% {
+    box-shadow: 0 0 4px 4px #14E609, 0 0 8px 8px #FFFF00, 0 0 12px 12px #FF8C00;
+  }
+  41% {
+    box-shadow: 0 0 4px 4px #FFFF00, 0 0 8px 8px #FF8C00, 0 0 12px 12px #FF0000;
+  }
+  50% {
+    box-shadow: 0 0 4px 4px #FF8C00, 0 0 8px 8px #FF0000, 0 0 12px 12px #E605C1;
+  }
+  58% {
+    box-shadow: 0 0 4px 4px #FF0000, 0 0 8px 8px #E605C1, 0 0 12px 12px #AD79FC;
+  }
+  66% {
+    box-shadow: 0 0 4px 4px #E605C1, 0 0 8px 8px #AD79FC, 0 0 12px 12px #806BF7;
+  }
+  75% {
+    box-shadow: 0 0 4px 4px #AD79FC, 0 0 8px 8px #806BF7, 0 0 12px 12px #09E6E6;
+  }
+  83% {
+    box-shadow: 0 0 4px 4px #806BF7, 0 0 8px 8px #09E6E6, 0 0 12px 12px #14E609;
+  }
+  91% {
+    box-shadow: 0 0 4px 4px #09E6E6, 0 0 8px 8px #14E609, 0 0 12px 12px #FFFF00;
+  }
+  100% {
+    box-shadow: 0 0 4px 4px #14E609, 0 0 8px 8px #FFFF00, 0 0 12px 12px #FF8C00;
+  }
 }

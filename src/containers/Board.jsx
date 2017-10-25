@@ -129,6 +129,10 @@ class Board extends Component {
     this.props.actions.updateHero(hero);
     this.props.actions.updateMessages(messages);
     this.props.actions.setCurrentEntity(currentEntity);
+    document.getElementById('hero').classList.add('powerUp');
+    setTimeout(() => {
+      document.getElementById('hero').classList.remove('powerUp');
+    }, 1000);
   }
 
   healthBoost(food) {
@@ -141,6 +145,10 @@ class Board extends Component {
     this.props.actions.updateHero(hero);
     this.props.actions.updateMessages(messages);
     this.props.actions.setCurrentEntity(currentEntity);
+    document.getElementById('hero').classList.add('powerUp');
+    setTimeout(() => {
+      document.getElementById('hero').classList.remove('powerUp');
+    }, 1000);
   }
 
   handleCombat(monster, newPosition, newHero) {
@@ -180,15 +188,14 @@ class Board extends Component {
     const shake = ['shake', 'shake-hard', 'shake-rotate', 'shake-crazy'];
     let shakeClass = shake[Math.floor(utils.random(0, 4))];
     const entityShake = shakeClass;
-    let shakeDuration = utils.clamp(monsterDamageTaken*9, 100, 500);
+    let shakeDuration = utils.clamp(monsterDamageTaken * 9, 100, 500);
     document.getElementById('entity').classList.add(entityShake);
     setTimeout(() => {
-          document.getElementById('entity').classList.remove(entityShake);
-        }, shakeDuration);
+      document.getElementById('entity').classList.remove(entityShake);
+    }, shakeDuration);
 
     // if monster is still alive...
     if (this.props.appState.currentEntity.health > 0) {
-
       // MONSTER ATTACK //
 
       const heroDamageTaken = Math.floor(utils.random(0.7, 1.3) * currentEntity.damage);
@@ -198,11 +205,11 @@ class Board extends Component {
       // calculate shake animation
       shakeClass = shake[Math.floor(utils.random(0, 4))];
       const heroShake = shakeClass;
-      shakeDuration = utils.clamp(heroDamageTaken*9, 100, 500);
+      shakeDuration = utils.clamp(heroDamageTaken * 9, 100, 500);
       document.getElementById('hero').classList.add(heroShake);
       setTimeout(() => {
-          document.getElementById('hero').classList.remove(heroShake);
-        }, shakeDuration);
+        document.getElementById('hero').classList.remove(heroShake);
+      }, shakeDuration);
 
       // update hero health in app state after attack
       this.props.actions.updateHero(hero);
