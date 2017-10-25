@@ -34,6 +34,8 @@
     border-bottom: 1px solid Lime;
     padding-bottom: 6px;
     margin-bottom: 10px;
+    line-height: 1.2em;
+    min-height: 2.3em;
   }
 
 }
@@ -48,7 +50,7 @@
     text-align: center;
     margin: 0 auto 10px;
     line-height: 1.2em;
-    height: 2.3em;
+    min-height: 2.3em;
     opacity: 1;
     transition: opacity 1000ms ease-out;
     @include rainbow;

@@ -107,3 +107,9 @@ canvas {
 
   }
 }
+
+.staircaseSpin {
+  -webkit-animation: stspin 2s linear infinite;
+    -moz-animation: stspin 2s linear infinite;
+    animation: stspin 2s linear infinite;
+}

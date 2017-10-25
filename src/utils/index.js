@@ -115,7 +115,7 @@ const drawCell = (cellSize, ctx, level, x, y, vX, vY, cellType, opacity, hue, ic
   }
 };
 
-const clamp = (val, min, max) => Math.min(Math.max(val, min), max);
+export const clamp = (val, min, max) => Math.min(Math.max(val, min), max);
 
 export const renderViewport = (heroPosition, entities, width) => {
   let cellSize;

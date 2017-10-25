@@ -176,12 +176,33 @@ class Board extends Component {
     this.props.actions.updateEntities(entities);
     this.props.actions.setCurrentEntity(currentEntity);
 
+    // calculate shake animation
+    const shake = ['shake', 'shake-hard', 'shake-rotate', 'shake-crazy'];
+    let shakeClass = shake[Math.floor(utils.random(0, 4))];
+    const entityShake = shakeClass;
+    let shakeDuration = utils.clamp(monsterDamageTaken*9, 100, 500);
+    document.getElementById('entity').classList.add(entityShake);
+    setTimeout(() => {
+          document.getElementById('entity').classList.remove(entityShake);
+        }, shakeDuration);
+
     // if monster is still alive...
     if (this.props.appState.currentEntity.health > 0) {
+
       // MONSTER ATTACK //
+
       const heroDamageTaken = Math.floor(utils.random(0.7, 1.3) * currentEntity.damage);
       utils.changeEntity(this.props.appState.entities, monster, newPosition);
       hero.hp -= heroDamageTaken;
+
+      // calculate shake animation
+      shakeClass = shake[Math.floor(utils.random(0, 4))];
+      const heroShake = shakeClass;
+      shakeDuration = utils.clamp(heroDamageTaken*9, 100, 500);
+      document.getElementById('hero').classList.add(heroShake);
+      setTimeout(() => {
+          document.getElementById('hero').classList.remove(heroShake);
+        }, shakeDuration);
 
       // update hero health in app state after attack
       this.props.actions.updateHero(hero);
@@ -209,10 +230,8 @@ class Board extends Component {
 
        // HANDLE MONSTER DEATH //
     } else if (currentEntity.health <= 0) {
-      console.log('starting handle death function');
       document.getElementById('entity').classList.add('spin', 'hidden');
       const [x, y] = this.props.appState.heroPosition;
-      console.log(`hero position: ${x},${y}`);
       hero.xp += 25;
       hero.level = Math.floor(hero.xp / 100) + 1;
       if (hero.xp % 100 === 0) { console.log('level up!'); }
@@ -264,10 +283,12 @@ class Board extends Component {
     const { newMap, heroPosition } = fillGrid(generateMap(level + 1),
       level + 1, this.props.appState.hero);
     this.props.actions.handleStaircase(currentEntity, heroPosition, newMap, level + 1);
+    document.getElementById('board').classList.add('staircaseSpin');
     setTimeout(() => {
+      document.getElementById('board').classList.remove('staircaseSpin');
       utils.renderViewport(this.props.appState.heroPosition,
         this.props.appState.entities, this.props.appState.width);
-    }, 1000);
+    }, 2000);
   }
 
   startGame() {
