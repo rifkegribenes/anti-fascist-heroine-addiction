@@ -6,26 +6,49 @@
   }
 
   &__col-wrap {
-    text-align: center;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+
+  &__col {
+    width: 100%;
+
+    &:first-child {
+      margin-right: 10px;
+    }
   }
 
   &__hearts {
-    height: 47px;
+    display: flex;
+    width: 100%;
+    padding-bottom: 10px;
+    justify-content: center;
   }
 
   &__heart {
-    width: 25px;
+    width: 100%;
+    max-width: 20px;
     height: auto;
-    margin-right: 10px;
-    margin-bottom: 20px;
 
+  }
+
+  &__heart-wrap {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 2px;
+    &:first-child {
+      align-items: left;
+      justify-content: flex-start;
+      min-width: 80px;
+    }
   }
 
   &__subhead {
     text-transform: uppercase;
     text-align: center;
     padding: 20px;
-    margin: 20px;
     font-size: 3em;
     font-family: 'G7 Silkworm TTF';
     border: 1px solid Lime;
@@ -45,16 +68,23 @@
   &__hero-title, .entity__title {
     text-transform: uppercase;
     font-family: 'G7 Silkworm TTF';
+    width: 100%;
     text-align: center;
     @include rainbow;
     letter-spacing: 2.5px;
     border-bottom: 1px solid Lime;
+    border-top: 1px solid Lime;
     padding-bottom: 6px;
+    padding-top: 8px;
     margin-bottom: 20px;
     line-height: 1.2em;
-    min-height: 51px;
+    // min-height: 51px;
     transition: opacity 1000ms ease-out;
     opacity: 1;
+
+    &--margin {
+      margin-top: 21px;
+    }
   }
 
 }
@@ -74,7 +104,6 @@
 @keyframes spin { 100% { -webkit-transform: rotate(360deg); transform:rotate(360deg); } }
 
 .col, .info__col {
-  padding: 20px;
   @include for-tablet-landscape-up {
     width: 50%;
   }
@@ -146,14 +175,16 @@
 
   &__team {
     padding: 20px 0;
+    display: flex;
+    flex-direction: column;
   }
 
   &__stats {
     margin-top: 20px;
+    text-align: center;
   }
 
-  &__aliases,
-  .entity__aliases {
+  &__aliases {
     color: white;
     font-weight: 700;
     margin-bottom: 15px;

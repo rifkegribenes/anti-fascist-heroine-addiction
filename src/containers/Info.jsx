@@ -19,14 +19,14 @@ const hearts = (entity) => {
   if (entity.type === 'hero') {
     const healthArray = [160, 280, 510];
     totalHealth = healthArray[entity.level - 1];
-    healthNum = Math.floor((entity.hp / totalHealth) * 5);
+    healthNum = Math.floor((entity.hp / totalHealth) * 5)+1;
   } else if (entity.type === 'monster') {
     const healthArray = [70, 243, 515];
     totalHealth = healthArray[entity.level - 1];
-    healthNum = Math.floor((entity.health / totalHealth) * 5);
+    healthNum = Math.floor((entity.health / totalHealth) * 5)+1;
   } else if (entity.type === 'finalMonster') {
     totalHealth = 500;
-    healthNum = Math.floor((entity.health / totalHealth) * 5);
+    healthNum = Math.floor((entity.health / totalHealth) * 5)+1;
   }
   const heartsArr = [];
   for (let i = 0; i < healthNum; i++) {
@@ -37,12 +37,14 @@ const hearts = (entity) => {
 
 const Info = (props) => {
   const healthIndH = hearts(props.hero).map(() => (
-    <img className="info__heart" key={shortid.generate()} src="https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/heart.png" alt=''/>
+    <span className="info__heart-wrap" key={shortid.generate()}>
+    <img className="info__heart" src="https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/heart.png" alt="" /></span>
       ));
   const healthIndM = hearts(props.entity).map(() => {
     if (props.entity.type === 'monster' || props.entity.type === 'finalMonster') {
       return (
-        <img className="info__heart" key={shortid.generate()} src="https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/heart.png" alt=''/>
+        <span className="info__heart-wrap" key={shortid.generate()}>
+        <img className="info__heart" src="https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/heart.png" alt="" /></span>
       );
     }
     return '';
@@ -56,18 +58,16 @@ const Info = (props) => {
       <div className="info__container">
         <div className="info__col">
           <div className="info__col-wrap">
-            <div className="info__hearts">{healthIndH}</div>
+            <div className="info__hearts"><span className="info__heart-wrap">Health: {props.hero.hp}</span>{healthIndH}</div>
             <h3 className="info__hero-title">{props.hero.name || 'Hero'}</h3>
             <div className="card-pic-wrapper">
               <img src={props.hero.cardUrl} alt={props.hero.name} className="card-pic card-pic--round" id="hero" />
             </div>
             <div className="hero__stats">
               <div className="hero__aliases">Aliases: {props.hero.aliases}</div>
-              <div className="hero__level">Level: {props.hero.level}</div>
+              <div className="hero__level">XP: {props.hero.xp} &bull; Level: {props.hero.level}</div>
               <div className="hero__attack">Attack: {props.hero.attack}</div>
               <div className="hero__powers">Powers: {props.hero.powers}</div>
-              <div className="hero__xp">XP: {props.hero.xp}</div>
-              <div className="hero__health">Health: {props.hero.hp}</div>
               <div className="hero__team">
                 <h4 className="info__hero-title">Team</h4>
                 <div className="hero__team--wrapper">
@@ -80,9 +80,14 @@ const Info = (props) => {
         <div className="info__col">
           <div className="info__col-wrap">
             <div className="info__hearts">
-              {healthIndM}
+            {props.entity.type === 'monster' ?
+              <span className="info__heart-wrap">Health: {props.entity.health}</span> :
+              <span className="info__heart-wrap"></span>
+            }{healthIndM}
             </div>
-            <h3 className="entity__title">{props.entity.type === 'food' ? props.entity.title : props.entity.name || ''}</h3>
+            {props.entity.type && props.entity.type !== 'floor' &&
+            <h3 className={props.entity.type === 'monster' ? "entity__title" : "entity__title entity__title--margin"}>{props.entity.type === 'food' ? props.entity.title : props.entity.name || ''}</h3>
+          }
             <div className="card-pic-wrapper">
               <img
                 src={props.entity.cardUrl}
@@ -91,9 +96,9 @@ const Info = (props) => {
                 id="entity"
               />
             </div>
-            <div className="entity__stats">
+            <div className="hero__stats">
               {props.entity.aliases &&
-              <div className="entity__aliases">Aliases: {props.entity.aliases}</div>
+              <div className="hero__aliases">Aliases: {props.entity.aliases}</div>
             }
               {props.entity.level &&
               (props.entity.type === 'teamHero' ||
@@ -109,9 +114,6 @@ const Info = (props) => {
             }
               {props.entity.message &&
               <div className="entity__message">{props.entity.message}</div>
-            }
-              {props.entity.health &&
-              <div className="entity__health">Health: {props.entity.health}</div>
             }
               {props.entity.healthBoost &&
               <div className="entity__healthBoost">Health Boost: {props.entity.healthBoost}</div>
