@@ -13,70 +13,116 @@ const teamList = (obj) => {
   return null;
 };
 
-const Info = props => (
-  <div className="info">
-    <h2 className="info__header">{props.header}</h2>
-    <div className="info__subhead-wrap">
-      <span className="info__subhead">Level:&nbsp;{props.gameLevel}</span>
-    </div>
-    <div className="info__container">
-      <div className="info__col">
-        <h3 className="info__hero-title">{props.hero.name || 'Hero'}</h3>
-        <div className="card-pic-wrapper">
-          <img src={props.hero.cardUrl} alt={props.hero.name} className="card-pic card-pic--round" id="hero" />
+const hearts = (entity) => {
+  let totalHealth;
+  let healthNum;
+  if (entity.type === 'hero') {
+    const healthArray = [160, 280, 510];
+    totalHealth = healthArray[entity.level - 1];
+    healthNum = Math.floor((entity.hp / totalHealth) * 5);
+  } else if (entity.type === 'monster') {
+    const healthArray = [70, 243, 515];
+    totalHealth = healthArray[entity.level - 1];
+    healthNum = Math.floor((entity.health / totalHealth) * 5);
+  } else if (entity.type === 'finalMonster') {
+    totalHealth = 500;
+    healthNum = Math.floor((entity.health / totalHealth) * 5);
+  }
+  const heartsArr = [];
+  for (let i = 0; i < healthNum; i++) {
+    heartsArr.push('0');
+  }
+  return heartsArr;
+};
+
+const Info = (props) => {
+  const healthIndH = hearts(props.hero).map(() => (
+    <img className="info__heart" key={shortid.generate()} src="https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/heart.png" alt=''/>
+      ));
+  const healthIndM = hearts(props.entity).map(() => {
+    if (props.entity.type === 'monster' || props.entity.type === 'finalMonster') {
+      return (
+        <img className="info__heart" key={shortid.generate()} src="https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/heart.png" alt=''/>
+      );
+    }
+    return '';
+  });
+  return (
+    <div className="info">
+      <h2 className="info__header">{props.header}</h2>
+      <div className="info__subhead-wrap">
+        <span className="info__subhead">Level:&nbsp;{props.gameLevel}</span>
+      </div>
+      <div className="info__container">
+        <div className="info__col">
+          <div className="info__col-wrap">
+            <div className="info__hearts">{healthIndH}</div>
+            <h3 className="info__hero-title">{props.hero.name || 'Hero'}</h3>
+            <div className="card-pic-wrapper">
+              <img src={props.hero.cardUrl} alt={props.hero.name} className="card-pic card-pic--round" id="hero" />
+            </div>
+            <div className="hero__stats">
+              <div className="hero__aliases">Aliases: {props.hero.aliases}</div>
+              <div className="hero__level">Level: {props.hero.level}</div>
+              <div className="hero__attack">Attack: {props.hero.attack}</div>
+              <div className="hero__powers">Powers: {props.hero.powers}</div>
+              <div className="hero__xp">XP: {props.hero.xp}</div>
+              <div className="hero__health">Health: {props.hero.hp}</div>
+              <div className="hero__team">
+                <h4 className="info__hero-title">Team</h4>
+                <div className="hero__team--wrapper">
+                  {teamList(props.hero.team)}
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
-        <div className="hero__stats">
-          <div className="hero__aliases">Aliases: {props.hero.aliases}</div>
-          <div className="hero__level">Level: {props.hero.level}</div>
-          <div className="hero__attack">Attack: {props.hero.attack}</div>
-          <div className="hero__powers">Powers: {props.hero.powers}</div>
-          <div className="hero__xp">XP: {props.hero.xp}</div>
-          <div className="hero__health">Health: {props.hero.hp}</div>
-          <div className="hero__team">
-            <h4 className="info__hero-title">Team</h4>
-            <div className="hero__team--wrapper">
-              {teamList(props.hero.team)}
+        <div className="info__col">
+          <div className="info__col-wrap">
+            <div className="info__hearts">
+              {healthIndM}
+            </div>
+            <h3 className="entity__title">{props.entity.type === 'food' ? props.entity.title : props.entity.name || ''}</h3>
+            <div className="card-pic-wrapper">
+              <img
+                src={props.entity.cardUrl}
+                alt={props.entity.type === 'food' ? props.entity.title : props.entity.name}
+                className={props.entity.type === 'hero' || props.entity.type === 'teamHero' || props.entity.type === 'staircase' ? 'card-pic card-pic--round' : 'card-pic'}
+                id="entity"
+              />
+            </div>
+            <div className="entity__stats">
+              {props.entity.aliases &&
+              <div className="entity__aliases">Aliases: {props.entity.aliases}</div>
+            }
+              {props.entity.level &&
+              (props.entity.type === 'teamHero' ||
+                props.entity.type === 'monster' ||
+                props.entity.type === 'finalMonster') &&
+                <div className="entity__level">Level: {props.entity.level}</div>
+            }
+              {props.entity.damage &&
+              <div className="entity__attack">Attack: {props.entity.damage}</div>
+            }
+              {props.entity.powers &&
+              <div className="entity__bio">Powers: {props.entity.powers}</div>
+            }
+              {props.entity.message &&
+              <div className="entity__message">{props.entity.message}</div>
+            }
+              {props.entity.health &&
+              <div className="entity__health">Health: {props.entity.health}</div>
+            }
+              {props.entity.healthBoost &&
+              <div className="entity__healthBoost">Health Boost: {props.entity.healthBoost}</div>
+            }
             </div>
           </div>
         </div>
       </div>
-      <div className="info__col">
-        <h3 className="entity__title">{props.entity.type === 'food' ? props.entity.title : props.entity.name || ''}</h3>
-        <div className="card-pic-wrapper">
-          <img
-            src={props.entity.cardUrl}
-            alt={props.entity.type === 'food' ? props.entity.title : props.entity.name}
-            className={props.entity.type === 'hero' || props.entity.type === 'teamHero' || props.entity.type === 'staircase' ? 'card-pic card-pic--round' : 'card-pic'}
-            id="entity"
-          />
-        </div>
-        <div className="entity__stats">
-          {props.entity.aliases &&
-          <div className="entity__aliases">Aliases: {props.entity.aliases}</div>
-        }
-          {props.entity.level &&
-          <div className="entity__level">Level: {props.entity.level}</div>
-        }
-          {props.entity.damage &&
-          <div className="entity__attack">Attack: {props.entity.damage}</div>
-        }
-          {props.entity.powers &&
-          <div className="entity__bio">Powers: {props.entity.powers}</div>
-        }
-          {props.entity.message &&
-          <div className="entity__message">{props.entity.message}</div>
-        }
-          {props.entity.health &&
-          <div className="entity__health">Health: {props.entity.health}</div>
-        }
-          {props.entity.healthBoost &&
-          <div className="entity__healthBoost">Health Boost: {props.entity.healthBoost}</div>
-        }
-        </div>
-      </div>
     </div>
-  </div>
-);
+  );
+};
 
 Info.propTypes = {
   header: PropTypes.string,

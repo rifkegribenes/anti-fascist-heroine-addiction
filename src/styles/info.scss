@@ -5,6 +5,22 @@
     display: flex;
   }
 
+  &__col-wrap {
+    text-align: center;
+  }
+
+  &__hearts {
+    height: 47px;
+  }
+
+  &__heart {
+    width: 25px;
+    height: auto;
+    margin-right: 10px;
+    margin-bottom: 20px;
+
+  }
+
   &__subhead {
     text-transform: uppercase;
     text-align: center;
@@ -26,35 +42,21 @@
     justify-content: center;
   }
 
-  &__hero-title {
+  &__hero-title, .entity__title {
     text-transform: uppercase;
     font-family: 'G7 Silkworm TTF';
-    @include rainbow;
-    letter-spacing: 2.5px;
-    border-bottom: 1px solid Lime;
-    padding-bottom: 6px;
-    margin-bottom: 10px;
-    line-height: 1.2em;
-    min-height: 2.3em;
-  }
-
-}
-
-.entity {
-  &__title {
-    text-transform: uppercase;
-    font-family: 'G7 Silkworm TTF';
-    letter-spacing: 2.5px;
-    border-bottom: 1px solid Lime;
-    padding-bottom: 6px;
     text-align: center;
-    margin: 0 auto 10px;
-    line-height: 1.2em;
-    min-height: 2.3em;
-    opacity: 1;
-    transition: opacity 1000ms ease-out;
     @include rainbow;
+    letter-spacing: 2.5px;
+    border-bottom: 1px solid Lime;
+    padding-bottom: 6px;
+    margin-bottom: 20px;
+    line-height: 1.2em;
+    min-height: 51px;
+    transition: opacity 1000ms ease-out;
+    opacity: 1;
   }
+
 }
 
 .hidden {
@@ -144,5 +146,16 @@
 
   &__team {
     padding: 20px 0;
+  }
+
+  &__stats {
+    margin-top: 20px;
+  }
+
+  &__aliases,
+  .entity__aliases {
+    color: white;
+    font-weight: 700;
+    margin-bottom: 15px;
   }
 }

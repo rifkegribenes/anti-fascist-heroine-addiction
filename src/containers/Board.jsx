@@ -97,6 +97,7 @@ class Board extends Component {
       this.props.actions.userInput(grid2, newPosition);
     }
     // handle collisions
+    this.props.actions.setCurrentEntity(destination);
     switch (destination.type) {
       case 'finalMonster':
       case 'monster':
@@ -156,7 +157,6 @@ class Board extends Component {
     const hero = { ...this.props.appState.hero };
     const messages = [...this.props.appState.messages];
 
-    // set current entity
     this.props.actions.setCurrentEntity(monster);
 
     // save message to display later in info panel
