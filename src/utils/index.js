@@ -101,7 +101,7 @@ const drawCell = (cellSize, ctx, level, x, y, vX, vY, cellType, opacity, hue, ic
       }
       break;
     case 'staircase':
-      img.src = 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/staircase_32.png';
+      img.src = 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/staircase_32_c.png';
       img.onload = () => {
         ctx.save();
         // console.log(`drawing staircase at ${x},${y}`);

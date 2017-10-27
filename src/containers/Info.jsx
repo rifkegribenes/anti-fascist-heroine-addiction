@@ -19,14 +19,14 @@ const hearts = (entity) => {
   if (entity.type === 'hero') {
     const healthArray = [160, 280, 510];
     totalHealth = healthArray[entity.level - 1];
-    healthNum = Math.floor((entity.hp / totalHealth) * 5)+1;
+    healthNum = Math.floor((entity.hp / totalHealth) * 5) + 1;
   } else if (entity.type === 'monster') {
     const healthArray = [70, 243, 515];
     totalHealth = healthArray[entity.level - 1];
-    healthNum = Math.floor((entity.health / totalHealth) * 5)+1;
+    healthNum = Math.floor((entity.health / totalHealth) * 5) + 1;
   } else if (entity.type === 'finalMonster') {
     totalHealth = 500;
-    healthNum = Math.floor((entity.health / totalHealth) * 5)+1;
+    healthNum = Math.floor((entity.health / totalHealth) * 5) + 1;
   }
   const heartsArr = [];
   for (let i = 0; i < healthNum; i++) {
@@ -38,13 +38,13 @@ const hearts = (entity) => {
 const Info = (props) => {
   const healthIndH = hearts(props.hero).map(() => (
     <span className="info__heart-wrap" key={shortid.generate()}>
-    <img className="info__heart" src="https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/heart.png" alt="" /></span>
+      <img className="info__heart" src="https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/heart.png" alt="" /></span>
       ));
   const healthIndM = hearts(props.entity).map(() => {
     if (props.entity.type === 'monster' || props.entity.type === 'finalMonster') {
       return (
         <span className="info__heart-wrap" key={shortid.generate()}>
-        <img className="info__heart" src="https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/heart.png" alt="" /></span>
+          <img className="info__heart" src="https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/heart.png" alt="" /></span>
       );
     }
     return '';
@@ -80,13 +80,13 @@ const Info = (props) => {
         <div className="info__col">
           <div className="info__col-wrap">
             <div className="info__hearts">
-            {props.entity.type === 'monster' ?
-              <span className="info__heart-wrap">Health: {props.entity.health}</span> :
-              <span className="info__heart-wrap"></span>
+              {props.entity.type === 'monster' ?
+                <span className="info__heart-wrap">Health: {props.entity.health}</span> :
+                <span className="info__heart-wrap" />
             }{healthIndM}
             </div>
             {props.entity.type && props.entity.type !== 'floor' &&
-            <h3 className={props.entity.type === 'monster' ? "entity__title" : "entity__title entity__title--margin"}>{props.entity.type === 'food' ? props.entity.title : props.entity.name || ''}</h3>
+            <h3 className={props.entity.type === 'monster' ? 'entity__title' : 'entity__title entity__title--margin'}>{props.entity.type === 'food' ? props.entity.title : props.entity.name || ''}</h3>
           }
             <div className="card-pic-wrapper">
               <img

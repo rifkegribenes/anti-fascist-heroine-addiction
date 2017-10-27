@@ -78,7 +78,7 @@
     padding-top: 8px;
     margin-bottom: 20px;
     line-height: 1.2em;
-    // min-height: 51px;
+    min-height: 3.2em;
     transition: opacity 1000ms ease-out;
     opacity: 1;
 
@@ -190,3 +190,9 @@
     margin-bottom: 15px;
   }
 }
+
+.entity__healthBoost {
+  color: white;
+    font-weight: 700;
+    margin-bottom: 15px;
+  }
