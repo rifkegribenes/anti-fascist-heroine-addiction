@@ -49,13 +49,10 @@
     text-transform: uppercase;
     text-align: center;
     padding: 20px;
-    font-size: 3em;
+    font-size: 2em;
     font-family: 'G7 Silkworm TTF';
     border: 1px solid Lime;
     @include rainbow;
-    @include for-tablet-landscape-up {
-      font-size: 3vw;
-    }
   }
 
   &__subhead-wrap {
@@ -84,6 +81,10 @@
 
     &--margin {
       margin-top: 21px;
+    }
+
+    &--team {
+      min-height: 0;
     }
   }
 
@@ -153,9 +154,20 @@
 }
 
 .hero {
+
+  &__level {
+    font-weight: 700;
+    color: white;
+    padding: 0 10px;
+  }
+
   &__team--wrapper {
     display: flex;
     flex-direction: row;
+  }
+
+  &__powers {
+    color: lighten( #00FF00, 35%);
   }
 
   &__team--item {

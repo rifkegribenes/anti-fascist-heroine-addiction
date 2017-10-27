@@ -53,7 +53,7 @@ const Info = (props) => {
     <div className="info">
       <h2 className="info__header">{props.header}</h2>
       <div className="info__subhead-wrap">
-        <span className="info__subhead">Level:&nbsp;{props.gameLevel}</span>
+        <span className="info__subhead" id="subhead">Level:&nbsp;{props.gameLevel}</span>
       </div>
       <div className="info__container">
         <div className="info__col">
@@ -65,11 +65,13 @@ const Info = (props) => {
             </div>
             <div className="hero__stats">
               <div className="hero__aliases">Aliases: {props.hero.aliases}</div>
-              <div className="hero__level">XP: {props.hero.xp} &bull; Level: {props.hero.level}</div>
-              <div className="hero__attack">Attack: {props.hero.attack}</div>
+              <div className="hero__xp">XP: {props.hero.xp}
+                <span className="hero__level">Level {props.hero.level}</span>
+                <span className="hero__attack">Attack: {props.hero.attack}</span>
+              </div>
               <div className="hero__powers">Powers: {props.hero.powers}</div>
               <div className="hero__team">
-                <h4 className="info__hero-title">Team</h4>
+                <h4 className="info__hero-title info__hero-title--team">Team</h4>
                 <div className="hero__team--wrapper">
                   {teamList(props.hero.team)}
                 </div>

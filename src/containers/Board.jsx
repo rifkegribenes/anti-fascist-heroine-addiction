@@ -97,22 +97,25 @@ class Board extends Component {
       this.props.actions.userInput(grid2, newPosition);
     }
     // handle collisions
-    this.props.actions.setCurrentEntity(destination);
     switch (destination.type) {
       case 'finalMonster':
       case 'monster':
+        this.props.actions.setCurrentEntity(destination);
         document.getElementById('entity').classList.remove('spin', 'hidden');
         this.handleCombat(destination, newPosition, newHero);
         break;
       case 'food':
+        this.props.actions.setCurrentEntity(destination);
         document.getElementById('entity').classList.remove('spin', 'hidden');
         this.healthBoost(destination);
         break;
       case 'teamHero':
+        this.props.actions.setCurrentEntity(destination);
         document.getElementById('entity').classList.remove('spin', 'hidden');
         this.addTeamHero(destination);
         break;
       case 'staircase':
+        this.props.actions.setCurrentEntity(destination);
         document.getElementById('entity').classList.remove('spin', 'hidden');
         this.handleStaircase(destination);
         break;
@@ -291,8 +294,10 @@ class Board extends Component {
       level + 1, this.props.appState.hero);
     this.props.actions.handleStaircase(currentEntity, heroPosition, newMap, level + 1);
     document.getElementById('board').classList.add('staircaseSpin');
+    document.getElementById('subhead').classList.add('powerUp');
     setTimeout(() => {
       document.getElementById('board').classList.remove('staircaseSpin');
+      document.getElementById('subhead').classList.remove('powerUp');
       utils.renderViewport(this.props.appState.heroPosition,
         this.props.appState.entities, this.props.appState.width);
     }, 2000);
