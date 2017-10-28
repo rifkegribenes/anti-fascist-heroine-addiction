@@ -70,6 +70,7 @@ const fillGrid = (gameMap, level, hero) => {
     iconUrl: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/donald-trump_64.png',
     cardUrl: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/donald-trump_200.png',
     damage: 60,
+    opacity: 1,
   };
 
     // find most upper-left floor tile
@@ -77,7 +78,7 @@ const fillGrid = (gameMap, level, hero) => {
   for (let i = 0; i < newMap.length; i++) {
     for (let j = 0; j < newMap[i].length; j++) {
       if (newMap[i][j].type === 'floor') {
-        topLeft = [j, i];
+        topLeft = [j, i]; // x,y
         break;
       }
     } if (topLeft.length > 0) {
@@ -85,11 +86,18 @@ const fillGrid = (gameMap, level, hero) => {
     }
   }
 
-  // Fill four-tile block in top-left positionwith fM object
+  // Fill four-tile block in top-left positionwith fM object,
+  // but only draw it once
   newMap[topLeft[1]][topLeft[0]] = finalMonster;
-  newMap[topLeft[1] + 1][topLeft[0]] = finalMonster;
-  newMap[topLeft[1] + 1][topLeft[0] + 1] = finalMonster;
-  newMap[topLeft[1]][topLeft[0] + 1] = finalMonster;
+  console.log([topLeft[1], topLeft[0]]);
+  console.log(newMap[topLeft[1]][topLeft[0]]);
+
+  const fmInv = { ...finalMonster };
+
+  fmInv.opacity = 0;
+  newMap[topLeft[1] + 1][topLeft[0]] = fmInv;
+  newMap[topLeft[1] + 1][topLeft[0] + 1] = fmInv;
+  newMap[topLeft[1]][topLeft[0] + 1] = fmInv;
   // }
 
   // randomly place other entities on floor tiles throughout grid

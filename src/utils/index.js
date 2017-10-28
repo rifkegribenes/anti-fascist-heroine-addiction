@@ -89,15 +89,20 @@ const drawCell = (cellSize, ctx, level, x, y, vX, vY, cellType, opacity, hue, ic
       }
       break;
     case 'finalMonster':
-      img.src = iconUrl;
-      img.onload = () => {
-        ctx.save();
-        ctx.drawImage(img, x, y, size, size);
-        ctx.restore();
-      };
-      if (!iconUrl) {
-        ctx.fillStyle = 'black';
-        ctx.fillRect(x, y, size, size);
+      console.log([vX, vY]);
+      console.log(opacity);
+      if (opacity) {
+        console.log('drawing');
+        img.src = iconUrl;
+        img.onload = () => {
+          ctx.save();
+          ctx.drawImage(img, x, y, size, size);
+          ctx.restore();
+        };
+        if (!iconUrl) {
+          ctx.fillStyle = 'black';
+          ctx.fillRect(x, y, size, size);
+        }
       }
       break;
     case 'staircase':
