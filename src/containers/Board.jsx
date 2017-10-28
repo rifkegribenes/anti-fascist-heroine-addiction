@@ -91,7 +91,7 @@ class Board extends Component {
     const newPosition = [changeX + x, changeY + y];
     const newHero = this.props.appState.entities[y][x];
     const destination = this.props.appState.entities[y + changeY][x + changeX];
-    if (destination.type !== 'wall' && destination.type !== 'monster' && destination.type !== 'boss') {
+    if (destination.type !== 'wall' && destination.type !== 'monster' && destination.type !== 'finalMonster') {
       const grid1 = utils.changeEntity(this.props.appState.entities, { type: 'floor' }, [x, y]);
       const grid2 = utils.changeEntity(grid1, newHero, newPosition);
       this.props.actions.userInput(grid2, newPosition);
@@ -156,6 +156,9 @@ class Board extends Component {
   }
 
   handleCombat(monster, newPosition, newHero) {
+    // check if final battle
+    const finalBattle = (monster.type === 'finalMonster');
+
     // get values for hero and messages from app state
     const hero = { ...this.props.appState.hero };
     const messages = [...this.props.appState.messages];
@@ -183,6 +186,26 @@ class Board extends Component {
     const entities = this.props.appState.entities;
     const [mx, my] = newPosition;
     entities[my][mx] = currentEntity;
+
+    // if final monster also update his other 3 blocks
+    if (finalBattle) {
+      console.log('final battle');
+      console.log(`heroPos: ${this.props.appState.heroPosition}`);
+      console.log(`trumpPos: ${this.props.appState.trumpPosition}`);
+      const trumpPosition = [ ...this.props.appState.trumpPosition];
+      const [mx0, my0] = trumpPosition[0];
+      const [mx1, my1] = trumpPosition[1];
+      const [mx2, my2] = trumpPosition[2];
+      const [mx3, my3] = trumpPosition[3];
+
+      const currentEntityViz = { ...currentEntity, opacity: 1 };
+      const currentEntityInv = { ...currentEntity, opacity: 0 };
+
+      entities[my0][mx0] = currentEntityViz;
+      entities[my1][mx1] = currentEntityInv;
+      entities[my2][mx2] = currentEntityInv;
+      entities[my3][mx3] = currentEntityInv;
+    }
 
     this.props.actions.updateEntities(entities);
     this.props.actions.setCurrentEntity(currentEntity);
@@ -290,9 +313,10 @@ class Board extends Component {
     const level = this.props.appState.gameLevel;
     messages.push(`You found the staircase down to level ${this.props.appState.gameLevel + 1}!`);
     this.props.actions.updateMessages(messages);
-    const { newMap, heroPosition } = fillGrid(generateMap(level + 1),
+    const { newMap, heroPosition, trumpPosition } = fillGrid(generateMap(level + 1),
       level + 1, this.props.appState.hero);
-    this.props.actions.handleStaircase(currentEntity, heroPosition, newMap, level + 1);
+    this.props.actions.handleStaircase(currentEntity,
+      heroPosition, trumpPosition, newMap, level + 1);
     document.getElementById('board').classList.add('staircaseSpin');
     document.getElementById('subhead').classList.add('powerUp');
     setTimeout(() => {
@@ -304,8 +328,9 @@ class Board extends Component {
   }
 
   startGame() {
-    const { newMap, heroPosition } = fillGrid(generateMap(1), 1, this.props.appState.hero);
-    this.props.actions.start(newMap, heroPosition);
+    const { newMap, heroPosition, trumpPosition } =
+      fillGrid(generateMap(1), 1, this.props.appState.hero);
+    this.props.actions.start(newMap, heroPosition, trumpPosition);
   }
 
   render() {

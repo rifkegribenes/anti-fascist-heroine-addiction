@@ -1,6 +1,7 @@
 export const SET_LEVEL = 'SET_LEVEL';
 export const SET_HERO = 'SET_HERO';
 export const UPDATE_HERO = 'UPDATE_HERO';
+export const UPDATE_TRUMP = 'UPDATE_TRUMP';
 export const OPEN_MODAL = 'OPEN_MODAL';
 export const CLOSE_MODAL = 'CLOSE_MODAL';
 export const RESTART = 'RESTART';
@@ -31,6 +32,16 @@ export function updateHero(hero) {
   return ({
     type: UPDATE_HERO,
     payload: hero,
+  });
+}
+
+export function updateTrump(trumpPosition, entities) {
+  return ({
+    type: UPDATE_TRUMP,
+    payload: {
+      trumpPosition,
+      entities,
+    },
   });
 }
 
@@ -83,12 +94,13 @@ export function restart() {
   });
 }
 
-export function start(entities, heroPosition) {
+export function start(entities, heroPosition, trumpPosition) {
   return ({
     type: START,
     payload: {
       entities,
       heroPosition,
+      trumpPosition,
     },
   });
 }
@@ -102,12 +114,13 @@ export function updateEntities(entities) {
   });
 }
 
-export function handleStaircase(currentEntity, heroPosition, entities, gameLevel) {
+export function handleStaircase(currentEntity, heroPosition, trumpPosition, entities, gameLevel) {
   return ({
     type: HANDLE_STAIRCASE,
     payload: {
       currentEntity,
       heroPosition,
+      trumpPosition,
       entities,
       gameLevel,
     },

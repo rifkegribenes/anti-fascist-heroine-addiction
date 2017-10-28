@@ -1,12 +1,13 @@
 import update from 'immutability-helper';
 import teamHeroes from '../../utils/teamHeroes';
 
-import { SET_LEVEL, SET_HERO, UPDATE_HERO, CLOSE_MODAL, OPEN_MODAL, RESTART, START, USER_INPUT, SET_CURRENT_ENTITY, UPDATE_ENTITIES, UPDATE_MESSAGES, UPDATE_DIMENSIONS, HANDLE_STAIRCASE, UPDATE_GRID } from '../actions';
+import { SET_LEVEL, SET_HERO, UPDATE_HERO, UPDATE_TRUMP, CLOSE_MODAL, OPEN_MODAL, RESTART, START, USER_INPUT, SET_CURRENT_ENTITY, UPDATE_ENTITIES, UPDATE_MESSAGES, UPDATE_DIMENSIONS, HANDLE_STAIRCASE, UPDATE_GRID } from '../actions';
 
 const INITIAL_STATE = {
   entities: [[]],
   gameLevel: 1,
   heroPosition: [],
+  trumpPosition: [],
   hero: {
     hp: 100,
     xp: 0,
@@ -23,6 +24,15 @@ const INITIAL_STATE = {
   modalOpen: true,
   modalTitle: '',
   modalList: teamHeroes,
+  bigMsg: {
+    show: false,
+    title: '',
+    imgUrl: '',
+    imgAlt: '',
+    body: '',
+    action: '',
+    actionText: '',
+  },
   currentEntity: {},
   width: window.innerWidth,
   gridFilled: false,
@@ -72,6 +82,16 @@ function appState(state = INITIAL_STATE, action) {
         },
       );
 
+    case UPDATE_TRUMP:
+      return update(
+        state,
+        {
+          trumpPosition: { $set: action.payload.trumpPosition },
+          entities: { $set: action.payload.entities },
+        },
+      );
+
+
     case CLOSE_MODAL:
       return update(
         state,
@@ -98,6 +118,7 @@ function appState(state = INITIAL_STATE, action) {
           entities: { $set: action.payload.entities },
           heroPosition: { $set: action.payload.heroPosition },
           gridFilled: { $set: true },
+          trumpPosition: { $set: action.payload.trumpPosition },
         },
       );
 
@@ -157,6 +178,7 @@ function appState(state = INITIAL_STATE, action) {
         {
           currentEntity: { $set: action.payload.currentEntity },
           heroPosition: { $set: action.payload.heroPosition },
+          trumpPosition: { $set: action.payload.trumpPosition },
           entities: { $set: action.payload.entities },
           gameLevel: { $set: action.payload.gameLevel },
         },

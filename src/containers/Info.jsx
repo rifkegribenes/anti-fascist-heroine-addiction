@@ -82,13 +82,13 @@ const Info = (props) => {
         <div className="info__col">
           <div className="info__col-wrap">
             <div className="info__hearts">
-              {props.entity.type === 'monster' ?
+              {props.entity.type === 'monster' || props.entity.type === 'finalMonster' ?
                 <span className="info__heart-wrap">Health: {props.entity.health}</span> :
                 <span className="info__heart-wrap" />
             }{healthIndM}
             </div>
             {props.entity.type && props.entity.type !== 'floor' &&
-            <h3 className={props.entity.type === 'monster' ? 'entity__title' : 'entity__title entity__title--margin'}>{props.entity.type === 'food' ? props.entity.title : props.entity.name || ''}</h3>
+            <h3 className={props.entity.type === 'monster' || props.entity.type === 'finalMonster' ? 'entity__title' : 'entity__title entity__title--margin'}>{props.entity.type === 'food' ? props.entity.title : props.entity.name || ''}</h3>
           }
             <div className="card-pic-wrapper">
               <img

@@ -89,10 +89,7 @@ const drawCell = (cellSize, ctx, level, x, y, vX, vY, cellType, opacity, hue, ic
       }
       break;
     case 'finalMonster':
-      console.log([vX, vY]);
-      console.log(opacity);
       if (opacity) {
-        console.log('drawing');
         img.src = iconUrl;
         img.onload = () => {
           ctx.save();

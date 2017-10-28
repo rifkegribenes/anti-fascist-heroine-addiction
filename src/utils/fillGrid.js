@@ -61,15 +61,18 @@ const fillGrid = (gameMap, level, hero) => {
 // hard code final boss in upper left four floor tiles on level 3
   // if (level === 3) {
   const finalMonster = {
-    health: 500,
-    level: 5,
+    // health: 500,
+    // level: 5,
+    // damage: 60,
+    health: 100,
+    level: 1,
+    damage: 10,
     type: 'finalMonster',
     name: 'Donald Trump',
     bio: '',
     youDiedMsg: '',
     iconUrl: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/donald-trump_64.png',
     cardUrl: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/donald-trump_200.png',
-    damage: 60,
     opacity: 1,
   };
 
@@ -86,19 +89,29 @@ const fillGrid = (gameMap, level, hero) => {
     }
   }
 
+  // Save an array of the coordinates of the four blocks
+  // that the final monster will fill
+
+  const trumpPosition = [
+    [topLeft[1], topLeft[0]],
+    [topLeft[1] + 1, topLeft[0]],
+    [topLeft[1] + 1, topLeft[0] + 1],
+    [topLeft[1], topLeft[0] + 1],
+  ];
+
+
   // Fill four-tile block in top-left positionwith fM object,
   // but only draw it once
   newMap[topLeft[1]][topLeft[0]] = finalMonster;
-  console.log([topLeft[1], topLeft[0]]);
-  console.log(newMap[topLeft[1]][topLeft[0]]);
 
+  // fill the other three tiles in the block with the smame object
+  // but don't draw it to the canvas
   const fmInv = { ...finalMonster };
 
   fmInv.opacity = 0;
   newMap[topLeft[1] + 1][topLeft[0]] = fmInv;
   newMap[topLeft[1] + 1][topLeft[0] + 1] = fmInv;
   newMap[topLeft[1]][topLeft[0] + 1] = fmInv;
-  // }
 
   // randomly place other entities on floor tiles throughout grid
   [foods, monsters, teamHeroArray, staircases].forEach((entities) => {
@@ -110,7 +123,7 @@ const fillGrid = (gameMap, level, hero) => {
       }
     }
   });
-  return { newMap, heroPosition };
+  return { newMap, heroPosition, trumpPosition };
 };
 
 export default fillGrid;
