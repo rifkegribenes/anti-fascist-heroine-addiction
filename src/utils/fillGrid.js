@@ -4,21 +4,8 @@ import teamHeroes from './teamHeroes';
 import monsterTypes from './monsterTypes';
 
 const fillGrid = (gameMap, level, hero) => {
-  const finalMonsters = [];
+  // const finalMonsters = [];
   const tempHero = { ...hero };
-  if (level === 3) {
-    finalMonsters.push({
-      health: 500,
-      level: 5,
-      type: 'finalMonster',
-      name: 'Donald Trump',
-      bio: '',
-      youDiedMsg: '',
-      iconUrl: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/donald-trump_64.png',
-      cardUrl: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/donald-trump_200.png',
-      damage: 60,
-    });
-  }
 
   const monsters = [];
   const qM = monsterTypes
@@ -70,7 +57,43 @@ const fillGrid = (gameMap, level, hero) => {
   const newHero = hero;
   newHero.type = 'hero';
   newMap[hY][hX] = newHero;
-  [foods, monsters, teamHeroArray, staircases, finalMonsters].forEach((entities) => {
+
+// hard code final boss in upper left four floor tiles on level 3
+  // if (level === 3) {
+  const finalMonster = {
+    health: 500,
+    level: 5,
+    type: 'finalMonster',
+    name: 'Donald Trump',
+    bio: '',
+    youDiedMsg: '',
+    iconUrl: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/donald-trump_64.png',
+    cardUrl: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/donald-trump_200.png',
+    damage: 60,
+  };
+
+    // find most upper-left floor tile
+  let topLeft = [];
+  for (let i = 0; i < newMap.length; i++) {
+    for (let j = 0; j < newMap[i].length; j++) {
+      if (newMap[i][j].type === 'floor') {
+        topLeft = [j, i];
+        break;
+      }
+    } if (topLeft.length > 0) {
+      break;
+    }
+  }
+
+  // Fill four-tile block in top-left positionwith fM object
+  newMap[topLeft[1]][topLeft[0]] = finalMonster;
+  newMap[topLeft[1] + 1][topLeft[0]] = finalMonster;
+  newMap[topLeft[1] + 1][topLeft[0] + 1] = finalMonster;
+  newMap[topLeft[1]][topLeft[0] + 1] = finalMonster;
+  // }
+
+  // randomly place other entities on floor tiles throughout grid
+  [foods, monsters, teamHeroArray, staircases].forEach((entities) => {
     while (entities.length) {
       const x = Math.floor(Math.random() * utils.gridWidth);
       const y = Math.floor(Math.random() * utils.gridHeight);
