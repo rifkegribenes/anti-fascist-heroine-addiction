@@ -97,6 +97,24 @@ $color_gray_lighter: lighten($color_gray_text,35%);
   100% { opacity:1; -webkit-transform: rotate(360deg);  }
 }
 
+@keyframes blink {
+  0%   { opacity:1; }
+  50%  { opacity:0; }
+  100%  { opacity:1; }
+}
+
+@-moz-keyframes blink {
+  0%   { opacity:1; }
+  50%  { opacity:0; }
+  100%  { opacity:1; }
+}
+
+@-webkit-keyframes blink {
+  0%   { opacity:1; }
+  50%  { opacity:0; }
+  100%  { opacity:1; }
+}
+
 @-keyframes rainbowglow {
   0% {
     box-shadow: 0 0 4px 4px #E605C1, 0 0 8px 8px #AD79FC, 0 0 12px 12px #806BF7;

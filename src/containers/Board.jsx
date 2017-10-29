@@ -257,8 +257,8 @@ class Board extends Component {
         };
         this.props.actions.showMsg({
           title: 'You died!',
-          imgUrl: '',
-          imgAlt: '',
+          imgUrl: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/you-died.png',
+          imgAlt: 'skull and crossbones',
           body: msg,
           action,
           actionText: 'Play Again',
