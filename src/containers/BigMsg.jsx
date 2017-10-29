@@ -7,7 +7,7 @@ import * as Actions from '../store/actions';
 const BigMsg = props => (
   <div className="big-msg" style={props.style}>
     <h2 className="big-msg__title blink">{props.appState.bigMsg.title}</h2>
-    <img className="big-msg__img" src={props.appState.bigMsg.imgUrl} alt={props.appState.bigMsg.imgAlt} />
+    <img className="big-msg__img" id="msgImg" src={props.appState.bigMsg.imgUrl} alt={props.appState.bigMsg.imgAlt} />
     <div className="big-msg__body">{props.appState.bigMsg.body}</div>
     <button className="big-msg__btn" onClick={props.appState.bigMsg.action}>{props.appState.bigMsg.actionText}</button>
   </div>

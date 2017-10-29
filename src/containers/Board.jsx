@@ -292,16 +292,13 @@ class Board extends Component {
         setTimeout(() => messages.push('You won! blah blah blah.'), 1000); // fix this msg later
         this.props.actions.showMsg({
           title: 'You won!',
-          imgUrl: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/you-died.png',
-          imgAlt: 'skull and crossbones',
+          imgUrl: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/rainbow.png',
+          imgAlt: 'rainbow',
           body: 'You and your team defeated the biggest monster of all! Great work!',
           action,
           actionText: 'Play Again',
         });
-        setTimeout(() => {
-          this.props.actions.restart();
-          this.props.history.push('/');
-        }, 3000);
+        document.getElementById('msgImg').classList.add('powerUp');
         return;
       }
       messages.push(`You did it! Your attack of [${monsterDamageTaken}] defeated ${currentEntity.name}.`); // fix this msg later
