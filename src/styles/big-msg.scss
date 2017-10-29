@@ -1,14 +1,19 @@
 .big-msg {
   margin: auto;
-  border-radius: 100%;
   position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 2;
   background: black;
-  border: 1px solid Lime;
   padding: 20px;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  width: 100vw;
+  height: 100vh;
 
   &__title {
     text-transform: uppercase;

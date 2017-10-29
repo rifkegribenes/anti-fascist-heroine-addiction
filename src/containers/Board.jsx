@@ -157,6 +157,13 @@ class Board extends Component {
   }
 
   handleCombat(monster, newPosition, newHero) {
+    // define action for 'you died' and 'you won' screens
+    const action = () => {
+      document.getElementById('hero').classList.remove('spin', 'hidden');
+      this.props.actions.restart();
+      this.props.history.push('/');
+    };
+
     // check if final battle
     const finalBattle = (monster.type === 'finalMonster');
 
@@ -190,9 +197,6 @@ class Board extends Component {
 
     // if final monster also update his other 3 blocks
     if (finalBattle) {
-      console.log('final battle');
-      console.log(`heroPos: ${this.props.appState.heroPosition}`);
-      console.log(`trumpPos: ${this.props.appState.trumpPosition}`);
       const trumpPosition = [...this.props.appState.trumpPosition];
       const [mx0, my0] = trumpPosition[0];
       const [mx1, my1] = trumpPosition[1];
@@ -224,7 +228,6 @@ class Board extends Component {
     // if monster is still alive...
     if (this.props.appState.currentEntity.health > 0) {
       // MONSTER ATTACK //
-
       const heroDamageTaken = Math.floor(utils.random(0.7, 1.3) * currentEntity.damage);
       utils.changeEntity(this.props.appState.entities, monster, newPosition);
       hero.hp -= heroDamageTaken;
@@ -248,13 +251,7 @@ class Board extends Component {
 
       // HANDLE HERO DEATH //
       if (hero.hp - heroDamageTaken <= 0) {
-        console.log('you died!');
         const msg = currentEntity.youDiedMsg || `${currentEntity.name} killed you! Bummer!`;
-        const action = () => {
-          document.getElementById('hero').classList.remove('spin', 'hidden');
-          this.props.actions.restart();
-          this.props.history.push('/');
-        };
         this.props.actions.showMsg({
           title: 'You died!',
           imgUrl: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/you-died.png',
@@ -292,9 +289,15 @@ class Board extends Component {
 
       if (monster.type === 'finalMonster') {
         messages.push(`You did it! Your attack of [${monsterDamageTaken}] defeated ${currentEntity.name}.`); // fix this msg later
-        setTimeout(() => this.props.actions.setLevel(4), 250);
-        // TODO: YOU WON SCREEN
         setTimeout(() => messages.push('You won! blah blah blah.'), 1000); // fix this msg later
+        this.props.actions.showMsg({
+          title: 'You won!',
+          imgUrl: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/you-died.png',
+          imgAlt: 'skull and crossbones',
+          body: 'You and your team defeated the biggest monster of all! Great work!',
+          action,
+          actionText: 'Play Again',
+        });
         setTimeout(() => {
           this.props.actions.restart();
           this.props.history.push('/');
@@ -355,10 +358,6 @@ class Board extends Component {
     const canvasStyle = {
       clipPath: `circle(${clipRadius}px at center)`,
     };
-    const msgStyle = {
-      width: `${clipRadius * 2}px`,
-      height: `${clipRadius * 2}px`,
-    };
     return (
       <div>
         <div className="container">
@@ -371,9 +370,8 @@ class Board extends Component {
               style={canvasStyle}
             />
             {this.props.appState.bigMsg.show &&
-              <BigMsg
-                style={msgStyle}
-              />}
+              <BigMsg />
+            }
           </div>
           <div className="rightCol">
             <Info
