@@ -13,6 +13,8 @@ export const UPDATE_GRID = 'UPDATE_GRID';
 export const UPDATE_DIMENSIONS = 'UPDATE_DIMENSIONS';
 export const UPDATE_ENTITIES = 'UPDATE_ENTITIES';
 export const HANDLE_STAIRCASE = 'HANDLE_STAIRCASE';
+export const SHOW_MSG = 'SHOW_MSG';
+export const HIDE_MSG = 'HIDE_MSG';
 
 export function setLevel(level) {
   return ({
@@ -57,6 +59,26 @@ export function openModal(title, list) {
     payload: {
       title,
       list,
+    },
+  });
+}
+
+export function hideMsg() {
+  return ({
+    type: HIDE_MSG,
+  });
+}
+
+export function showMsg(msg) {
+  return ({
+    type: SHOW_MSG,
+    payload: {
+      title: msg.title,
+      imgUrl: msg.imgUrl,
+      imgAlt: msg.imgAlt,
+      body: msg.body,
+      action: msg.action,
+      actionText: msg.actionText,
     },
   });
 }

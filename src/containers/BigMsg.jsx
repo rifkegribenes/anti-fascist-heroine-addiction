@@ -5,11 +5,11 @@ import { bindActionCreators } from 'redux';
 import * as Actions from '../store/actions';
 
 const BigMsg = props => (
-  <div className="big-msg">
-    <h2 className="big-msg__title">{props.title}</h2>
-    <img className="big-msg__img" src={props.imgUrl} alt={props.imgAlt}/>
-    <div className="big-msg__body">{props.body}</div>
-    <button className="big-msg__btn" onClick={props.action}>{props.actionText}</button>
+  <div className="big-msg" style={props.style}>
+    <h2 className="big-msg__title">{props.appState.bigMsg.title}</h2>
+    <img className="big-msg__img" src={props.appState.bigMsg.imgUrl} alt={props.appState.bigMsg.imgAlt} />
+    <div className="big-msg__body">{props.appState.bigMsg.body}</div>
+    <button className="big-msg__btn" onClick={props.appState.bigMsg.action}>{props.appState.bigMsg.actionText}</button>
   </div>
     );
 

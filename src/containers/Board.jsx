@@ -6,6 +6,7 @@ import { withRouter } from 'react-router';
 
 import * as Actions from '../store/actions';
 import Info from './Info';
+import BigMsg from './BigMsg';
 import * as utils from '../utils/index';
 import generateMap from '../utils/mapGen';
 import fillGrid from '../utils/fillGrid';
@@ -192,7 +193,7 @@ class Board extends Component {
       console.log('final battle');
       console.log(`heroPos: ${this.props.appState.heroPosition}`);
       console.log(`trumpPos: ${this.props.appState.trumpPosition}`);
-      const trumpPosition = [ ...this.props.appState.trumpPosition];
+      const trumpPosition = [...this.props.appState.trumpPosition];
       const [mx0, my0] = trumpPosition[0];
       const [mx1, my1] = trumpPosition[1];
       const [mx2, my2] = trumpPosition[2];
@@ -248,16 +249,25 @@ class Board extends Component {
       // HANDLE HERO DEATH //
       if (hero.hp - heroDamageTaken <= 0) {
         console.log('you died!');
+        const msg = currentEntity.youDiedMsg || `${currentEntity.name} killed you! Bummer!`;
+        const action = () => {
+          document.getElementById('hero').classList.remove('spin', 'hidden');
+          this.props.actions.restart();
+          this.props.history.push('/');
+        };
+        this.props.actions.showMsg({
+          title: 'You died!',
+          imgUrl: '',
+          imgAlt: '',
+          body: msg,
+          action,
+          actionText: 'Play Again',
+        });
         document.getElementById('hero').classList.add('spin', 'hidden');
         setTimeout(() => {
           messages.push(`You died! ${currentEntity.youDiedMsg}.`);
           this.props.actions.updateMessages(messages);
         }, 1000);
-        setTimeout(() => {
-          document.getElementById('hero').classList.remove('spin', 'hidden');
-          this.props.actions.restart();
-          this.props.history.push('/');
-        }, 3000);
         return;
       }
 
@@ -345,6 +355,10 @@ class Board extends Component {
     const canvasStyle = {
       clipPath: `circle(${clipRadius}px at center)`,
     };
+    const msgStyle = {
+      width: `${clipRadius * 2}px`,
+      height: `${clipRadius * 2}px`,
+    };
     return (
       <div>
         <div className="container">
@@ -356,6 +370,10 @@ class Board extends Component {
               height={utils.vHeight * cellSize}
               style={canvasStyle}
             />
+            {this.props.appState.bigMsg.show &&
+              <BigMsg
+                style={msgStyle}
+              />}
           </div>
           <div className="rightCol">
             <Info

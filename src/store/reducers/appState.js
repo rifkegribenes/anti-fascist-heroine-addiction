@@ -1,7 +1,7 @@
 import update from 'immutability-helper';
 import teamHeroes from '../../utils/teamHeroes';
 
-import { SET_LEVEL, SET_HERO, UPDATE_HERO, UPDATE_TRUMP, CLOSE_MODAL, OPEN_MODAL, RESTART, START, USER_INPUT, SET_CURRENT_ENTITY, UPDATE_ENTITIES, UPDATE_MESSAGES, UPDATE_DIMENSIONS, HANDLE_STAIRCASE, UPDATE_GRID } from '../actions';
+import { SET_LEVEL, SET_HERO, UPDATE_HERO, UPDATE_TRUMP, CLOSE_MODAL, OPEN_MODAL, RESTART, START, USER_INPUT, SET_CURRENT_ENTITY, UPDATE_ENTITIES, UPDATE_MESSAGES, UPDATE_DIMENSIONS, HANDLE_STAIRCASE, UPDATE_GRID, SHOW_MSG, HIDE_MSG } from '../actions';
 
 const INITIAL_STATE = {
   entities: [[]],
@@ -108,6 +108,38 @@ function appState(state = INITIAL_STATE, action) {
           modalOpen: { $set: true },
           modalTitle: { $set: action.payload.title },
           modalList: { $set: action.payload.list },
+        },
+      );
+
+    case SHOW_MSG:
+      return update(
+        state,
+        {
+          bigMsg: {
+            show: { $set: true },
+            title: { $set: action.payload.title },
+            imgUrl: { $set: action.payload.imgUrl },
+            imgAlt: { $set: action.payload.imgAlt },
+            body: { $set: action.payload.body },
+            action: { $set: action.payload.action },
+            actionText: { $set: action.payload.actionText },
+          },
+        },
+      );
+
+    case HIDE_MSG:
+      return update(
+        state,
+        {
+          bigMsg: {
+            show: { $set: false },
+            title: { $set: '' },
+            imgUrl: { $set: '' },
+            imgAlt: { $set: '' },
+            body: { $set: '' },
+            action: { $set: '' },
+            actionText: { $set: '' },
+          },
         },
       );
 
