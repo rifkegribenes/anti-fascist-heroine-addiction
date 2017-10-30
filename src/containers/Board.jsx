@@ -13,23 +13,15 @@ import fillGrid from '../utils/fillGrid';
 
 
 class Board extends Component {
+
   constructor(props) {
     super(props);
-    this.state = {
-      entities: [[]],
-      gameLevel: 1,
-      heroPosition: [],
-      hero: this.props.appState.hero,
-      messages: [],
-      modalOpen: true,
-      currentEntity: {},
-      width: window.innerWidth,
-    };
 
     this.handleKeydown = this.handleKeydown.bind(this);
     this.userInput = this.userInput.bind(this);
     this.updateDimensions = this.updateDimensions.bind(this);
   }
+
   componentWillMount() {
 
   }
@@ -82,7 +74,6 @@ class Board extends Component {
         this.userInput([-1, 0]);
         break;
       default:
-
     }
   }
 
@@ -298,7 +289,10 @@ class Board extends Component {
           action,
           actionText: 'Play Again',
         });
-        document.getElementById('msgImg').classList.add('powerUp');
+        setTimeout(() => {
+          document.getElementById('msgImg').classList.remove('powerUp');
+          document.getElementById('msgTitle').classList.remove('blink', 'powerUp');
+        }, 1000);
         return;
       }
       messages.push(`You did it! Your attack of [${monsterDamageTaken}] defeated ${currentEntity.name}.`); // fix this msg later

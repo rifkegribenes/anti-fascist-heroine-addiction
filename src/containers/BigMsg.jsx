@@ -4,14 +4,31 @@ import { bindActionCreators } from 'redux';
 
 import * as Actions from '../store/actions';
 
-const BigMsg = props => (
-  <div className="big-msg" style={props.style}>
-    <h2 className="big-msg__title blink">{props.appState.bigMsg.title}</h2>
-    <img className="big-msg__img" id="msgImg" src={props.appState.bigMsg.imgUrl} alt={props.appState.bigMsg.imgAlt} />
-    <div className="big-msg__body">{props.appState.bigMsg.body}</div>
-    <button className="big-msg__btn" onClick={props.appState.bigMsg.action}>{props.appState.bigMsg.actionText}</button>
-  </div>
+class BigMsg extends React.Component {
+
+  componentDidMount() {
+    if (this.props.appState.bigMsg.title === 'You won!') {
+      setTimeout(() => {
+        document.getElementById('msgImg').classList.add('big-msg__img--reveal');
+      }, 200);
+
+      document.getElementById('msgTitle').classList.add('powerUp');
+    }
+  }
+
+  render() {
+    return (
+      <div className="big-msg" style={this.props.style}>
+        <h2 className="big-msg__title blink" id="msgTitle">{this.props.appState.bigMsg.title}</h2>
+        <div id="msgImg" className={this.props.appState.bigMsg.title === 'You won!' ? 'big-msg__img-wrap' : ''}>
+          <img src={this.props.appState.bigMsg.imgUrl} className="big-msg__img" alt={this.props.appState.bigMsg.imgAlt} />
+        </div>
+        <div className="big-msg__body">{this.props.appState.bigMsg.body}</div>
+        <button className="big-msg__btn" onClick={this.props.appState.bigMsg.action}>{this.props.appState.bigMsg.actionText}</button>
+      </div>
     );
+  }
+}
 
 const mapStateToProps = state => ({
   appState: state.appState,
