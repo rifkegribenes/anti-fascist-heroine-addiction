@@ -110,19 +110,19 @@ canvas {
 }
 
 .staircaseSpin {
-  -webkit-animation: stspin 2s linear infinite;
-    -moz-animation: stspin 2s linear infinite;
-    animation: stspin 2s linear infinite;
+  -webkit-animation: stspin 2s linear 2s;
+    -moz-animation: stspin 2s linear 2s;
+    animation: stspin 2s linear 2s;
 }
 
 .powerUp {
-  -webkit-animation: rainbowglow 1s linear infinite;
-    -moz-animation: rainbowglow 1s linear infinite;
-    animation: rainbowglow 1s linear infinite;
+  -webkit-animation: rainbowglow 1s linear 4s;
+    -moz-animation: rainbowglow 1s linear 4s;
+    animation: rainbowglow 1s linear 4s;
 }
 
 .blink {
-  -webkit-animation: blink 2s linear infinite;
-    -moz-animation: blink 2s linear infinite;
-    animation: blink 2s linear infinite;
+  -webkit-animation: blink 2s linear 4s;
+    -moz-animation: blink 2s linear 4s;
+    animation: blink 2s linear 4s;
 }

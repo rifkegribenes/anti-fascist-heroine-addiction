@@ -189,6 +189,7 @@ class Board extends Component {
     // if final monster also update his other 3 blocks
     if (finalBattle) {
       const trumpPosition = [...this.props.appState.trumpPosition];
+      console.log(trumpPosition);
       const [mx0, my0] = trumpPosition[0];
       const [mx1, my1] = trumpPosition[1];
       const [mx2, my2] = trumpPosition[2];
@@ -277,7 +278,7 @@ class Board extends Component {
       this.props.actions.updateMessages(messages);
       this.props.actions.setCurrentEntity(currentEntity);
 
-
+       // HANDLE GAME WIN  //
       if (monster.type === 'finalMonster') {
         messages.push(`You did it! Your attack of [${monsterDamageTaken}] defeated ${currentEntity.name}.`); // fix this msg later
         setTimeout(() => messages.push('You won! blah blah blah.'), 1000); // fix this msg later
@@ -290,8 +291,8 @@ class Board extends Component {
           actionText: 'Play Again',
         });
         setTimeout(() => {
-          document.getElementById('msgImg').classList.remove('powerUp');
-          document.getElementById('msgTitle').classList.remove('blink', 'powerUp');
+          document.getElementById('msgTitle').classList.remove('powerUp');
+          document.getElementById('msgTitle').classList.remove('blink');
         }, 1000);
         return;
       }
@@ -361,7 +362,9 @@ class Board extends Component {
               style={canvasStyle}
             />
             {this.props.appState.bigMsg.show &&
-              <BigMsg />
+              <BigMsg
+                handleKeydown={this.handleKeydown}
+              />
             }
           </div>
           <div className="rightCol">

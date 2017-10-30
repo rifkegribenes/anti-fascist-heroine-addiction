@@ -7,12 +7,13 @@ import * as Actions from '../store/actions';
 class BigMsg extends React.Component {
 
   componentDidMount() {
+    window.removeEventListener('keydown', this.props.handleKeydown);
     if (this.props.appState.bigMsg.title === 'You won!') {
+      document.getElementById('msgTitle').classList.remove('blink');
+      document.getElementById('msgTitle').classList.add('powerUp');
       setTimeout(() => {
         document.getElementById('msgImg').classList.add('big-msg__img--reveal');
       }, 200);
-
-      document.getElementById('msgTitle').classList.add('powerUp');
     }
   }
 
