@@ -189,7 +189,7 @@ class Board extends Component {
     // if final monster also update his other 3 blocks
     if (finalBattle) {
       const trumpPosition = [...this.props.appState.trumpPosition];
-      console.log(trumpPosition);
+      // console.log(trumpPosition);
       const [mx0, my0] = trumpPosition[0];
       const [mx1, my1] = trumpPosition[1];
       const [mx2, my2] = trumpPosition[2];

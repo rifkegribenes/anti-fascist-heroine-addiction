@@ -20,35 +20,51 @@ const hearts = (entity) => {
     const healthArray = [160, 280, 510];
     totalHealth = healthArray[entity.level - 1];
     healthNum = Math.floor((entity.hp / totalHealth) * 5) + 1;
+    if (entity.hp === 0) { healthNum = 0; }
   } else if (entity.type === 'monster') {
     const healthArray = [70, 243, 515];
     totalHealth = healthArray[entity.level - 1];
     healthNum = Math.floor((entity.health / totalHealth) * 5) + 1;
+    if (entity.health === 0) { healthNum = 0; }
   } else if (entity.type === 'finalMonster') {
     totalHealth = 500;
     healthNum = Math.floor((entity.health / totalHealth) * 5) + 1;
+    if (entity.health === 0) { healthNum = 0; }
   }
   const heartsArr = [];
-  for (let i = 0; i < healthNum; i++) {
-    heartsArr.push('0');
+  if (healthNum > 0) {
+    for (let i = 0; i < healthNum; i++) {
+      heartsArr.push('0');
+    }
   }
   return heartsArr;
 };
 
 const Info = (props) => {
-  const healthIndH = hearts(props.hero).map(() => (
-    <span className="info__heart-wrap" key={shortid.generate()}>
-      <img className="info__heart" src="https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/heart.png" alt="" /></span>
-      ));
-  const healthIndM = hearts(props.entity).map(() => {
-    if (props.entity.type === 'monster' || props.entity.type === 'finalMonster') {
-      return (
-        <span className="info__heart-wrap" key={shortid.generate()}>
-          <img className="info__heart" src="https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/heart.png" alt="" /></span>
-      );
-    }
-    return '';
-  });
+  let healthIndH = '';
+  let healthIndM = '';
+  const heartsArrH = hearts(props.hero);
+  const heartsArrM = hearts(props.entity);
+
+  // if hero health = 0, don't display any hearts
+  if (heartsArrH.length) {
+    healthIndH = heartsArrH.map(() => (
+      <span className="info__heart-wrap" key={shortid.generate()}>
+        <img className="info__heart" src="https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/heart.png" alt="" /></span>
+        ));
+  }
+  // if monster health = 0, don't display any hearts
+  if (heartsArrM.length) {
+    healthIndM = heartsArrM.map(() => {
+      if (props.entity.type === 'monster' || props.entity.type === 'finalMonster') {
+        return (
+          <span className="info__heart-wrap" key={shortid.generate()}>
+            <img className="info__heart" src="https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/heart.png" alt="" /></span>
+        );
+      }
+      return '';
+    });
+  }
   return (
     <div className="info">
       <h2 className="info__header">{props.header}</h2>
