@@ -1,8 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 import shortid from 'shortid';
 
 import hearts from '../utils/helpers';
+import * as Actions from '../store/actions';
 
 const teamList = (obj) => {
   if (obj && obj.length) {
@@ -52,6 +55,16 @@ const InfoLeft = (props) => {
                   {teamList(props.hero.team)}
                 </div>
               </div>
+              <button
+                className="big-msg__btn"
+                onClick={
+                () => {
+                  props.actions.restart();
+                  props.history.push('/');
+                }
+                }
+              >
+              Restart</button>
             </div>
           </div>
         </div>
@@ -79,4 +92,12 @@ InfoLeft.defaultProps = {
   header: '',
 };
 
-export default InfoLeft;
+const mapStateToProps = state => ({
+  appState: state.appState,
+});
+
+const mapDispatchToProps = dispatch => ({
+  actions: bindActionCreators({ ...Actions }, dispatch),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(InfoLeft);

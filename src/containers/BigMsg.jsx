@@ -25,7 +25,12 @@ class BigMsg extends React.Component {
           <img src={this.props.appState.bigMsg.imgUrl} className="big-msg__img" alt={this.props.appState.bigMsg.imgAlt} />
         </div>
         <div className="big-msg__body">{this.props.appState.bigMsg.body}</div>
-        <button className="big-msg__btn" onClick={this.props.appState.bigMsg.action}>{this.props.appState.bigMsg.actionText}</button>
+        <button
+          className="big-msg__btn"
+          onClick={this.props.appState.bigMsg.action}
+        >
+          {this.props.appState.bigMsg.actionText}
+        </button>
       </div>
     );
   }

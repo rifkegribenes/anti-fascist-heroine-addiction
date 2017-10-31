@@ -3,19 +3,53 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  height: 100vh;
+  min-height: 100vh;
   width: 100vw;
+
+  @include for-phone-landscape-up {
+    padding: 20px;
+  }
 
   &__container {
   margin: auto;
   background: black;
   padding: 20px;
-  width: 50%;
-  height: 80%;
+
+  @include for-tablet-landscape-up {
+    width: 50%;
+    height: 80%;
+  }
+
+  }
+
+  &__instructions {
+    padding-bottom: 20px;
+  }
+
+  &__btn-wrap {
+    display: flex;
+    justify-content: center;
+    padding-bottom: 20px;
+    flex-wrap: wrap;
+
+    & .big-msg__btn {
+      &:first-child {
+         @include for-phone-landscape-up {
+        margin-right: 20px;
+      }
+      }
+    }
+  }
+
+  &__header {
+    display: flex;
+    justify-content: center;
   }
 
   &__title {
     display: inline-block;
+    max-width: 300px;
+    text-align: center;
     z-index: 3;
     text-transform: uppercase;
     font-family: 'G7 Silkworm TTF';
@@ -24,9 +58,7 @@
     @include rainbow;
     letter-spacing: 2.5px;
     padding: 10px;
-    margin: 0 auto 40px;
-    width: auto;
-    max-width: 300px;
+    margin: 0 auto;
     line-height: 1.2em;
     transition: opacity 1000ms ease-out;
     opacity: 1;
@@ -72,6 +104,12 @@
 
   &__icon {
     margin-right: 5px;
+
+    &--c {
+      border-radius: 100%;
+      border: 1px solid Lime;
+      margin-right: 5px;
+    }
   }
 
   &__img-wrap {

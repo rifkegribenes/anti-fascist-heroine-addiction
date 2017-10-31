@@ -151,9 +151,9 @@ class Board extends Component {
   handleCombat(monster, newPosition, newHero) {
     // define action for 'you died' and 'you won' screens
     const action = () => {
-      document.getElementById('hero').classList.remove('spin', 'hidden');
-      this.props.actions.restart();
+      this.props.actions.hideMsg();
       this.props.history.push('/');
+      this.props.actions.restart();
     };
 
     // check if final battle
@@ -267,7 +267,14 @@ class Board extends Component {
       const [x, y] = this.props.appState.heroPosition;
       hero.xp += 25;
       hero.level = Math.floor(hero.xp / 100) + 1;
-      if (hero.xp % 100 === 0) { console.log('level up!'); }
+      if (hero.xp % 100 === 0) {
+        document.getElementById('hero').classList.add('powerUp');
+        messages.push(`Level UP!! Your team is now prepared to take on level ${hero.level} monsters.`);
+        this.props.actions.updateMessages(messages);
+        setTimeout(() => {
+          document.getElementById('hero').classList.remove('powerUp');
+        }, 2000);
+      }
 
       const grid1 = utils.changeEntity(this.props.appState.entities, { type: 'floor' }, [x, y]);
       const grid2 = utils.changeEntity(grid1, newHero, newPosition);
@@ -355,42 +362,45 @@ class Board extends Component {
     };
     return (
       <div>
-        <div className="container">
-          <div className="col col--narrow">
-            <InfoLeft
-              hero={this.props.appState.hero}
-              header=""
-            />
-          </div>
-          <div className="col col--wide">
-            <div className="info__subhead-wrap">
-              <span className="info__subhead" id="subhead">Level:&nbsp;{this.props.appState.gameLevel}</span>
-            </div>
-            <canvas
-              id="board"
-              className="board"
-              width={utils.vWidth * cellSize}
-              height={utils.vHeight * cellSize}
-              style={canvasStyle}
-            />
-            {this.props.appState.bigMsg.show &&
-              <BigMsg
-                handleKeydown={this.handleKeydown}
+        {this.props.appState.bigMsg.show &&
+          <BigMsg
+            handleKeydown={this.handleKeydown}
+          />
+        }
+        {!this.props.appState.bigMsg.show &&
+          <div className="container">
+            <div className="col col--narrow">
+              <InfoLeft
+                hero={this.props.appState.hero}
+                header=""
+                history={this.props.history}
               />
-            }
-          </div>
-          <div className="col col--narrow">
-            <InfoRight
-              entity={this.props.appState.currentEntity}
-              header={this.props.appState.header}
-            />
-            <div className="message">
-              <ul className="message__list">
-                {messageList.reverse()}
-              </ul>
+            </div>
+            <div className="col col--wide">
+              <div className="info__subhead-wrap">
+                <span className="info__subhead" id="subhead">Level:&nbsp;{this.props.appState.gameLevel}</span>
+              </div>
+              <canvas
+                id="board"
+                className="board"
+                width={utils.vWidth * cellSize}
+                height={utils.vHeight * cellSize}
+                style={canvasStyle}
+              />
+            </div>
+            <div className="col col--narrow">
+              <InfoRight
+                entity={this.props.appState.currentEntity}
+                header={this.props.appState.header}
+              />
+              <div className="message">
+                <ul className="message__list">
+                  {messageList.reverse()}
+                </ul>
+              </div>
             </div>
           </div>
-        </div>
+        }
       </div>
     );
   }

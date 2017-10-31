@@ -10,12 +10,20 @@ class HeroPicker extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      items: this.props.items,
-      active: this.props.active,
+      items: this.props.appState.modalList,
+      active: 0,
       direction: '',
     };
-    this.rightClick = this.moveRight.bind(this);
-    this.leftClick = this.moveLeft.bind(this);
+    this.moveRight = this.moveRight.bind(this);
+    this.moveLeft = this.moveLeft.bind(this);
+  }
+
+  componentDidMount() {
+    window.addEventListener('keydown', this.handleKeydown);
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('keydown', this.handleKeydown);
   }
 
   generateItems() {
@@ -51,14 +59,27 @@ class HeroPicker extends React.Component {
     });
   }
 
+  handleKeydown(e) {
+    switch (e.keyCode) {
+      case 39: // right
+        e.preventDefault();
+        this.moveRight(e);
+        break;
+      case 37: // left
+        e.preventDefault();
+        this.moveLeft(e);
+        break;
+      default:
+    }
+  }
+
   render() {
     return (
       <div>
-        <button className="modal__close" onClick={this.props.actions.closeModal} aria-label="close">&times;</button>
         <div id="carousel" className="carousel">
           <div className="carousel__header">Choose player</div>
           <div className="carousel__wrap">
-            <button className="aria-button carousel__button" onClick={this.leftClick} aria-label="previous"><span className="arrow arrow-left" /></button>
+            <button className="aria-button carousel__button" onClick={this.moveLeft} aria-label="previous"><span className="arrow arrow-left" /></button>
             <CSSTransitionGroup
               transitionName={this.state.direction}
               transitionEnterTimeout={300}
@@ -67,7 +88,7 @@ class HeroPicker extends React.Component {
             >
               {this.generateItems()}
             </CSSTransitionGroup>
-            <button className="aria-button carousel__button" onClick={this.rightClick} aria-label="next"><span className="arrow arrow-right" /></button>
+            <button className="aria-button carousel__button" onClick={this.moveRight} aria-label="next"><span className="arrow arrow-right" /></button>
           </div>
         </div>
       </div>
