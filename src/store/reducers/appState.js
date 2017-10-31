@@ -20,7 +20,7 @@ const INITIAL_STATE = {
     team: [],
     level: 1,
   },
-  messages: [],
+  messages: ['Welcome to the dungeon! Try eating some food and gathering your team members before attacking any monsters.'],
   modalOpen: true,
   modalTitle: '',
   modalList: teamHeroes,

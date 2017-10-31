@@ -1,3 +1,10 @@
+.col {
+  padding: 10px;
+  &--wide {
+      margin: 0 20px;
+    }
+}
+
 
 .info {
 
@@ -14,9 +21,6 @@
   &__col {
     width: 100%;
 
-    &:first-child {
-      margin-right: 10px;
-    }
   }
 
   &__hearts {
@@ -75,7 +79,6 @@
     padding-top: 8px;
     margin-bottom: 20px;
     line-height: 1.2em;
-    min-height: 3.2em;
     transition: opacity 1000ms ease-out;
     opacity: 1;
 
@@ -86,6 +89,7 @@
     &--team {
       min-height: 0;
     }
+
   }
 
 }
@@ -104,11 +108,6 @@
 @-webkit-keyframes spin { 100% { -webkit-transform: rotate(360deg); } }
 @keyframes spin { 100% { -webkit-transform: rotate(360deg); transform:rotate(360deg); } }
 
-.col, .info__col {
-  @include for-tablet-landscape-up {
-    width: 50%;
-  }
-}
 
 .rightCol {
   background: white;
@@ -201,6 +200,11 @@
     font-weight: 700;
     margin-bottom: 15px;
   }
+
+  &__attack {
+     text-align: left;
+     margin-bottom: 10px;
+    }
 }
 
 .entity__healthBoost {
@@ -208,3 +212,43 @@
     font-weight: 700;
     margin-bottom: 15px;
   }
+
+.message {
+  max-height: 45vh;
+  overflow-y: hidden;
+
+  &__list {
+    list-style-type: none;
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid Lime;
+
+  }
+  &__item {
+    margin-bottom: 10px;
+
+    &:first-child {
+      opacity: 1;
+    }
+
+    &:nth-child(2) {
+      opacity: .9;
+    }
+
+    &:nth-child(3) {
+      opacity: .8;
+    }
+
+    &:nth-child(4) {
+      opacity: .7;
+    }
+
+    &:nth-child(5) {
+      opacity: .6;
+    }
+
+    &:nth-child(n+6) {
+      opacity: .5;
+    }
+  }
+}

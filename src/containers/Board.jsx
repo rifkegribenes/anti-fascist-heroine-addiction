@@ -5,7 +5,8 @@ import shortid from 'shortid';
 import { withRouter } from 'react-router';
 
 import * as Actions from '../store/actions';
-import Info from './Info';
+import InfoLeft from './InfoLeft';
+import InfoRight from './InfoRight';
 import BigMsg from './BigMsg';
 import * as utils from '../utils/index';
 import generateMap from '../utils/mapGen';
@@ -308,6 +309,7 @@ class Board extends Component {
   }
 
   handleStaircase() {
+    document.getElementById('board').classList.add('staircaseSpin');
     const messages = [...this.props.appState.messages];
     const currentEntity = {
       type: 'staircase',
@@ -322,13 +324,14 @@ class Board extends Component {
       level + 1, this.props.appState.hero);
     this.props.actions.handleStaircase(currentEntity,
       heroPosition, trumpPosition, newMap, level + 1);
-    document.getElementById('board').classList.add('staircaseSpin');
     document.getElementById('subhead').classList.add('powerUp');
+    setTimeout(() => {
+      utils.renderViewport(this.props.appState.heroPosition,
+        this.props.appState.entities, this.props.appState.width);
+    }, 1000);
     setTimeout(() => {
       document.getElementById('board').classList.remove('staircaseSpin');
       document.getElementById('subhead').classList.remove('powerUp');
-      utils.renderViewport(this.props.appState.heroPosition,
-        this.props.appState.entities, this.props.appState.width);
     }, 2000);
   }
 
@@ -343,8 +346,8 @@ class Board extends Component {
     const cellSize = width > 640 ? 32 : Math.floor(width / 20);
     const clipRadius = cellSize * 10;
     const messages = [...this.props.appState.messages];
-    const messageList = messages.slice(messages.length - 3, messages.length).map(message => (
-      <li key={shortid.generate()}>
+    const messageList = messages.map(message => (
+      <li key={shortid.generate()} className="message__item">
         {message}
       </li>));
     const canvasStyle = {
@@ -353,7 +356,16 @@ class Board extends Component {
     return (
       <div>
         <div className="container">
-          <div className="leftCol">
+          <div className="col col--narrow">
+            <InfoLeft
+              hero={this.props.appState.hero}
+              header=""
+            />
+          </div>
+          <div className="col col--wide">
+            <div className="info__subhead-wrap">
+              <span className="info__subhead" id="subhead">Level:&nbsp;{this.props.appState.gameLevel}</span>
+            </div>
             <canvas
               id="board"
               className="board"
@@ -367,15 +379,13 @@ class Board extends Component {
               />
             }
           </div>
-          <div className="rightCol">
-            <Info
-              hero={this.props.appState.hero}
+          <div className="col col--narrow">
+            <InfoRight
               entity={this.props.appState.currentEntity}
-              gameLevel={this.props.appState.gameLevel}
               header={this.props.appState.header}
             />
             <div className="message">
-              <ul>
+              <ul className="message__list">
                 {messageList.reverse()}
               </ul>
             </div>

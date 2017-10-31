@@ -3,6 +3,7 @@
 @import 'styles/cssshake';
 @import 'styles/carousel';
 @import 'styles/big-msg';
+@import 'styles/splash';
 
 body {
   background: black;
@@ -110,9 +111,9 @@ canvas {
 }
 
 .staircaseSpin {
-  -webkit-animation: stspin 2s linear 2s;
-    -moz-animation: stspin 2s linear 2s;
-    animation: stspin 2s linear 2s;
+  -webkit-animation: stspin 2s linear infinite;
+    -moz-animation: stspin 2s linear infinite;
+    animation: stspin 2s linear infinite;
 }
 
 .powerUp {

@@ -58,60 +58,60 @@ const fillGrid = (gameMap, level, hero) => {
   newHero.type = 'hero';
   newMap[hY][hX] = newHero;
 
-// hard code final boss in upper left four floor tiles on level 3
-  // if (level === 3) {
-  const finalMonster = {
-    // health: 500,
-    // level: 5,
-    // damage: 60,
-    health: 100,
-    level: 1,
-    damage: 10,
-    type: 'finalMonster',
-    name: 'Donald Trump',
-    bio: '',
-    youDiedMsg: '',
-    iconUrl: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/donald-trump_64.png',
-    cardUrl: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/donald-trump_200.png',
-    opacity: 1,
-  };
+// hard code trump in upper left four floor tiles on level 3
+
+  let trumpPosition = [];
+  if (level === 3) {
+    const finalMonster = {
+      health: 500,
+      level: 5,
+      damage: 60,
+      type: 'finalMonster',
+      name: 'Donald Trump',
+      bio: '',
+      youDiedMsg: '',
+      iconUrl: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/donald-trump_64.png',
+      cardUrl: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/donald-trump_200.png',
+      opacity: 1,
+    };
 
     // find most upper-left floor tile
-  let topLeft = [];
-  for (let i = 0; i < newMap.length; i++) {
-    for (let j = 0; j < newMap[i].length; j++) {
-      if (newMap[i][j].type === 'floor') {
-        topLeft = [j, i]; // x,y
+    let topLeft = [];
+    for (let i = 0; i < newMap.length; i++) {
+      for (let j = 0; j < newMap[i].length; j++) {
+        if (newMap[i][j].type === 'floor') {
+          topLeft = [j, i]; // x,y
+          break;
+        }
+      } if (topLeft.length > 0) {
         break;
       }
-    } if (topLeft.length > 0) {
-      break;
     }
+
+    // Save an array of the coordinates of the four blocks
+    // that the final monster will fill
+
+    trumpPosition = [
+      [topLeft[1], topLeft[0]],
+      [topLeft[1] + 1, topLeft[0]],
+      [topLeft[1] + 1, topLeft[0] + 1],
+      [topLeft[1], topLeft[0] + 1],
+    ];
+
+
+    // Fill four-tile block in top-left positionwith fM object,
+    // but only draw it once
+    newMap[topLeft[1]][topLeft[0]] = finalMonster;
+
+    // fill the other three tiles in the block with the smame object
+    // but don't draw it to the canvas
+    const fmInv = { ...finalMonster };
+
+    fmInv.opacity = 0;
+    newMap[topLeft[1] + 1][topLeft[0]] = fmInv;
+    newMap[topLeft[1] + 1][topLeft[0] + 1] = fmInv;
+    newMap[topLeft[1]][topLeft[0] + 1] = fmInv;
   }
-
-  // Save an array of the coordinates of the four blocks
-  // that the final monster will fill
-
-  const trumpPosition = [
-    [topLeft[1], topLeft[0]],
-    [topLeft[1] + 1, topLeft[0]],
-    [topLeft[1] + 1, topLeft[0] + 1],
-    [topLeft[1], topLeft[0] + 1],
-  ];
-
-
-  // Fill four-tile block in top-left positionwith fM object,
-  // but only draw it once
-  newMap[topLeft[1]][topLeft[0]] = finalMonster;
-
-  // fill the other three tiles in the block with the smame object
-  // but don't draw it to the canvas
-  const fmInv = { ...finalMonster };
-
-  fmInv.opacity = 0;
-  newMap[topLeft[1] + 1][topLeft[0]] = fmInv;
-  newMap[topLeft[1] + 1][topLeft[0] + 1] = fmInv;
-  newMap[topLeft[1]][topLeft[0] + 1] = fmInv;
 
   // randomly place other entities on floor tiles throughout grid
   [foods, monsters, teamHeroArray, staircases].forEach((entities) => {

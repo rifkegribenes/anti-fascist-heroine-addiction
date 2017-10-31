@@ -1,0 +1,149 @@
+.splash {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  width: 100vw;
+
+  &__container {
+  margin: auto;
+  background: black;
+  padding: 20px;
+  width: 50%;
+  height: 80%;
+  }
+
+  &__title {
+    display: inline-block;
+    z-index: 3;
+    text-transform: uppercase;
+    font-family: 'G7 Silkworm TTF';
+    width: 100%;
+    text-align: center;
+    @include rainbow;
+    letter-spacing: 2.5px;
+    padding: 10px;
+    margin: 0 auto 40px;
+    width: auto;
+    max-width: 300px;
+    line-height: 1.2em;
+    transition: opacity 1000ms ease-out;
+    opacity: 1;
+  }
+
+  &__subhead {
+    font-size: 1.5em;
+    font-weight: 700;
+    margin-bottom: 20px;
+    border-bottom: 1px solid Lime;
+  }
+
+  &__bold {
+    font-size: 1.2em;
+    margin: 15px 0 5px;
+    color: white;
+  }
+
+  &__keys {
+    display: flex;
+    margin-top: 15px;
+  }
+
+  &__key-wrap {
+    margin-right: 30px;
+
+    &:last-child {
+      margin-right: 0;
+    }
+  }
+
+  &__key {
+    text-align: center;
+    padding: 5px 10px;
+    margin-right: 5px;
+    border: 1px solid Lime;
+    border-radius: 4px;
+
+    &:last-child {
+      margin-right: 0;
+    }
+  }
+
+  &__icon {
+    margin-right: 5px;
+  }
+
+  &__img-wrap {
+    position: relative;
+
+    &::after {
+        content: '';
+        position: absolute;
+        top: -50px;
+        left: -10px;
+        width: 618px;
+        height: 329px;
+        background: black;
+        transform: rotate(0deg);
+        transform-origin: bottom center;
+        transition: transform 2000ms linear;
+      }
+  }
+
+  &__img {
+    max-width: 100%;
+    height: auto;
+    position: relative;
+    &::after {
+      max-width: 120%;
+    }
+
+    &--reveal {
+      &::after {
+        content: '';
+        position: absolute;
+        top: -50px;
+        left: -10px;
+        width: 618px;
+        height: 329px;
+        background: black;
+        transform: rotate(180deg) !important;
+        transform-origin: bottom center;
+        transition: transform 2000ms linear;
+      }
+    }
+  }
+
+  &__body {
+    margin-top: 40px;
+    z-index: 3;
+  }
+
+  &__btn {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background: transparent;
+    text-transform: uppercase;
+    font-family: 'G7 Silkworm TTF';
+    width: 100%;
+    text-align: center;
+    @include rainbow;
+    letter-spacing: 2.5px;
+    font-size: 1em;
+    padding: 15px;
+    border-radius: 40px;
+    border: 1px solid Lime;
+    width: 220px;
+    margin-top: 40px;
+    text-align: center;
+    z-index: 3;
+
+    &:hover, &:focus, &:active {
+      box-shadow: 0 0 20px Lime;
+    }
+
+
+  }
+}
