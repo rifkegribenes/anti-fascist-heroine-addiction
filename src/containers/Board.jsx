@@ -244,12 +244,12 @@ class Board extends Component {
 
       // HANDLE HERO DEATH //
       if (hero.hp - heroDamageTaken <= 0) {
-        const msg = currentEntity.youDiedMsg || `${currentEntity.name} killed you! Bummer!`;
+        const youDiedMsg = `${utils.badNews[Math.floor(utils.random(0, 13))]}! You were defeated by ${currentEntity.name} — ${currentEntity.bio}`;
         this.props.actions.showMsg({
           title: 'You died!',
           imgUrl: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/you-died.png',
           imgAlt: 'skull and crossbones',
-          body: msg,
+          body: youDiedMsg,
           action,
           actionText: 'Play Again',
         });
@@ -288,13 +288,14 @@ class Board extends Component {
 
        // HANDLE GAME WIN  //
       if (monster.type === 'finalMonster') {
+        const youWonMsg = `${utils.goodNews[Math.floor(utils.random(0, 13))]}! You and your team defeated the biggest monster of all! Great work!`;
         messages.push(`You did it! Your attack of [${monsterDamageTaken}] defeated ${currentEntity.name}.`); // fix this msg later
         setTimeout(() => messages.push('You won! blah blah blah.'), 1000); // fix this msg later
         this.props.actions.showMsg({
           title: 'You won!',
           imgUrl: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/rainbow.png',
           imgAlt: 'rainbow',
-          body: 'You and your team defeated the biggest monster of all! Great work!',
+          body: youWonMsg,
           action,
           actionText: 'Play Again',
         });
