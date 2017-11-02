@@ -11,7 +11,7 @@
 // Spencer 2 30
 // Buchanan 2 30
 // Hatch 2 30
-// Flake 2 30
+// Rove 2 30
 // (health btw 222-242 each)
 // Hero attack end L2: 135
 // total damage range (@1-2 hits each): 120-180
@@ -28,8 +28,7 @@
 const monsterTypes = [
   {
     name: 'George W. Bush',
-    bio: '',
-    youDiedMsg: '',
+    bio: 'Former U.S. President, war criminal, torture apologist, government surveillance enthusiast, notorious liar.',
     iconUrl: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/bush_32.png',
     cardUrl: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/bush_200.png',
     type: 'monster',
@@ -38,8 +37,7 @@ const monsterTypes = [
   },
   {
     name: 'Dick Cheney',
-    bio: '',
-    youDiedMsg: '',
+    bio: 'Former U.S. Vice President and Halliburton profiteer, war criminal, lover of torture and illegal surveillance, once shot a dude in the face on a quail hunt and didn\'t even apologize.',
     iconUrl: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/cheney_32.png',
     cardUrl: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/cheney_200.png',
     type: 'monster',
@@ -48,8 +46,7 @@ const monsterTypes = [
   },
   {
     name: 'Chris Christie',
-    bio: '',
-    youDiedMsg: '',
+    bio: 'Governor of New Jersey, destroyer of public education, vetoer of minimum wage increases, hater of gays, bridge-shutter-downer.',
     iconUrl: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/christie_32.png',
     cardUrl: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/christie_200.png',
     type: 'monster',
@@ -58,8 +55,7 @@ const monsterTypes = [
   },
   {
     name: 'Scott Walker',
-    bio: '',
-    youDiedMsg: '',
+    bio: 'Governor of Wisconsin, crusher of labor unions, suppressor of voting rights, slasher of Planned Parenthood funding.',
     iconUrl: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/walker_32.png',
     cardUrl: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/walker_200.png',
     type: 'monster',
@@ -68,8 +64,7 @@ const monsterTypes = [
   },
   {
     name: 'Richard Spencer',
-    bio: '',
-    youDiedMsg: '',
+    bio: 'American white supremacist, antisemite, promoter of "ethnic cleansing" and frequent Heiler of Hitler. Yo this dude is a straight-up Nazi.',
     iconUrl: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/spencer_32.png',
     cardUrl: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/spencer_200.png',
     type: 'monster',
@@ -78,8 +73,7 @@ const monsterTypes = [
   },
   {
     name: 'Pat Buchanan',
-    bio: '',
-    youDiedMsg: '',
+    bio: 'Former senior advisor to Nixon and Reagan, holocaust denier, unrepentant bigot, contributor to anti-immigrant and antisemitic hate groups.',
     iconUrl: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/buchanan_32.png',
     cardUrl: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/buchanan_200.png',
     type: 'monster',
@@ -88,8 +82,7 @@ const monsterTypes = [
   },
   {
     name: 'Orrin Hatch',
-    bio: '',
-    youDiedMsg: '',
+    bio: 'U.S. Senator from Utah, hater of gays, opposer of fair housing legislation, restricter of civil liberties, destroyer of the enviroment.',
     iconUrl: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/hatch_32.png',
     cardUrl: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/hatch_200.png',
     type: 'monster',
@@ -97,19 +90,17 @@ const monsterTypes = [
     level: 2,
   },
   {
-    name: 'Jeff Flake',
-    bio: '',
-    youDiedMsg: '',
-    iconUrl: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/flake_32.png',
-    cardUrl: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/flake_200.png',
+    name: 'Karl Rove',
+    bio: 'Former senior advisor to G.W. Bush, leaker of Valerie Plame\'s identity, war crimes collaborator. Alias: Turd Blossom.',
+    iconUrl: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/rove_32.png',
+    cardUrl: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/rove_200.png',
     type: 'monster',
     damage: 30,
     level: 2,
   },
   {
     name: 'Ted Cruz',
-    bio: '',
-    youDiedMsg: '',
+    bio: 'U.S. Senator from Texas, ACA-repeal evangelist, suppressor of voter rights, destroyer of the environment, hater of gays, opposer of net neutrality, government shutter-downer.',
     iconUrl: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/cruz_32.png',
     cardUrl: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/cruz_200.png',
     type: 'monster',
@@ -118,8 +109,7 @@ const monsterTypes = [
   },
   {
     name: 'Mitch McConnell',
-    bio: '',
-    youDiedMsg: '',
+    bio: 'U.S. Senator from Kentucky, health care destroyer, Supreme Court nominee hearing delayer, climate change denier, Iraq war supporter.',
     iconUrl: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/mcconnell_32.png',
     cardUrl: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/mcconnell_200.png',
     type: 'monster',
@@ -128,8 +118,7 @@ const monsterTypes = [
   },
   {
     name: 'Steve Bannon',
-    bio: '',
-    youDiedMsg: '',
+    bio: 'Former "chief strategist" advisor to President Trump, white supremacist hater of immigrants, jews, gays, women, and pretty much everybody else except his own self, domestic-violencer, seriously creepy neo-Nazi.',
     iconUrl: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/bannon_32.png',
     cardUrl: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/bannon_200.png',
     type: 'monster',
@@ -138,8 +127,7 @@ const monsterTypes = [
   },
   {
     name: 'The Propped Up Corpse of Ronald Reagan',
-    bio: '',
-    youDiedMsg: '',
+    bio: 'Former U.S. President, cold war escalator, AIDS crisis ignorer, bomber of Libya and Grenada, destabilizer of democratically-elected governments in Central America, and "Trickle-Down Economics" enthusiast. Even beyond the grave, still one of the scariest monsters in the dungeon.',
     iconUrl: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/reagan_32.png',
     cardUrl: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/reagan_200.png',
     type: 'monster',
