@@ -16,6 +16,7 @@ class HeroPicker extends React.Component {
     };
     this.moveRight = this.moveRight.bind(this);
     this.moveLeft = this.moveLeft.bind(this);
+    this.handleKeydown = this.handleKeydown.bind(this);
   }
 
   componentDidMount() {
@@ -60,14 +61,21 @@ class HeroPicker extends React.Component {
   }
 
   handleKeydown(e) {
+    console.log(e.keyCode);
+    e.preventDefault();
+    const newActive = this.state.active;
     switch (e.keyCode) {
       case 39: // right
-        e.preventDefault();
-        this.moveRight(e);
+        this.setState({
+          active: (newActive + 1) % this.state.items.length,
+          direction: 'right',
+        });
         break;
       case 37: // left
-        e.preventDefault();
-        this.moveLeft(e);
+        this.setState({
+          active: newActive < 0 ? this.state.items.length - 1 : newActive,
+          direction: 'left',
+        });
         break;
       default:
     }

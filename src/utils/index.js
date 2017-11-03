@@ -121,10 +121,10 @@ export const clamp = (val, min, max) => Math.min(Math.max(val, min), max);
 
 export const renderViewport = (heroPosition, entities, width) => {
   let cellSize;
-  if (width > 640) {
+  if (width > 1040) {
     cellSize = 32;
   } else {
-    cellSize = Math.floor(width / 20);
+    cellSize = Math.floor((width - 400) / 20);
   }
   const [hX, hY] = heroPosition;
   const newEntities = entities.map(row => row.map((cell) => {

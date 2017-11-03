@@ -37,7 +37,7 @@ const InfoRight = (props) => {
           }
             <div className="card-pic-wrapper">
               <img
-                src={props.entity.cardUrl}
+                src={props.entity.health === 0 ? 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/you-died.png' : props.entity.cardUrl}
                 alt={props.entity.type === 'food' ? props.entity.title : props.entity.name}
                 className={props.entity.type === 'hero' || props.entity.type === 'teamHero' || props.entity.type === 'staircase' ? 'card-pic card-pic--round' : 'card-pic'}
                 id="entity"
@@ -59,8 +59,8 @@ const InfoRight = (props) => {
               {props.entity.powers &&
               <div className="entity__bio">Powers: {props.entity.powers}</div>
             }
-              {props.entity.message &&
-              <div className="entity__message">{props.entity.message}</div>
+              {props.entity.bio &&
+              <div className="entity__bio">{props.entity.bio}</div>
             }
               {props.entity.healthBoost &&
               <div className="entity__healthBoost">Health Boost: {props.entity.healthBoost}</div>

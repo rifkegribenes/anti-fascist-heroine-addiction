@@ -21,6 +21,8 @@ body {
   display: flex;
   width: 100vw;
   height: 100vh;
+  max-width: 1200px;
+  margin: auto;
   // flex-wrap: wrap;
   @include for-tablet-landscape-up {
     flex-wrap: nowrap;

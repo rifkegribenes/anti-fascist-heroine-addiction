@@ -351,7 +351,7 @@ class Board extends Component {
 
   render() {
     const width = this.props.appState.width;
-    const cellSize = width > 640 ? 32 : Math.floor(width / 20);
+    const cellSize = width > 1040 ? 32 : Math.floor((width - 400) / 20);
     const clipRadius = cellSize * 10;
     const messages = [...this.props.appState.messages];
     const messageList = messages.map(message => (
