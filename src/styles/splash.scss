@@ -181,7 +181,38 @@
     &:hover, &:focus, &:active {
       box-shadow: 0 0 20px Lime;
     }
+  }
+
+  &__list {
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+  &__item {
+    margin: 10px;
+    padding: 10px;
+    border: 1px solid white;
+    display: flex;
+  }
 
 
+  &__link {
+    text-decoration: none;
+    color: lighten(#00ff00, 40%);
+    border-bottom: 1px dotted lighten(#00ff00, 40%);
+
+    &:hover, &:focus, &:active {
+      color: white;
+      border-bottom: 1px dotted white;
+    }
+
+  }
+
+  &__avatar-wrap {
+    width: 140px;
+  }
+
+  &__text-wrap {
+    line-height: 1.5em;
   }
 }
