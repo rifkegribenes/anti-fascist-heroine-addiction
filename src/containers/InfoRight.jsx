@@ -47,12 +47,6 @@ const InfoRight = (props) => {
               {props.entity.aliases &&
               <div className="hero__aliases">Aliases: {props.entity.aliases}</div>
             }
-              {props.entity.level &&
-              (props.entity.type === 'teamHero' ||
-                props.entity.type === 'monster' ||
-                props.entity.type === 'finalMonster') &&
-                <div className="entity__level">Level: {props.entity.level}</div>
-            }
               {props.entity.damage &&
               <div className="entity__attack">Attack: {props.entity.damage}</div>
             }

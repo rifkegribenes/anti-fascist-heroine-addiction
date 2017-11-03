@@ -34,12 +34,12 @@ const INITIAL_STATE = {
     actionText: '',
   },
   currentEntity: {},
-  cellSize: 32,
+  clipSize: 32,
   gridFilled: false,
 };
 
 function appState(state = INITIAL_STATE, action) {
-  let cellSize = 32;
+  let clipSize = 640;
 
   switch (action.type) {
 
@@ -199,23 +199,18 @@ function appState(state = INITIAL_STATE, action) {
       );
 
     case UPDATE_DIMENSIONS:
-      console.log(action.payload);
       if (action.payload.width < 1040 || action.payload.height < 768) {
-        console.log('<1040w or <768h');
         if (action.payload.height > action.payload.width) {
-          console.log('h>w');
-          cellSize = Math.floor((action.payload.width - 400) / 20);
+          clipSize = (action.payload.width * 0.6) - 20;
         } else {
-          console.log('w>h');
-          cellSize = Math.floor(Math.min((action.payload.width - 400),
-            (action.payload.height - 105)) / 20);
+          clipSize = Math.min((action.payload.width * 0.6),
+            (action.payload.height - 105)) - 20;
         }
       }
-      console.log(cellSize);
       return update(
         state,
         {
-          cellSize: { $set: cellSize },
+          clipSize: { $set: clipSize },
         },
       );
 

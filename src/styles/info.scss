@@ -2,12 +2,12 @@
   padding: 10px;
   &--wide {
       margin: 0 20px;
-      flex-basis: 60%;
+      width: 60%;
       display: flex;
       flex-direction: column;
     }
   &--narrow {
-    flex-basis: 20%;
+    width: 20%;
   }
 }
 
@@ -230,23 +230,32 @@
     background-color: transparent;
     position: relative;
 
-    &:after {
+    &::after {
+      content: '';
       position: absolute;
       top: 0;
       left: 0;
-      background: red;
-      width: 100%;
-
-
+      width: 5px;
+      height: 8px;
+      background-image: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxkZWZzPjxsaW5lYXJHcmFkaWVudCBpZD0iZ3JhZGllbnQiIHgxPSIwJSIgeTE9IjAlIiB4Mj0iMCUiIHkyPSIxMDAlIj48c3RvcCBvZmZzZXQ9IjAlIiBzdHlsZT0ic3RvcC1jb2xvcjojRTYwNUMxOyIgLz48c3RvcCBvZmZzZXQ9IjE1JSIgc3R5bGU9InN0b3AtY29sb3I6I0FENzlGQzsiIC8+PHN0b3Agb2Zmc2V0PSIzMCUiIHN0eWxlPSJzdG9wLWNvbG9yOiM4MDZCRjc7IiAvPjxzdG9wIG9mZnNldD0iNDUlIiBzdHlsZT0ic3RvcC1jb2xvcjojMDlFNkU2OyIgLz48c3RvcCBvZmZzZXQ9IjYwJSIgc3R5bGU9InN0b3AtY29sb3I6IzE0RTYwOTsiIC8+PHN0b3Agb2Zmc2V0PSI3NCUiIHN0eWxlPSJzdG9wLWNvbG9yOiNGRkZGMDA7IiAvPjxzdG9wIG9mZnNldD0iODglIiBzdHlsZT0ic3RvcC1jb2xvcjojRkY4QzAwOyIgLz48c3RvcCBvZmZzZXQ9Ijk5JSIgc3R5bGU9InN0b3AtY29sb3I6I0ZGMDAwMDsiIC8+PC9saW5lYXJHcmFkaWVudD48L2RlZnM+PHJlY3QgZmlsbD0idXJsKCNncmFkaWVudCkiIGhlaWdodD0iMTAwJSIgd2lkdGg9IjEwMCUiIC8+PC9zdmc+);
+      background-image: -webkit-gradient(linear, left top, -45deg, color-stop(0%, #E605C1), color-stop(15%, #AD79FC), color-stop(30%, #806BF7), color-stop(45%, #09E6E6), color-stop(60%, #14E609), color-stop(74%, #FFFF00), color-stop(88%, #FF8C00), color-stop(99%, #FF0000));
+      background-image: -moz-linear-gradient(-45deg,#E605C1 0%,#AD79FC 15%,#806BF7 30%,#09E6E6 45%,#14E609 60%,#FFFF00 74%,#FF8C00 88%,#FF0000 99%);
+      background-image: -webkit-linear-gradient(-45deg,#E605C1 0%,#AD79FC 15%,#806BF7 30%,#09E6E6 45%,#14E609 60%,#FFFF00 74%,#FF8C00 88%,#FF0000 99%);
+      background-image: -o-linear-gradient(-45deg,#E605C1 0%,#AD79FC 15%,#806BF7 30%,#09E6E6 45%,#14E609 60%,#FFFF00 74%,#FF8C00 88%,#FF0000 99%);
+      background-image: -ms-linear-gradient(-45deg,#E605C1 0%,#AD79FC 15%,#806BF7 30%,#09E6E6 45%,#14E609 60%,#FFFF00 74%,#FF8C00 88%,#FF0000 99%);
+      background-image: linear-gradient(-45deg,#E605C1 0%,#AD79FC 15%,#806BF7 30%,#09E6E6 45%,#14E609 60%,#FFFF00 74%,#FF8C00 88%,#FF0000 99%);
+      display:inline-block; /*required*/
     }
   }
 }
 
-.entity__healthBoost {
-  color: white;
-    font-weight: 700;
-    margin-bottom: 15px;
-  }
+.entity {
+  &__healthBoost, &__attack {
+    color: white;
+      font-weight: 700;
+      margin-bottom: 15px;
+    }
+}
 
 .message {
   max-height: 45vh;

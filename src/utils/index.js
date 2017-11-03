@@ -119,7 +119,8 @@ const drawCell = (cellSize, ctx, level, x, y, vX, vY, cellType, opacity, hue, ic
 
 export const clamp = (val, min, max) => Math.min(Math.max(val, min), max);
 
-export const renderViewport = (heroPosition, entities, cellSize) => {
+export const renderViewport = (heroPosition, entities) => {
+  const cellSize = 32;
   const [hX, hY] = heroPosition;
   const newEntities = entities.map(row => row.map((cell) => {
     const newCell = { ...cell };

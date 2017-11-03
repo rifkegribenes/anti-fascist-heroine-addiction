@@ -12,6 +12,10 @@ import * as utils from '../utils/index';
 import generateMap from '../utils/mapGen';
 import fillGrid from '../utils/fillGrid';
 
+const updateXP = (xp) => {
+  const width = xp / 3;
+  document.styleSheets[0].addRule('.hero__xp-slider::after', `width: ${width}% !important`);
+};
 
 class Board extends Component {
 
@@ -31,13 +35,14 @@ class Board extends Component {
     this.startGame();
     window.addEventListener('keydown', this.handleKeydown);
     window.addEventListener('resize', this.updateDimensions);
+    updateXP(0);
     document.getElementById('board').focus();
   }
 
   componentDidUpdate() {
     if (this.props.appState.gridFilled) {
       utils.renderViewport(this.props.appState.heroPosition,
-        this.props.appState.entities, this.props.appState.cellSize);
+        this.props.appState.entities);
     }
   }
 
@@ -49,7 +54,7 @@ class Board extends Component {
   updateDimensions() {
     this.props.actions.updateDimensions(window.innerWidth, window.innerHeight);
     utils.renderViewport(this.props.appState.heroPosition,
-      this.props.appState.entities, this.props.appState.cellSize);
+      this.props.appState.entities);
   }
 
   handleKeydown(e) {
@@ -266,13 +271,16 @@ class Board extends Component {
       document.getElementById('entity').classList.add('spin', 'hidden');
       const [x, y] = this.props.appState.heroPosition;
       hero.xp += 25;
+      updateXP(hero.xp);
       hero.level = Math.floor(hero.xp / 100) + 1;
       if (hero.xp % 100 === 0) {
         document.getElementById('hero').classList.add('powerUp');
+        document.getElementById('hero-level').classList.add('powerUp');
         messages.push(`Level UP!! Your team is now prepared to take on level ${hero.level} monsters.`);
         this.props.actions.updateMessages(messages);
         setTimeout(() => {
           document.getElementById('hero').classList.remove('powerUp');
+          document.getElementById('hero-level').classList.remove('powerUp');
         }, 2000);
       }
 
@@ -280,7 +288,7 @@ class Board extends Component {
       const grid2 = utils.changeEntity(grid1, newHero, newPosition);
       this.props.actions.updateGrid(grid2, newPosition);
       utils.renderViewport(this.props.appState.heroPosition,
-        this.props.appState.entities, this.props.appState.cellSize);
+        this.props.appState.entities);
 
       this.props.actions.updateHero(hero);
       this.props.actions.updateMessages(messages);
@@ -335,7 +343,7 @@ class Board extends Component {
     document.getElementById('subhead').classList.add('powerUp');
     setTimeout(() => {
       utils.renderViewport(this.props.appState.heroPosition,
-        this.props.appState.entities, this.props.appState.cellSize);
+        this.props.appState.entities);
     }, 1000);
     setTimeout(() => {
       document.getElementById('board').classList.remove('staircaseSpin');
@@ -350,16 +358,24 @@ class Board extends Component {
   }
 
   render() {
-    const cellSize = this.props.appState.cellSize;
-    const clipRadius = cellSize * 10;
+    const clipRadius = this.props.appState.clipSize / 2;
+    const cellSize = 32;
     const messages = [...this.props.appState.messages];
     const messageList = messages.map(message => (
       <li key={shortid.generate()} className="message__item">
         {message}
       </li>));
+    let colWidth;
+    if (document.getElementById('colWide')) {
+      colWidth = document.getElementById('colWide').clientWidth;
+    }
     const canvasStyle = {
       clipPath: `circle(${clipRadius}px at center)`,
     };
+    if (colWidth < 660) {
+      canvasStyle.marginLeft = `${(colWidth / 2) - 320}px`;
+      canvasStyle.marginTop = `${(colWidth / 2) - 320}px`;
+    }
     return (
       <div>
         {this.props.appState.bigMsg.show &&
@@ -376,7 +392,7 @@ class Board extends Component {
                 history={this.props.history}
               />
             </div>
-            <div className="col col--wide">
+            <div className="col col--wide" id="colWide">
               <div className="info__subhead-wrap">
                 <span className="info__subhead" id="subhead">Level:&nbsp;{this.props.appState.gameLevel}</span>
               </div>
