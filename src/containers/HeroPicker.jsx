@@ -61,9 +61,8 @@ class HeroPicker extends React.Component {
   }
 
   handleKeydown(e) {
-    console.log(e.keyCode);
     e.preventDefault();
-    const newActive = this.state.active;
+    let newActive = this.state.active;
     switch (e.keyCode) {
       case 39: // right
         this.setState({
@@ -72,6 +71,7 @@ class HeroPicker extends React.Component {
         });
         break;
       case 37: // left
+        newActive -= 1;
         this.setState({
           active: newActive < 0 ? this.state.items.length - 1 : newActive,
           direction: 'left',
