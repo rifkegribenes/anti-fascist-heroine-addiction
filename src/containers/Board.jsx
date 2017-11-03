@@ -24,10 +24,10 @@ class Board extends Component {
   }
 
   componentWillMount() {
-
   }
 
   componentDidMount() {
+    this.updateDimensions();
     this.startGame();
     window.addEventListener('keydown', this.handleKeydown);
     window.addEventListener('resize', this.updateDimensions);
@@ -37,7 +37,7 @@ class Board extends Component {
   componentDidUpdate() {
     if (this.props.appState.gridFilled) {
       utils.renderViewport(this.props.appState.heroPosition,
-        this.props.appState.entities, this.props.appState.width);
+        this.props.appState.entities, this.props.appState.cellSize);
     }
   }
 
@@ -47,9 +47,9 @@ class Board extends Component {
   }
 
   updateDimensions() {
-    this.props.actions.updateDimensions(window.innerWidth);
+    this.props.actions.updateDimensions(window.innerWidth, window.innerHeight);
     utils.renderViewport(this.props.appState.heroPosition,
-      this.props.appState.entities, this.props.appState.width);
+      this.props.appState.entities, this.props.appState.cellSize);
   }
 
   handleKeydown(e) {
@@ -280,7 +280,7 @@ class Board extends Component {
       const grid2 = utils.changeEntity(grid1, newHero, newPosition);
       this.props.actions.updateGrid(grid2, newPosition);
       utils.renderViewport(this.props.appState.heroPosition,
-        this.props.appState.entities, this.props.appState.width);
+        this.props.appState.entities, this.props.appState.cellSize);
 
       this.props.actions.updateHero(hero);
       this.props.actions.updateMessages(messages);
@@ -335,7 +335,7 @@ class Board extends Component {
     document.getElementById('subhead').classList.add('powerUp');
     setTimeout(() => {
       utils.renderViewport(this.props.appState.heroPosition,
-        this.props.appState.entities, this.props.appState.width);
+        this.props.appState.entities, this.props.appState.cellSize);
     }, 1000);
     setTimeout(() => {
       document.getElementById('board').classList.remove('staircaseSpin');
@@ -350,8 +350,7 @@ class Board extends Component {
   }
 
   render() {
-    const width = this.props.appState.width;
-    const cellSize = width > 1040 ? 32 : Math.floor((width - 400) / 20);
+    const cellSize = this.props.appState.cellSize;
     const clipRadius = cellSize * 10;
     const messages = [...this.props.appState.messages];
     const messageList = messages.map(message => (

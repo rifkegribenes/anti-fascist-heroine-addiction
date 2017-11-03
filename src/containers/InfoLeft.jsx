@@ -38,14 +38,16 @@ const InfoLeft = (props) => {
           <div className="info__col-wrap">
             <div className="info__hearts"><span className="info__heart-wrap">Health: {props.hero.hp}</span>{healthIndH}</div>
             <h3 className="info__hero-title">{props.hero.name || 'Hero'}</h3>
+            <div className="hero__level">Level {props.hero.level}</div>
+            <div className="hero__xp">
+              <span className="hero__xp-text">XP</span>
+              <span className="hero__xp-slider" id="xp-slider" />
+            </div>
             <div className="card-pic-wrapper">
               <img src={props.hero.cardUrl} alt={props.hero.name} className="card-pic card-pic--round" id="hero" />
             </div>
             <div className="hero__stats">
               <div className="hero__aliases">Aliases: {props.hero.aliases}</div>
-              <div className="hero__xp">XP: {props.hero.xp}
-                <span className="hero__level">Level {props.hero.level}</span>
-              </div>
               <div className="hero__powers">Powers: {props.hero.powers}</div>
               <div className="hero__team">
                 <h4 className="info__hero-title info__hero-title--team">Your Team</h4>

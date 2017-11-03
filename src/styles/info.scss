@@ -163,7 +163,8 @@
   &__level {
     font-weight: 700;
     color: white;
-    padding: 0 10px;
+    margin-bottom: 10px;
+    text-align: center;
   }
 
   &__team--wrapper {
@@ -212,6 +213,33 @@
      text-align: left;
      margin-bottom: 10px;
     }
+
+  &__xp {
+    display: flex;
+    align-items: center;
+  }
+
+  &__xp-text {
+    margin-right: 5px;
+  }
+
+  &__xp-slider {
+    width: 100%;
+    height: 10px;
+    border: 1px solid Lime;
+    background-color: transparent;
+    position: relative;
+
+    &:after {
+      position: absolute;
+      top: 0;
+      left: 0;
+      background: red;
+      width: 100%;
+
+
+    }
+  }
 }
 
 .entity__healthBoost {

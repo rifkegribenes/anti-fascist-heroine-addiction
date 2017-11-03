@@ -103,10 +103,13 @@ export function updateGrid(entities, heroPosition) {
   });
 }
 
-export function updateDimensions(width) {
+export function updateDimensions(width, height) {
   return ({
     type: UPDATE_DIMENSIONS,
-    payload: width,
+    payload: {
+      width,
+      height,
+    },
   });
 }
 
