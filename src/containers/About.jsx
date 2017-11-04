@@ -6,21 +6,19 @@ import { Link } from 'react-router-dom';
 import * as Actions from '../store/actions';
 import teamHeroes from '../utils/teamHeroes';
 
-const heroCredits = teamHeroes.map((hero) => {
-  return (
-    <div className="splash__item">
-      <div className="splash__avatar-wrap">
-        <img src={hero.cardUrl} alt={hero.name} className="card-pic card-pic--round" />
-      </div>
-      <div className="splash__text-wrap">
-        <span className="splash__bold">{hero.name}</span><br />
+const heroCredits = teamHeroes.map(hero => (
+  <div className="splash__item">
+    <div className="splash__avatar-wrap">
+      <img src={hero.cardUrl} alt={hero.name} className="card-pic card-pic--round" />
+    </div>
+    <div className="splash__text-wrap">
+      <span className="splash__bold">{hero.name}</span><br />
           Character created by: {hero.createdBy || ''}<br />
           Image source: <a className="splash__link" href={hero.srcUrl}>{hero.srcName}</a><br />
           Artwork by: {hero.artBy || 'Unknown'}
-      </div>
     </div>
-  );
-});
+  </div>
+  ));
 
 const About = () => (
   <div className="splash">
