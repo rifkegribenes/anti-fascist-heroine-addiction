@@ -58,11 +58,18 @@
   &__subhead {
     text-transform: uppercase;
     text-align: center;
-    padding: 20px;
-    font-size: 2em;
     font-family: 'G7 Silkworm TTF';
     border: 1px solid Lime;
     @include rainbow;
+    font-size: 1.5em;
+    line-height: 1em;
+    min-height: fit-content;
+    padding: 10px;
+
+    @media (min-height: 680px) {
+      font-size: 2em;
+      padding: 20px;
+    }
   }
 
   &__subhead-wrap {

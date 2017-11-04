@@ -7,7 +7,7 @@ import * as Actions from '../store/actions';
 
 const Splash = () => (
   <div className="splash">
-    <div className="splash__container">
+    <div className="splash__container splash__container--narrow">
       <div className="splash__header">
         <h2 className="splash__title">Game Title</h2>
       </div>

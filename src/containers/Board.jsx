@@ -99,22 +99,22 @@ class Board extends Component {
       case 'finalMonster':
       case 'monster':
         this.props.actions.setCurrentEntity(destination);
-        document.getElementById('entity').classList.remove('spin', 'hidden');
+        document.getElementById('entity').classList.remove('spin');
         this.handleCombat(destination, newPosition, newHero);
         break;
       case 'food':
         this.props.actions.setCurrentEntity(destination);
-        document.getElementById('entity').classList.remove('spin', 'hidden');
+        document.getElementById('entity').classList.remove('spin');
         this.healthBoost(destination);
         break;
       case 'teamHero':
         this.props.actions.setCurrentEntity(destination);
-        document.getElementById('entity').classList.remove('spin', 'hidden');
+        document.getElementById('entity').classList.remove('spin');
         this.addTeamHero(destination);
         break;
       case 'staircase':
         this.props.actions.setCurrentEntity(destination);
-        document.getElementById('entity').classList.remove('spin', 'hidden');
+        document.getElementById('entity').classList.remove('spin');
         this.handleStaircase(destination);
         break;
       default:
@@ -249,7 +249,7 @@ class Board extends Component {
 
       // HANDLE HERO DEATH //
       if (hero.hp - heroDamageTaken <= 0) {
-        const youDiedMsg = `${utils.badNews[Math.floor(utils.random(0, 13))]}! You were defeated by ${currentEntity.name} — ${currentEntity.bio}`;
+        const youDiedMsg = `${utils.badNews[Math.floor(utils.random(0, 13))]}! You were defeated by ${currentEntity.name}<br />${currentEntity.bio}`;
         this.props.actions.showMsg({
           title: 'You died!',
           imgUrl: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/you-died.png',
@@ -258,7 +258,7 @@ class Board extends Component {
           action,
           actionText: 'Play Again',
         });
-        document.getElementById('hero').classList.add('spin', 'hidden');
+        document.getElementById('hero').classList.add('spin');
         setTimeout(() => {
           messages.push(`You died! ${currentEntity.youDiedMsg}.`);
           this.props.actions.updateMessages(messages);
@@ -268,7 +268,7 @@ class Board extends Component {
 
        // HANDLE MONSTER DEATH //
     } else if (currentEntity.health <= 0) {
-      document.getElementById('entity').classList.add('spin', 'hidden');
+      document.getElementById('entity').classList.add('spin');
       const [x, y] = this.props.appState.heroPosition;
       hero.xp += 25;
       updateXP(hero.xp);

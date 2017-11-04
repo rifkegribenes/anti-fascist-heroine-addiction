@@ -7,7 +7,7 @@
 // Total health possible: 60 (160 total)
 // total damage range (@2-3 hits each): 120-180
 
-// Orange 2 30
+// Fries 2 30
 // Plum 2 30
 // Pear 2 30
 // Popsicle 2 30
@@ -56,10 +56,10 @@ const foodTypes = [
     level: 1,
   },
   {
-    name: 'an Orange',
-    title: 'Orange',
-    iconUrl: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/orange_32.png',
-    cardUrl: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/orange_200.png',
+    name: 'some Fries',
+    title: 'Fries',
+    iconUrl: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/frues_32.png',
+    cardUrl: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/fries_200.png',
     healthBoost: 30,
     level: 2,
   },

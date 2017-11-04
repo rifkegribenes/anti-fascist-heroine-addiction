@@ -77,7 +77,7 @@ const teamHeroes = [
   },
   {
     name: 'Nubia',
-    powers: 'Superhuman strength, speed, durability, and longevity, Flight, Healing (Wonder Woman\'s twin sister)',
+    powers: 'Superhuman strength, speed, durability, and longevity, Flight, Healing',
     aliases: 'Wonder Woman, Nu\'bia',
     iconUrl: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/nubia_32_c.png',
     cardUrl: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/nubia_200.png',

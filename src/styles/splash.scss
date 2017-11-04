@@ -14,12 +14,12 @@
   margin: auto;
   background: black;
   padding: 20px;
+  width: 100%;
+  max-width: 1200px;
 
-  @include for-tablet-landscape-up {
-    width: 50%;
-    height: 80%;
+  &--narrow {
+    max-width: 600px;
   }
-
   }
 
   &__instructions {
@@ -186,6 +186,7 @@
   &__list {
     display: flex;
     flex-wrap: wrap;
+    justify-content: center;
   }
 
   &__item {
@@ -193,6 +194,16 @@
     padding: 10px;
     border: 1px solid white;
     display: flex;
+    width: 100%;
+
+
+    @include for-tablet-portrait-up {
+      width: 47%;
+    }
+
+    @include for-tablet-landscape-up {
+      width: 31%;
+    }
   }
 
 
@@ -210,10 +221,10 @@
 
   &__avatar-wrap {
     width: 140px;
+    flex-shrink: 0;
   }
 
   &__text-wrap {
     line-height: 1.5em;
-    max-width: 250px;
   }
 }
