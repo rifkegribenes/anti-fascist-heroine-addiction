@@ -33,8 +33,8 @@ const monsterCredits = (
     </div>
     <div className="splash__text-wrap">
       <span className="splash__bold">George W. Bush</span><br />
-        I was not able to source this image, it is for sale as a sticker
-         from various sellers, including this one:<br />
+        Modified from this image (unknown source, for sale as a sticker
+         from various sellers, including this one):<br />
       <a
         className="splash__link"
         href="https://www.artfire.com/ext/shop/product_view/DressXpress/12389222/george_w_bush_face_with_horns_die-cut_decal_car_window_wall_bumper_phone_laptop/commercial/home_and_garden/home_decor"
@@ -48,8 +48,8 @@ const monsterCredits = (
 
 const foodCredits = (
   <div>
-    <div className="splash__item">
-      <div className="splash__avatar-wrap">
+    <div className="splash__item splash__item--food">
+      <div className="splash__avatar-wrap splash__avatar-wrap--multi">
         <img src="https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/raspberry_200.png" alt="raspberry" className="card-pic" />
         <img src="https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/pear_200.png" alt="pear" className="card-pic" />
         <img src="https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/plum_200.png" alt="plum" className="card-pic" />
@@ -64,8 +64,8 @@ const foodCredits = (
         >Glossy fruits icon set free vector</a>
       </div>
     </div>
-    <div className="splash__item">
-      <div className="splash__avatar-wrap">
+    <div className="splash__item splash__item--food">
+      <div className="splash__avatar-wrap splash__avatar-wrap--multi">
         <img src="https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/cherries_200.png" alt="cherries" className="card-pic" />
         <img src="https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/apple_200.png" alt="apple" className="card-pic" />
       </div>
@@ -78,8 +78,8 @@ const foodCredits = (
         >Fresh fruit and ice cream vector set 05</a>
       </div>
     </div>
-    <div className="splash__item">
-      <div className="splash__avatar-wrap">
+    <div className="splash__item splash__item--food">
+      <div className="splash__avatar-wrap splash__avatar-wrap--multi">
         <img src="https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/popsicle_200.png" alt="popsicle" className="card-pic" />
       </div>
       <div className="splash__text-wrap">
@@ -91,8 +91,8 @@ const foodCredits = (
         >Fresh fruit and ice cream vector set 01</a>
       </div>
     </div>
-    <div className="splash__item">
-      <div className="splash__avatar-wrap">
+    <div className="splash__item splash__item--food">
+      <div className="splash__avatar-wrap splash__avatar-wrap--multi">
         <img src="https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/cupcake_200.png" alt="cupcake" className="card-pic" />
       </div>
       <div className="splash__text-wrap">
@@ -104,8 +104,8 @@ const foodCredits = (
         >Fresh fruit and ice cream vector set 03</a>
       </div>
     </div>
-    <div className="splash__item">
-      <div className="splash__avatar-wrap">
+    <div className="splash__item splash__item--food">
+      <div className="splash__avatar-wrap splash__avatar-wrap--multi">
         <img src="https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/hamburger_200.png" alt="hamburger" className="card-pic" />
         <img src="https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/ice-cream_200.png" alt="ice cream" className="card-pic" />
         <img src="https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/donut_200.png" alt="donut" className="card-pic" />

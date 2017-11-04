@@ -204,6 +204,12 @@
     @include for-tablet-landscape-up {
       width: 31%;
     }
+
+    &--food {
+      flex-direction: column;
+      width: fit-content;
+      display: inline-block;
+    }
   }
 
 
@@ -222,6 +228,17 @@
   &__avatar-wrap {
     width: 140px;
     flex-shrink: 0;
+
+    &--multi {
+      min-width: 140px;
+      width: fit-content;
+      display: flex;
+
+      & img {
+        width: 120px;
+        height: auto;
+      }
+    }
   }
 
   &__text-wrap {
