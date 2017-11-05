@@ -15,6 +15,8 @@ export const UPDATE_ENTITIES = 'UPDATE_ENTITIES';
 export const HANDLE_STAIRCASE = 'HANDLE_STAIRCASE';
 export const SHOW_MSG = 'SHOW_MSG';
 export const HIDE_MSG = 'HIDE_MSG';
+export const TOGGLE_TORCH = 'TOGGLE_TORCH';
+export const TOGGLE_SOUND = 'TOGGLE_SOUND';
 
 export function setLevel(level) {
   return ({
@@ -116,6 +118,20 @@ export function updateDimensions(width, height) {
 export function restart() {
   return ({
     type: RESTART,
+  });
+}
+
+export function toggleSound(sound) {
+  return ({
+    type: TOGGLE_SOUND,
+    payload: sound,
+  });
+}
+
+export function toggleTorch(torch) {
+  return ({
+    type: TOGGLE_TORCH,
+    payload: torch,
   });
 }
 

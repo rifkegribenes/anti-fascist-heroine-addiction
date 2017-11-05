@@ -249,7 +249,7 @@ class Board extends Component {
 
       // HANDLE HERO DEATH //
       if (hero.hp - heroDamageTaken <= 0) {
-        const youDiedMsg = `${utils.badNews[Math.floor(utils.random(0, 13))]}! You were defeated by ${currentEntity.name}<br />${currentEntity.bio}`;
+        const youDiedMsg = `${utils.badNews[Math.floor(utils.random(0, 13))]}! You were defeated by ${currentEntity.name} — ${currentEntity.bio}`;
         this.props.actions.showMsg({
           title: 'You died!',
           imgUrl: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/you-died.png',
@@ -269,6 +269,9 @@ class Board extends Component {
        // HANDLE MONSTER DEATH //
     } else if (currentEntity.health <= 0) {
       document.getElementById('entity').classList.add('spin');
+      setTimeout(() => {
+        document.getElementById('entity').classList.remove('spin');
+      }, 1000);
       const [x, y] = this.props.appState.heroPosition;
       hero.xp += 25;
       updateXP(hero.xp);
@@ -389,12 +392,53 @@ class Board extends Component {
               <InfoLeft
                 hero={this.props.appState.hero}
                 header=""
-                history={this.props.history}
               />
             </div>
             <div className="col col--wide" id="colWide">
-              <div className="info__subhead-wrap">
+              <div className="info__controls">
                 <span className="info__subhead" id="subhead">Level:&nbsp;{this.props.appState.gameLevel}</span>
+                <div className="info__icons-wrap">
+                  <button
+                    className="aria-button info__icon"
+                    onClick={
+                      () => {
+                        this.props.actions.restart();
+                        this.props.history.push('/');
+                      }}
+                    aria-label="restart game"
+                  >
+                    <img src="https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/refresh.svg" alt="" />
+                  </button>
+                  <button
+                    className="aria-button info__icon"
+                    onClick={
+                      () => {
+                        this.props.actions.toggleSound(this.props.appState.sound);
+                      }}
+                    aria-label="toggle sound"
+                  >
+                    <img src="https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/volume-up.svg" alt="" />
+                  </button>
+                  <button
+                    className="aria-button info__icon"
+                    onClick={
+                      () => {
+                        this.props.actions.toggleTorch(this.props.appState.torch);
+                      }}
+                    aria-label="toggle torch"
+                  >
+                    <img src="https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/flashlight.svg" alt="" />
+                  </button>
+                  <a
+                    className="aria-button info__icon"
+                    href="https://github.com/rifkegribenes/dungeon-crawler"
+                    rel="noopener noreferrer"
+                    target="_blank"
+                    title="github"
+                  >
+                    <img src="https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/github.svg" alt="" />
+                  </a>
+                </div>
               </div>
               <canvas
                 id="board"

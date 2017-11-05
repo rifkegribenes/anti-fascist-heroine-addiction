@@ -1,8 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import shortid from 'shortid';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 
 import hearts from '../utils/helpers';
+import * as Actions from '../store/actions';
 
 const InfoRight = (props) => {
   let healthIndM = '';
@@ -88,4 +91,12 @@ InfoRight.defaultProps = {
   header: '',
 };
 
-export default InfoRight;
+const mapStateToProps = state => ({
+  appState: state.appState,
+});
+
+const mapDispatchToProps = dispatch => ({
+  actions: bindActionCreators({ ...Actions }, dispatch),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(InfoRight);

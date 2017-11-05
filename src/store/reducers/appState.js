@@ -1,7 +1,7 @@
 import update from 'immutability-helper';
 import teamHeroes from '../../utils/teamHeroes';
 
-import { SET_LEVEL, SET_HERO, UPDATE_HERO, UPDATE_TRUMP, CLOSE_MODAL, OPEN_MODAL, RESTART, START, USER_INPUT, SET_CURRENT_ENTITY, UPDATE_ENTITIES, UPDATE_MESSAGES, UPDATE_DIMENSIONS, HANDLE_STAIRCASE, UPDATE_GRID, SHOW_MSG, HIDE_MSG } from '../actions';
+import { SET_LEVEL, SET_HERO, UPDATE_HERO, UPDATE_TRUMP, CLOSE_MODAL, OPEN_MODAL, RESTART, START, USER_INPUT, SET_CURRENT_ENTITY, UPDATE_ENTITIES, UPDATE_MESSAGES, UPDATE_DIMENSIONS, HANDLE_STAIRCASE, UPDATE_GRID, SHOW_MSG, HIDE_MSG, TOGGLE_SOUND, TOGGLE_TORCH } from '../actions';
 
 const INITIAL_STATE = {
   entities: [[]],
@@ -34,8 +34,10 @@ const INITIAL_STATE = {
     actionText: '',
   },
   currentEntity: {},
-  clipSize: 32,
+  clipSize: 640,
   gridFilled: false,
+  sound: true,
+  torch: true,
 };
 
 function appState(state = INITIAL_STATE, action) {
@@ -48,6 +50,22 @@ function appState(state = INITIAL_STATE, action) {
         state,
         {
           gameLevel: { $set: action.payload },
+        },
+      );
+
+    case TOGGLE_TORCH:
+      return update(
+        state,
+        {
+          torch: { $set: !action.payload },
+        },
+      );
+
+    case TOGGLE_SOUND:
+      return update(
+        state,
+        {
+          sound: { $set: !action.payload },
         },
       );
 

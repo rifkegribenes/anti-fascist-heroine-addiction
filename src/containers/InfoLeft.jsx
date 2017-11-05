@@ -57,16 +57,6 @@ const InfoLeft = (props) => {
                   {teamList(props.hero.team)}
                 </div>
               </div>
-              <button
-                className="big-msg__btn"
-                onClick={
-                () => {
-                  props.actions.restart();
-                  props.history.push('/');
-                }
-                }
-              >
-              Restart</button>
             </div>
           </div>
         </div>

@@ -29,6 +29,13 @@
 
   }
 
+  &__controls {
+    display: flex;
+    justify-content: center;
+    padding: 20px;
+
+  }
+
   &__hearts {
     display: flex;
     width: 100%;
@@ -65,6 +72,7 @@
     line-height: 1em;
     min-height: fit-content;
     padding: 10px;
+    margin-right: 20px;
 
     @media (min-height: 680px) {
       font-size: 2em;
@@ -72,11 +80,17 @@
     }
   }
 
-  &__subhead-wrap {
-    background: black;
-    padding: 20px;
-    display: flex;
-    justify-content: center;
+  &__icons-wrap {
+    padding: 10px;
+    border: 1px solid Lime;
+    min-height: fit-content;
+    font-size: 1.5em;
+    line-height: 1em;
+
+    @media (min-height: 680px) {
+      font-size: 2em;
+      padding: 20px;
+    }
   }
 
   &__hero-title, .entity__title {
@@ -117,9 +131,9 @@
     -moz-animation:spin .5s linear 5;
     animation:spin 1s linear 5;
   }
-@-moz-keyframes spin { 100% { -moz-transform: rotate(360deg); } }
-@-webkit-keyframes spin { 100% { -webkit-transform: rotate(360deg); } }
-@keyframes spin { 100% { -webkit-transform: rotate(360deg); transform:rotate(360deg); } }
+@-moz-keyframes spin { 100% { -moz-transform: rotate(360deg); opacity: 1;} }
+@-webkit-keyframes spin { 100% { -webkit-transform: rotate(360deg); opacity: 0;} }
+@keyframes spin { 100% { -webkit-transform: rotate(360deg); transform:rotate(360deg); opacity: 1;} }
 
 
 .rightCol {
@@ -170,7 +184,7 @@
   &__level {
     font-weight: 700;
     color: white;
-    margin-bottom: 10px;
+    margin-top: -5px;
     text-align: center;
   }
 
@@ -181,7 +195,7 @@
   }
 
   &__powers {
-    // color: lighten( #00FF00, 35%);
+    font-size: .9em;
   }
 
   &__team--item {
@@ -206,7 +220,6 @@
   }
 
   &__stats {
-    margin-top: 20px;
     text-align: center;
   }
 
@@ -218,7 +231,7 @@
 
   &__attack {
      text-align: left;
-     margin-bottom: 10px;
+     margin: -5px 0 10px;
     }
 
   &__xp {
