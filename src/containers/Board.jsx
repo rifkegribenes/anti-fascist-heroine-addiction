@@ -406,8 +406,9 @@ class Board extends Component {
                         this.props.history.push('/');
                       }}
                     aria-label="restart game"
+                    title="restart game"
                   >
-                    <img src="https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/refresh.svg" alt="" />
+                    <img className="ctrl-icon" src="/img/refresh.png" alt="" />
                   </button>
                   <button
                     className="aria-button info__icon"
@@ -416,8 +417,9 @@ class Board extends Component {
                         this.props.actions.toggleSound(this.props.appState.sound);
                       }}
                     aria-label="toggle sound"
+                    title="toggle sound"
                   >
-                    <img src="https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/volume-up.svg" alt="" />
+                    <img className="ctrl-icon" src="/img/volume-up.png" alt="" />
                   </button>
                   <button
                     className="aria-button info__icon"
@@ -426,8 +428,9 @@ class Board extends Component {
                         this.props.actions.toggleTorch(this.props.appState.torch);
                       }}
                     aria-label="toggle torch"
+                    title="toggle torch"
                   >
-                    <img src="https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/flashlight.svg" alt="" />
+                    <img className="ctrl-icon" src="/img/flashlight.png" alt="" />
                   </button>
                   <a
                     className="aria-button info__icon"
@@ -436,7 +439,7 @@ class Board extends Component {
                     target="_blank"
                     title="github"
                   >
-                    <img src="https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/github.svg" alt="" />
+                    <img className="ctrl-icon" src="/img/github.png" alt="" />
                   </a>
                 </div>
               </div>
