@@ -372,9 +372,12 @@ class Board extends Component {
     if (document.getElementById('colWide')) {
       colWidth = document.getElementById('colWide').clientWidth;
     }
-    const canvasStyle = {
-      clipPath: `circle(${clipRadius}px at center)`,
-    };
+    let canvasStyle = {};
+    if (this.props.appState.torch) {
+      canvasStyle = {
+        clipPath: `circle(${clipRadius}px at center)`,
+      };
+    }
     if (colWidth < 660) {
       canvasStyle.marginLeft = `${(colWidth / 2) - 320}px`;
       canvasStyle.marginTop = `${(colWidth / 2) - 320}px`;
@@ -408,7 +411,7 @@ class Board extends Component {
                     aria-label="restart game"
                     title="restart game"
                   >
-                    <img className="ctrl-icon" src="/img/refresh.png" alt="" />
+                    <img className="ctrl-icon" src="https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/refresh.png" alt="" />
                   </button>
                   <button
                     className="aria-button info__icon"
@@ -419,7 +422,7 @@ class Board extends Component {
                     aria-label="toggle sound"
                     title="toggle sound"
                   >
-                    <img className="ctrl-icon" src="/img/volume-up.png" alt="" />
+                    <img className="ctrl-icon" src="https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/volume-up.png" alt="" />
                   </button>
                   <button
                     className="aria-button info__icon"
@@ -430,7 +433,7 @@ class Board extends Component {
                     aria-label="toggle torch"
                     title="toggle torch"
                   >
-                    <img className="ctrl-icon" src="/img/flashlight.png" alt="" />
+                    <img className="ctrl-icon" src="https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/flashlight.png" alt="" />
                   </button>
                   <a
                     className="aria-button info__icon"
@@ -439,7 +442,7 @@ class Board extends Component {
                     target="_blank"
                     title="github"
                   >
-                    <img className="ctrl-icon" src="/img/github.png" alt="" />
+                    <img className="ctrl-icon" src="https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/github.png" alt="" />
                   </a>
                 </div>
               </div>

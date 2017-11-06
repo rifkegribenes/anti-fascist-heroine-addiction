@@ -82,7 +82,6 @@
 
   &__icons-wrap {
     padding: 10px;
-    border: 1px solid Lime;
     min-height: fit-content;
 
     @media (min-height: 680px) {
@@ -320,15 +319,14 @@
     }
   }
 }
-svg {
-  padding-top: 5px;
-  width: 25px;
-  height: 25px;
-}
 
 .ctrl-icon {
-  fill: white;
+  width: 35px;
+  height: auto;
+  margin-top: 5px;
+  padding: 5px;
+  border: 1px solid transparent;
   &:hover {
-    fill: Lime;
+    border: 1px solid Lime;
   }
 }
