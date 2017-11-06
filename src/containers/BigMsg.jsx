@@ -4,6 +4,17 @@ import { bindActionCreators } from 'redux';
 
 import * as Actions from '../store/actions';
 
+const teamList = (arr) => {
+  if (arr && arr.length) {
+    return arr.map(val => (
+      <div className="hero__team--item" key={val.name}>
+        <div className="hero__team--item-image"><img src={val.iconUrl} alt={val.name} /></div>
+      </div>
+      ));
+  }
+  return null;
+};
+
 class BigMsg extends React.Component {
 
   componentDidMount() {
@@ -20,17 +31,28 @@ class BigMsg extends React.Component {
   render() {
     return (
       <div className="big-msg" style={this.props.style}>
-        <h2 className="big-msg__title blink" id="msgTitle">{this.props.appState.bigMsg.title}</h2>
-        <div id="msgImg" className={this.props.appState.bigMsg.title === 'You won!' ? 'big-msg__img-wrap' : ''}>
-          <img src={this.props.appState.bigMsg.imgUrl} className="big-msg__img" alt={this.props.appState.bigMsg.imgAlt} />
+        <div className="big-msg__container">
+          <h2 className="big-msg__title blink" id="msgTitle">{this.props.appState.bigMsg.title}</h2>
+          <div id="msgImg" className={this.props.appState.bigMsg.title === 'You won!' ? 'big-msg__img-wrap' : ''}>
+            <img src={this.props.appState.bigMsg.imgUrl} className="big-msg__img" alt={this.props.appState.bigMsg.imgAlt} />
+          </div>
+          {this.props.appState.bigMsg.title === 'You won!' &&
+            <div className="big-msg__team--wrapper">
+              {teamList(this.props.appState.hero.team)}
+            </div>
+          }
+          <div className="big-msg__news">{this.props.appState.bigMsg.news}</div>
+          <div className="big-msg__body1">{this.props.appState.bigMsg.body1}</div>
+          {this.props.appState.bigMsg.body2 &&
+            <div className="big-msg__body2">{this.props.appState.bigMsg.body2}</div>
+          }
+          <button
+            className="big-msg__btn"
+            onClick={this.props.appState.bigMsg.action}
+          >
+            {this.props.appState.bigMsg.actionText}
+          </button>
         </div>
-        <div className="big-msg__body">{this.props.appState.bigMsg.body}</div>
-        <button
-          className="big-msg__btn"
-          onClick={this.props.appState.bigMsg.action}
-        >
-          {this.props.appState.bigMsg.actionText}
-        </button>
       </div>
     );
   }

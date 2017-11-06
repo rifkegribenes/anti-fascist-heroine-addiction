@@ -32,8 +32,8 @@
   &__controls {
     display: flex;
     justify-content: center;
-    padding: 20px;
-
+    margin-top: 10px;
+    min-height: fit-content;
   }
 
   &__hearts {
@@ -66,31 +66,22 @@
     text-transform: uppercase;
     text-align: center;
     font-family: 'G7 Silkworm TTF';
-    border: 1px solid Lime;
+    // border: 1px solid Lime;
     @include rainbow;
     font-size: 1.5em;
     line-height: 1em;
     min-height: fit-content;
     padding: 10px;
-    margin-right: 20px;
-
-    @media (min-height: 680px) {
-      font-size: 2em;
-      padding: 20px;
-    }
+    margin-right: 30px;
   }
 
   &__icons-wrap {
     padding: 10px;
     min-height: fit-content;
-
-    @media (min-height: 680px) {
-      padding: 20px;
-    }
   }
 
   &__icon {
-    margin-right: 20px;
+    margin-right: 10px;
     &:last-child {
       margin-right: 0;
     }
@@ -321,10 +312,10 @@
 }
 
 .ctrl-icon {
-  width: 35px;
+  width: 25px;
   height: auto;
   margin-top: 5px;
-  padding: 5px;
+  padding: 0 2px;
   border: 1px solid transparent;
   &:hover {
     border: 1px solid Lime;

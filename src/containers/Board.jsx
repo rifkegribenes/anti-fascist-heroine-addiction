@@ -42,7 +42,7 @@ class Board extends Component {
   componentDidUpdate() {
     if (this.props.appState.gridFilled) {
       utils.renderViewport(this.props.appState.heroPosition,
-        this.props.appState.entities);
+        this.props.appState.entities, this.props.appState.cellSize);
     }
   }
 
@@ -54,7 +54,7 @@ class Board extends Component {
   updateDimensions() {
     this.props.actions.updateDimensions(window.innerWidth, window.innerHeight);
     utils.renderViewport(this.props.appState.heroPosition,
-      this.props.appState.entities);
+      this.props.appState.entities, this.props.appState.cellSize);
   }
 
   handleKeydown(e) {
@@ -248,20 +248,22 @@ class Board extends Component {
       this.props.actions.updateMessages(messages);
 
       // HANDLE HERO DEATH //
+      // display message
       if (hero.hp - heroDamageTaken <= 0) {
-        const youDiedMsg = `${utils.badNews[Math.floor(utils.random(0, 13))]}! You were defeated by ${currentEntity.name} — ${currentEntity.bio}`;
-        this.props.actions.showMsg({
-          title: 'You died!',
-          imgUrl: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/you-died.png',
-          imgAlt: 'skull and crossbones',
-          body: youDiedMsg,
-          action,
-          actionText: 'Play Again',
-        });
         document.getElementById('hero').classList.add('spin');
         setTimeout(() => {
           messages.push(`You died! ${currentEntity.youDiedMsg}.`);
           this.props.actions.updateMessages(messages);
+          this.props.actions.showMsg({
+            title: 'You died!',
+            imgUrl: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/you-died.png',
+            imgAlt: 'skull and crossbones',
+            news: utils.badNews[Math.floor(utils.random(0, 13))],
+            body1: `You were defeated by ${currentEntity.name}`,
+            body2: currentEntity.bio,
+            action,
+            actionText: 'Play Again',
+          });
         }, 1000);
         return;
       }
@@ -272,41 +274,52 @@ class Board extends Component {
       setTimeout(() => {
         document.getElementById('entity').classList.remove('spin');
       }, 1000);
-      const [x, y] = this.props.appState.heroPosition;
-      hero.xp += 25;
-      updateXP(hero.xp);
-      hero.level = Math.floor(hero.xp / 100) + 1;
-      if (hero.xp % 100 === 0) {
-        document.getElementById('hero').classList.add('powerUp');
-        document.getElementById('hero-level').classList.add('powerUp');
-        messages.push(`Level UP!! Your team is now prepared to take on level ${hero.level} monsters.`);
-        this.props.actions.updateMessages(messages);
-        setTimeout(() => {
-          document.getElementById('hero').classList.remove('powerUp');
-          document.getElementById('hero-level').classList.remove('powerUp');
-        }, 2000);
-      }
 
+      // update grid, replace monster with floor and move hero into it
+      const [x, y] = this.props.appState.heroPosition;
       const grid1 = utils.changeEntity(this.props.appState.entities, { type: 'floor' }, [x, y]);
       const grid2 = utils.changeEntity(grid1, newHero, newPosition);
       this.props.actions.updateGrid(grid2, newPosition);
       utils.renderViewport(this.props.appState.heroPosition,
-        this.props.appState.entities);
+        this.props.appState.entities, this.props.appState.cellSize);
 
-      this.props.actions.updateHero(hero);
-      this.props.actions.updateMessages(messages);
-      this.props.actions.setCurrentEntity(currentEntity);
+      // update xp slider
+      hero.xp += 25;
+      updateXP(hero.xp);
+
+      // update hero level
+      hero.level = Math.floor(hero.xp / 100) + 1;
+      if (hero.xp % 100 === 0) {
+        // add and remove powerup class
+        document.getElementById('hero').classList.add('powerUp');
+        document.getElementById('hero-level').classList.add('powerUp');
+        setTimeout(() => {
+          document.getElementById('hero').classList.remove('powerUp');
+          document.getElementById('hero-level').classList.remove('powerUp');
+        }, 2000);
+
+        // display level up message
+        messages.push(`Level UP!! Your team is now prepared to take on level ${hero.level} monsters.`);
+        this.props.actions.updateMessages(messages);
+
+        // update hero state in redux store with updated level & xp
+        this.props.actions.updateHero(hero);
+
+        // this.props.actions.setCurrentEntity(currentEntity);
+        // what happens if we remove this line? ^^
+      }
 
        // HANDLE GAME WIN  //
       if (monster.type === 'finalMonster') {
-        const youWonMsg = `${utils.goodNews[Math.floor(utils.random(0, 13))]}! You and your team defeated the biggest monster of all! Great work!`;
         messages.push(`You did it! Your attack of [${monsterDamageTaken}] defeated ${currentEntity.name}.`); // fix this msg later
         setTimeout(() => messages.push('You won! blah blah blah.'), 1000); // fix this msg later
         this.props.actions.showMsg({
           title: 'You won!',
           imgUrl: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/rainbow.png',
           imgAlt: 'rainbow',
-          body: youWonMsg,
+          news: utils.goodNews[Math.floor(utils.random(0, 13))],
+          body1: 'You and your team defeated the biggest monster of all! Great work!',
+          body2: null,
           action,
           actionText: 'Play Again',
         });
@@ -346,7 +359,7 @@ class Board extends Component {
     document.getElementById('subhead').classList.add('powerUp');
     setTimeout(() => {
       utils.renderViewport(this.props.appState.heroPosition,
-        this.props.appState.entities);
+        this.props.appState.entities, this.props.appState.cellSize);
     }, 1000);
     setTimeout(() => {
       document.getElementById('board').classList.remove('staircaseSpin');
@@ -362,25 +375,17 @@ class Board extends Component {
 
   render() {
     const clipRadius = this.props.appState.clipSize / 2;
-    const cellSize = 32;
+    const cellSize = this.props.appState.cellSize;
     const messages = [...this.props.appState.messages];
     const messageList = messages.map(message => (
       <li key={shortid.generate()} className="message__item">
         {message}
       </li>));
-    let colWidth;
-    if (document.getElementById('colWide')) {
-      colWidth = document.getElementById('colWide').clientWidth;
-    }
     let canvasStyle = {};
     if (this.props.appState.torch) {
       canvasStyle = {
         clipPath: `circle(${clipRadius}px at center)`,
       };
-    }
-    if (colWidth < 660) {
-      canvasStyle.marginLeft = `${(colWidth / 2) - 320}px`;
-      canvasStyle.marginTop = `${(colWidth / 2) - 320}px`;
     }
     return (
       <div>
@@ -449,8 +454,8 @@ class Board extends Component {
               <canvas
                 id="board"
                 className="board"
-                width={utils.vWidth * cellSize}
-                height={utils.vHeight * cellSize}
+                width={20 * cellSize}
+                height={20 * cellSize}
                 style={canvasStyle}
               />
             </div>

@@ -15,6 +15,23 @@
   width: 100vw;
   min-height: 100vh;
 
+  &__container {
+    max-width: 600px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+  }
+
+  &__team--wrapper {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    z-index: 3;
+    margin-top: 20px;
+  }
+
   &__title {
     display: inline-block;
     z-index: 3;

@@ -42,7 +42,10 @@ const INITIAL_STATE = {
 
 function appState(state = INITIAL_STATE, action) {
   let clipSize = 640;
-
+  let colWide = 640;
+  if (document.getElementById('colWide')) {
+    colWide = document.getElementById('colWide').clientWidth;
+  }
   switch (action.type) {
 
     case SET_LEVEL:
@@ -217,18 +220,22 @@ function appState(state = INITIAL_STATE, action) {
       );
 
     case UPDATE_DIMENSIONS:
-      if (action.payload.width < 1040 || action.payload.height < 768) {
-        if (action.payload.height > action.payload.width) {
-          clipSize = (action.payload.width * 0.6) - 20;
+    // wide column max width = 675 inner width / 735 outer width
+    // board space is vh - 50px (header)
+      if (colWide < 640 || action.payload.height < 690) { // true
+        if ((action.payload.height - 70) > colWide) { // false
+          clipSize = colWide;
         } else {
-          clipSize = Math.min((action.payload.width * 0.6),
-            (action.payload.height - 105)) - 20;
+          clipSize = Math.min(colWide,
+                (action.payload.height - 70), 640);
         }
       }
+
       return update(
         state,
         {
-          clipSize: { $set: clipSize },
+          clipSize: { $set: (Math.floor(clipSize / 20)) * 20 },
+          cellSize: { $set: Math.floor(clipSize / 20) },
         },
       );
 

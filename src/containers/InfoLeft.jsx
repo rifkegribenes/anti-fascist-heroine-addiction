@@ -7,9 +7,9 @@ import shortid from 'shortid';
 import hearts from '../utils/helpers';
 import * as Actions from '../store/actions';
 
-const teamList = (obj) => {
-  if (obj && obj.length) {
-    return obj.map(val => (
+const teamList = (arr) => {
+  if (arr && arr.length) {
+    return arr.map(val => (
       <div className="hero__team--item" key={shortid.generate()}>
         <div className="hero__team--item-image"><img src={val.iconUrl} alt={val.name} /></div>
       </div>
