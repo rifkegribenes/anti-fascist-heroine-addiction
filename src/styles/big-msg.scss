@@ -91,8 +91,21 @@
     }
   }
 
-  &__body {
+  &__body1 {
     margin-top: 40px;
+    z-index: 3;
+    font-weight: 700;
+    margin-bottom: 10px;
+  }
+
+  &__body2 {
+    z-index: 3;
+  }
+
+  &__news {
+    font-size: 2em;
+    font-weight: 700;
+    margin: 20px 0 10px;
     z-index: 3;
   }
 

@@ -1,0 +1,30 @@
+const sounds = {
+  ui: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/sounds/sfx_sounds_button11.mp3',
+  uiSelect: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/sounds/sfx_menu_select1.mp3',
+  chooseHero: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/sounds/sfx_sounds_powerup2.mp3',
+  startGame: '',
+  food: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/sounds/sfx_sounds_fanfare1.mp3',
+  addHero: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/sounds/270333__littlerobotsoundfactory__jingle-win-00.mp3',
+  combat: [
+    'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/sounds/sfx_exp_odd5.mp3',
+    'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/sounds/sfx_exp_odd6.mp3',
+    'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/sounds/sfx_exp_odd7.mp3',
+    'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/sounds/sfx_exp_various1.mp3',
+    'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/sounds/sfx_sounds_impact7.mp3',
+    'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/sounds/sfx_sounds_impact8.mp3',
+    'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/sounds/sfx_sounds_impact10.mp3',
+    'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/sounds/sfx_sounds_impact11.mp3',
+  ],
+  monsterDeath: '',
+  movement: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/sounds/376968__elmasmalo1__bubble-pop.mp3',
+  heroDeath: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/sounds/Shut_Down1.mp3',
+  heroLevelUp: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/sounds/270330__littlerobotsoundfactory__jingle-achievement-01.mp3',
+  staircase: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/sounds/sfx_movement_portal1.mp3',
+  gameLevelUp: '',
+  bossFight: '',
+  evilLaugh: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/sounds/322459__lalazzylee1__game-boss-or-character-laughter.mp3',
+  gameWin: '',
+  gameOver: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/sounds/sfx_sound_shutdown2.mp3',
+};
+
+export default sounds;

@@ -11,6 +11,7 @@ import BigMsg from './BigMsg';
 import * as utils from '../utils/index';
 import generateMap from '../utils/mapGen';
 import fillGrid from '../utils/fillGrid';
+import sounds from '../utils/sounds';
 
 const updateXP = (xp) => {
   const width = xp / 3;
@@ -55,6 +56,15 @@ class Board extends Component {
     this.props.actions.updateDimensions(window.innerWidth, window.innerHeight);
     utils.renderViewport(this.props.appState.heroPosition,
       this.props.appState.entities, this.props.appState.cellSize);
+  }
+
+  playSound(item) {
+    if (this.props.appState.sound) {
+      const sound = document.createElement('audio');
+      sound.setAttribute('autoplay', 'autoplay');
+      sound.setAttribute('src', sounds[item]);
+      sound.play();
+    }
   }
 
   handleKeydown(e) {
@@ -258,7 +268,7 @@ class Board extends Component {
             title: 'You died!',
             imgUrl: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/you-died.png',
             imgAlt: 'skull and crossbones',
-            news: utils.badNews[Math.floor(utils.random(0, 13))],
+            news: `${utils.badNews[Math.floor(utils.random(0, 13))]}!`,
             body1: `You were defeated by ${currentEntity.name}`,
             body2: currentEntity.bio,
             action,
@@ -317,7 +327,7 @@ class Board extends Component {
           title: 'You won!',
           imgUrl: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/rainbow.png',
           imgAlt: 'rainbow',
-          news: utils.goodNews[Math.floor(utils.random(0, 13))],
+          news: `${utils.goodNews[Math.floor(utils.random(0, 13))]}!`,
           body1: 'You and your team defeated the biggest monster of all! Great work!',
           body2: null,
           action,
@@ -416,7 +426,7 @@ class Board extends Component {
                     aria-label="restart game"
                     title="restart game"
                   >
-                    <img className="ctrl-icon" src="https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/refresh.png" alt="" />
+                    <i className="icon icon-sync ctrl-icon" />
                   </button>
                   <button
                     className="aria-button info__icon"
@@ -427,7 +437,7 @@ class Board extends Component {
                     aria-label="toggle sound"
                     title="toggle sound"
                   >
-                    <img className="ctrl-icon" src="https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/volume-up.png" alt="" />
+                    <i className={this.props.appState.sound ? 'icon icon-volume_off ctrl-icon' : 'icon icon-volume_up ctrl-icon'} />
                   </button>
                   <button
                     className="aria-button info__icon"
@@ -438,7 +448,7 @@ class Board extends Component {
                     aria-label="toggle torch"
                     title="toggle torch"
                   >
-                    <img className="ctrl-icon" src="https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/flashlight.png" alt="" />
+                    <i className="icon icon-flashlight ctrl-icon" />
                   </button>
                   <a
                     className="aria-button info__icon"
@@ -447,7 +457,7 @@ class Board extends Component {
                     target="_blank"
                     title="github"
                   >
-                    <img className="ctrl-icon" src="https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/github.png" alt="" />
+                    <i className="icon icon-github ctrl-icon" />
                   </a>
                 </div>
               </div>

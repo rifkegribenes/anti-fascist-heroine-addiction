@@ -82,8 +82,12 @@
 
   &__icon {
     margin-right: 10px;
+    text-decoration: none;
     &:last-child {
-      margin-right: 0;
+      align-self: flex-end;
+      & .icon {
+
+      }
     }
   }
 
@@ -312,12 +316,12 @@
 }
 
 .ctrl-icon {
-  width: 25px;
-  height: auto;
+  color: white;
+  font-size: 1.3em;
   margin-top: 5px;
   padding: 0 2px;
   border: 1px solid transparent;
   &:hover {
-    border: 1px solid Lime;
+    color: Lime;
   }
 }
