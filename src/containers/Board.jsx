@@ -59,7 +59,10 @@ class Board extends Component {
   }
 
   playSound(item) {
+    console.log(item);
     if (this.props.appState.sound) {
+      console.log(`playing sound: ${item}`);
+      console.log(`mp3 url: ${sounds[item]}`);
       const sound = document.createElement('audio');
       sound.setAttribute('autoplay', 'autoplay');
       sound.setAttribute('src', sounds[item]);
@@ -68,6 +71,7 @@ class Board extends Component {
   }
 
   handleKeydown(e) {
+    this.playSound('movement');
     switch (e.keyCode) {
       case 38:
       case 87:
@@ -113,16 +117,19 @@ class Board extends Component {
         this.handleCombat(destination, newPosition, newHero);
         break;
       case 'food':
+        this.playSound('food');
         this.props.actions.setCurrentEntity(destination);
         document.getElementById('entity').classList.remove('spin');
         this.healthBoost(destination);
         break;
       case 'teamHero':
+        this.playSound('addHero');
         this.props.actions.setCurrentEntity(destination);
         document.getElementById('entity').classList.remove('spin');
         this.addTeamHero(destination);
         break;
       case 'staircase':
+        this.playSound('staircase');
         this.props.actions.setCurrentEntity(destination);
         document.getElementById('entity').classList.remove('spin');
         this.handleStaircase(destination);
