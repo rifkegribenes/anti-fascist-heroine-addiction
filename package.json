@@ -37,6 +37,7 @@
   "dependencies": {
     "font-awesome": "^4.7.0",
     "immutability-helper": "^2.4.0",
+    "preload-js": "^0.6.3",
     "prop-types": "^15.5.10",
     "react": "^15.5.4",
     "react-dom": "^15.5.4",

@@ -71,25 +71,28 @@ class Board extends Component {
   }
 
   handleKeydown(e) {
-    this.playSound('movement');
     switch (e.keyCode) {
       case 38:
       case 87:
+        this.playSound('movement');
         e.preventDefault();
         this.userInput([0, -1]);
         break;
       case 39:
       case 68:
+        this.playSound('movement');
         e.preventDefault();
         this.userInput([1, 0]);
         break;
       case 40:
       case 83:
+        this.playSound('movement');
         e.preventDefault();
         this.userInput([0, 1]);
         break;
       case 37:
       case 65:
+        this.playSound('movement');
         e.preventDefault();
         this.userInput([-1, 0]);
         break;

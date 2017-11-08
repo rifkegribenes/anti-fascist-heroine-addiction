@@ -3846,6 +3846,10 @@ pre-commit@^1.2.2:
     spawn-sync "^1.0.15"
     which "1.2.x"
 
+preload-js@^0.6.3:
+  version "0.6.3"
+  resolved "https://registry.yarnpkg.com/preload-js/-/preload-js-0.6.3.tgz#dcb4b7c0e182dbbce2677ad4f2cfaee2e25b4df7"
+
 prelude-ls@~1.1.2:
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/prelude-ls/-/prelude-ls-1.1.2.tgz#21932a549f5e52ffd9a827f570e04be62a97da54"
