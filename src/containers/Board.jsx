@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import shortid from 'shortid';
 import { withRouter } from 'react-router';
-import createjs from 'preload-js';
 
 import * as Actions from '../store/actions';
 import InfoLeft from './InfoLeft';
@@ -12,6 +11,8 @@ import BigMsg from './BigMsg';
 import * as utils from '../utils/index';
 import generateMap from '../utils/mapGen';
 import fillGrid from '../utils/fillGrid';
+// import * as aL from '../utils/asset_loader';
+import sounds from '../utils/sounds';
 
 
 const updateXP = (xp) => {
@@ -59,14 +60,14 @@ class Board extends Component {
       this.props.appState.entities, this.props.appState.cellSize);
   }
 
-  playSound(item) {
+  play(item) {
     console.log(item);
     if (this.props.appState.sound) {
-      console.log(`playing sound: ${item}`);
-      // const sound = document.createElement('audio');
-      // sound.setAttribute('autoplay', 'autoplay');
-      // sound.setAttribute('src', sounds[item]);
-      createjs.Sound.play(item);
+      // aL.playSound(item);
+      const sound = document.createElement('audio');
+      sound.setAttribute('autoplay', 'autoplay');
+      sound.setAttribute('src', sounds[item]);
+      sound.play();
     }
   }
 
@@ -74,25 +75,25 @@ class Board extends Component {
     switch (e.keyCode) {
       case 38:
       case 87:
-        this.playSound('movement');
+        this.play('movement');
         e.preventDefault();
         this.userInput([0, -1]);
         break;
       case 39:
       case 68:
-        this.playSound('movement');
+        this.play('movement');
         e.preventDefault();
         this.userInput([1, 0]);
         break;
       case 40:
       case 83:
-        this.playSound('movement');
+        this.play('movement');
         e.preventDefault();
         this.userInput([0, 1]);
         break;
       case 37:
       case 65:
-        this.playSound('movement');
+        this.play('movement');
         e.preventDefault();
         this.userInput([-1, 0]);
         break;
@@ -120,19 +121,19 @@ class Board extends Component {
         this.handleCombat(destination, newPosition, newHero);
         break;
       case 'food':
-        this.playSound('food');
+        this.play('food');
         this.props.actions.setCurrentEntity(destination);
         document.getElementById('entity').classList.remove('spin');
         this.healthBoost(destination);
         break;
       case 'teamHero':
-        this.playSound('addHero');
+        this.play('addHero');
         this.props.actions.setCurrentEntity(destination);
         document.getElementById('entity').classList.remove('spin');
         this.addTeamHero(destination);
         break;
       case 'staircase':
-        this.playSound('staircase');
+        this.play('staircase');
         this.props.actions.setCurrentEntity(destination);
         document.getElementById('entity').classList.remove('spin');
         this.handleStaircase(destination);

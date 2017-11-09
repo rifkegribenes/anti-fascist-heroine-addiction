@@ -1,7 +1,7 @@
 import createjs from 'preload-js';
 import manifest from '../sounds/asset_manifest.json';
 
-const assetLoader = () => {
+export const assetLoader = () => {
   // Reset the UI
   document.getElementById('progress').style.width = '0px';
 
@@ -19,6 +19,7 @@ const assetLoader = () => {
   // File complete handler
   const handleFileLoad = (event) => {
     console.log(`Preloaded: ${event.item.id}`);
+    // createjs.Sound.play(event.item.id);
     // const file = preload.getResult(event.item.id);
 
     // Get a reference to the loaded file and
@@ -29,7 +30,7 @@ const assetLoader = () => {
   const handleOverallProgress = () => {
     document.getElementById('progress').style.width = `${(preload.progress * document.getElementById('progress-wrap').clientWidth)}px`;
   };
-  // An error happened on a file
+  // Error handler
   const handleFileError = (event) => {
     console.log(`error: ${event.item.id}, ${event.text}`);
   };
@@ -57,4 +58,13 @@ const assetLoader = () => {
   loadAll();
 };
 
-export default assetLoader;
+export const playSound = (item) => {
+  console.log(item);
+  console.log(`playing sound: ${item}`);
+  // const sound = document.createElement('audio');
+  // sound.setAttribute('autoplay', 'autoplay');
+  // sound.setAttribute('src', sounds[item]);
+  const preload = new createjs.LoadQueue();
+  preload.installPlugin(createjs.Sound);
+  createjs.Sound.play(item);
+};

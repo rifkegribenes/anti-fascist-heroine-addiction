@@ -49,6 +49,7 @@
     "redux-logger": "^3.0.6",
     "redux-promise-middleware": "4.2.1",
     "redux-thunk": "^2.2.0",
-    "shortid": "^2.2.8"
+    "shortid": "^2.2.8",
+    "soundjs": "^1.0.1"
   }
 }

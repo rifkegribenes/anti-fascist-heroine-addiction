@@ -4560,6 +4560,10 @@ sort-keys@^1.0.0:
   dependencies:
     is-plain-obj "^1.0.0"
 
+soundjs@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/soundjs/-/soundjs-1.0.1.tgz#99970542d28d0df2a1ebd061ae75c961a98c8180"
+
 source-list-map@^0.1.7:
   version "0.1.8"
   resolved "https://registry.yarnpkg.com/source-list-map/-/source-list-map-0.1.8.tgz#c550b2ab5427f6b3f21f5afead88c4f5587b2106"

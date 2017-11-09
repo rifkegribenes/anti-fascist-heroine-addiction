@@ -8,13 +8,13 @@ import Board from './containers/Board';
 import About from './containers/About';
 import HeroPicker from './containers/HeroPicker';
 import * as Actions from './store/actions';
-import assetLoader from './utils/asset_loader';
+import * as aL from './utils/asset_loader';
 
 
 class App extends React.Component {
 
   componentDidMount() {
-    assetLoader();
+    aL.assetLoader();
   }
 
 
