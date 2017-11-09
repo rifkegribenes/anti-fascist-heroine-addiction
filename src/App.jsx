@@ -8,19 +8,31 @@ import Board from './containers/Board';
 import About from './containers/About';
 import HeroPicker from './containers/HeroPicker';
 import * as Actions from './store/actions';
+import assetLoader from './utils/asset_loader';
 
-const App = () => (
-  <BrowserRouter>
-    <main className="main" id="main">
-      <Switch>
-        <Route exact path="/" component={Splash} />
-        <Route exact path="/about" component={About} />
-        <Route exact path="/hero-picker" component={HeroPicker} />
-        <Route path="/play" component={Board} />
-      </Switch>
-    </main>
-  </BrowserRouter>
-  );
+
+class App extends React.Component {
+
+  componentDidMount() {
+    assetLoader();
+  }
+
+
+  render() {
+    return (
+      <BrowserRouter>
+        <main className="main" id="main">
+          <Switch>
+            <Route exact path="/" component={Splash} />
+            <Route exact path="/about" component={About} />
+            <Route exact path="/hero-picker" component={HeroPicker} />
+            <Route exact path="/play" render={Board} />
+          </Switch>
+        </main>
+      </BrowserRouter>
+    );
+  }
+}
 
 
 const mapStateToProps = state => ({

@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import shortid from 'shortid';
 import { withRouter } from 'react-router';
+import createjs from 'preload-js';
 
 import * as Actions from '../store/actions';
 import InfoLeft from './InfoLeft';
@@ -11,7 +12,7 @@ import BigMsg from './BigMsg';
 import * as utils from '../utils/index';
 import generateMap from '../utils/mapGen';
 import fillGrid from '../utils/fillGrid';
-import sounds from '../utils/sounds';
+
 
 const updateXP = (xp) => {
   const width = xp / 3;
@@ -62,11 +63,10 @@ class Board extends Component {
     console.log(item);
     if (this.props.appState.sound) {
       console.log(`playing sound: ${item}`);
-      console.log(`mp3 url: ${sounds[item]}`);
-      const sound = document.createElement('audio');
-      sound.setAttribute('autoplay', 'autoplay');
-      sound.setAttribute('src', sounds[item]);
-      sound.play();
+      // const sound = document.createElement('audio');
+      // sound.setAttribute('autoplay', 'autoplay');
+      // sound.setAttribute('src', sounds[item]);
+      createjs.Sound.play(item);
     }
   }
 

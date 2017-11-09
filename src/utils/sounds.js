@@ -1,10 +1,10 @@
 const sounds = {
   ui: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/sounds/sfx_sounds_button11.mp3',
   uiSelect: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/sounds/sfx_menu_select1.mp3',
-  chooseHero: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/sounds/sfx_sounds_powerup2.mp3',
+  chooseHero: '',
   startGame: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/sounds/270333__littlerobotsoundfactory__jingle-win-00.mp3',
-  food: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/sounds/sfx_sounds_fanfare1.mp3',
-  addHero: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/sounds/270330__littlerobotsoundfactory__jingle-achievement-01.mp3',
+  food: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/sounds/sfx_sounds_powerup1.mp3',
+  addHero: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/sounds/sfx_sounds_powerup2.mp3',
   combat: [
     'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/sounds/sfx_exp_odd5.mp3',
     'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/sounds/sfx_exp_odd6.mp3',
