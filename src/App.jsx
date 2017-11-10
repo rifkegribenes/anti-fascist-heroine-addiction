@@ -23,7 +23,6 @@ class App extends React.Component {
   }
 
   playSound(item) {
-    console.log(item);
     if (this.props.appState.sound) {
       // aL.playSound(item);
       const sound = document.createElement('audio');

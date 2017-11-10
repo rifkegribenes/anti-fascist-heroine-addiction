@@ -275,7 +275,7 @@ class Board extends Component {
         setTimeout(() => {
           messages.push(`You died! ${currentEntity.youDiedMsg}.`);
           this.props.actions.updateMessages(messages);
-          this.props.playSound('gameOver');
+          this.props.playSound('evilLaugh');
           this.props.actions.showMsg({
             title: 'You died!',
             imgUrl: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/you-died.png',
@@ -336,6 +336,7 @@ class Board extends Component {
       if (monster.type === 'finalMonster') {
         messages.push(`You did it! Your attack of [${monsterDamageTaken}] defeated ${currentEntity.name}.`); // fix this msg later
         setTimeout(() => messages.push('You won! blah blah blah.'), 1000); // fix this msg later
+        this.props.playSound('gameWin');
         this.props.actions.showMsg({
           title: 'You won!',
           imgUrl: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/rainbow.png',

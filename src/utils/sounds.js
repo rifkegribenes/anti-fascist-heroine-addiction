@@ -20,7 +20,7 @@ const sounds = {
   gameLevelUp: '',
   bossFight: '',
   evilLaugh: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/sounds/322459__lalazzylee1__game-boss-or-character-laughter1.mp3',
-  gameWin: '',
+  gameWin: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/sounds/270330__littlerobotsoundfactory__jingle-achievement-01.mp3',
   gameOver: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/sounds/sfx_sound_shutdown2.mp3',
 };
 
