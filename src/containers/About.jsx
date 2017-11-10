@@ -1,7 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { Link } from 'react-router-dom';
 
 import * as Actions from '../store/actions';
 import teamHeroes from '../utils/teamHeroes';
@@ -124,7 +123,7 @@ const foodCredits = (
   );
 
 
-const About = () => (
+const About = props => (
   <div className="splash">
     <div className="splash__container">
       <div className="splash__header">
@@ -145,8 +144,20 @@ const About = () => (
           {foodCredits}
         </div>
         <div className="splash__btn-wrap">
-          <Link className="big-msg__btn" to="/">How to play</Link>
-          <Link className="big-msg__btn" to="/hero-picker">Start Game</Link>
+          <button
+            className="big-msg__btn"
+            onClick={() => {
+              props.playSound('ui');
+              props.history.push('/');
+            }}
+          >How to play</button>
+          <button
+            className="big-msg__btn"
+            onClick={() => {
+              props.playSound('ui');
+              props.history.push('/hero-picker');
+            }}
+          >Start Game</button>
         </div>
       </div>
     </div>

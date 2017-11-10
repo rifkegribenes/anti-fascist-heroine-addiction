@@ -12,7 +12,6 @@ import * as utils from '../utils/index';
 import generateMap from '../utils/mapGen';
 import fillGrid from '../utils/fillGrid';
 // import * as aL from '../utils/asset_loader';
-import sounds from '../utils/sounds';
 
 
 const updateXP = (xp) => {
@@ -60,40 +59,29 @@ class Board extends Component {
       this.props.appState.entities, this.props.appState.cellSize);
   }
 
-  play(item) {
-    console.log(item);
-    if (this.props.appState.sound) {
-      // aL.playSound(item);
-      const sound = document.createElement('audio');
-      sound.setAttribute('autoplay', 'autoplay');
-      sound.setAttribute('src', sounds[item]);
-      sound.play();
-    }
-  }
-
   handleKeydown(e) {
     switch (e.keyCode) {
       case 38:
       case 87:
-        this.play('movement');
+        this.props.playSound('movement');
         e.preventDefault();
         this.userInput([0, -1]);
         break;
       case 39:
       case 68:
-        this.play('movement');
+        this.props.playSound('movement');
         e.preventDefault();
         this.userInput([1, 0]);
         break;
       case 40:
       case 83:
-        this.play('movement');
+        this.props.playSound('movement');
         e.preventDefault();
         this.userInput([0, 1]);
         break;
       case 37:
       case 65:
-        this.play('movement');
+        this.props.playSound('movement');
         e.preventDefault();
         this.userInput([-1, 0]);
         break;
@@ -121,19 +109,19 @@ class Board extends Component {
         this.handleCombat(destination, newPosition, newHero);
         break;
       case 'food':
-        this.play('food');
+        this.props.playSound('food');
         this.props.actions.setCurrentEntity(destination);
         document.getElementById('entity').classList.remove('spin');
         this.healthBoost(destination);
         break;
       case 'teamHero':
-        this.play('addHero');
+        this.props.playSound('addHero');
         this.props.actions.setCurrentEntity(destination);
         document.getElementById('entity').classList.remove('spin');
         this.addTeamHero(destination);
         break;
       case 'staircase':
-        this.play('staircase');
+        this.props.playSound('staircase');
         this.props.actions.setCurrentEntity(destination);
         document.getElementById('entity').classList.remove('spin');
         this.handleStaircase(destination);
@@ -198,6 +186,12 @@ class Board extends Component {
     const heroLevel = Math.floor(hero.xp / 100) + 1;
 
     // HERO ATTACK //
+
+    // generate random number for attack sound
+    let sound = Math.floor(utils.random(1, 8));
+    this.props.playSound(`combat${sound}`);
+
+    // calculate damage and update monster health
     const monsterDamageTaken = Math.floor(hero.attack *
       utils.random(1, 1.3) * (((heroLevel - 1) * 0.5) + 1));
     const currentEntity = monster;
@@ -247,6 +241,11 @@ class Board extends Component {
     // if monster is still alive...
     if (this.props.appState.currentEntity.health > 0) {
       // MONSTER ATTACK //
+
+      // generate random number for attack sound
+      sound = Math.floor(utils.random(1, 8));
+      this.props.playSound(`combat${sound}`);
+
       const heroDamageTaken = Math.floor(utils.random(0.7, 1.3) * currentEntity.damage);
       utils.changeEntity(this.props.appState.entities, monster, newPosition);
       hero.hp -= heroDamageTaken;
@@ -272,9 +271,11 @@ class Board extends Component {
       // display message
       if (hero.hp - heroDamageTaken <= 0) {
         document.getElementById('hero').classList.add('spin');
+        this.props.playSound('heroDeath');
         setTimeout(() => {
           messages.push(`You died! ${currentEntity.youDiedMsg}.`);
           this.props.actions.updateMessages(messages);
+          this.props.playSound('gameOver');
           this.props.actions.showMsg({
             title: 'You died!',
             imgUrl: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/you-died.png',
@@ -292,6 +293,7 @@ class Board extends Component {
        // HANDLE MONSTER DEATH //
     } else if (currentEntity.health <= 0) {
       document.getElementById('entity').classList.add('spin');
+      this.props.playSound('heroDeath');
       setTimeout(() => {
         document.getElementById('entity').classList.remove('spin');
       }, 1000);
@@ -431,6 +433,7 @@ class Board extends Component {
                     className="aria-button info__icon"
                     onClick={
                       () => {
+                        this.props.playSound('uiSelect');
                         this.props.actions.restart();
                         this.props.history.push('/');
                       }}
@@ -443,6 +446,7 @@ class Board extends Component {
                     className="aria-button info__icon"
                     onClick={
                       () => {
+                        this.props.playSound('uiSelect');
                         this.props.actions.toggleSound(this.props.appState.sound);
                       }}
                     aria-label="toggle sound"
@@ -454,6 +458,7 @@ class Board extends Component {
                     className="aria-button info__icon"
                     onClick={
                       () => {
+                        this.props.playSound('uiSelect');
                         this.props.actions.toggleTorch(this.props.appState.torch);
                       }}
                     aria-label="toggle torch"

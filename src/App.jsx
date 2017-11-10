@@ -9,24 +9,59 @@ import About from './containers/About';
 import HeroPicker from './containers/HeroPicker';
 import * as Actions from './store/actions';
 import * as aL from './utils/asset_loader';
+import sounds from './utils/sounds';
 
 
 class App extends React.Component {
+  constructor(props) {
+    super(props);
+    this.playSound = this.playSound.bind(this);
+  }
 
   componentDidMount() {
     aL.assetLoader();
   }
 
+  playSound(item) {
+    console.log(item);
+    if (this.props.appState.sound) {
+      // aL.playSound(item);
+      const sound = document.createElement('audio');
+      sound.setAttribute('autoplay', 'autoplay');
+      sound.setAttribute('src', sounds[item]);
+      sound.play();
+    }
+  }
 
   render() {
     return (
       <BrowserRouter>
         <main className="main" id="main">
           <Switch>
-            <Route exact path="/" component={Splash} />
-            <Route exact path="/about" component={About} />
-            <Route exact path="/hero-picker" component={HeroPicker} />
-            <Route exact path="/play" render={Board} />
+            <Route
+              exact
+              path="/"
+              render={routeProps => <Splash {...routeProps} playSound={this.playSound} />
+              }
+            />
+            <Route
+              exact
+              path="/about"
+              render={routeProps => <About {...routeProps} playSound={this.playSound} />
+              }
+            />
+            <Route
+              exact
+              path="/hero-picker"
+              render={routeProps => <HeroPicker {...routeProps} playSound={this.playSound} />
+              }
+            />
+            <Route
+              exact
+              path="/play"
+              render={routeProps => <Board {...routeProps} playSound={this.playSound} />
+              }
+            />
           </Switch>
         </main>
       </BrowserRouter>

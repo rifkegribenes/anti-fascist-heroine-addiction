@@ -17,11 +17,18 @@ export const SHOW_MSG = 'SHOW_MSG';
 export const HIDE_MSG = 'HIDE_MSG';
 export const TOGGLE_TORCH = 'TOGGLE_TORCH';
 export const TOGGLE_SOUND = 'TOGGLE_SOUND';
+export const SET_LOADED = 'SET_LOADED';
 
 export function setLevel(level) {
   return ({
     type: SET_LEVEL,
     payload: level,
+  });
+}
+
+export function setLoaded() {
+  return ({
+    type: SET_LOADED,
   });
 }
 

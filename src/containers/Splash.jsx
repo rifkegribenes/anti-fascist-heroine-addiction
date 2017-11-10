@@ -1,11 +1,10 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { Link } from 'react-router-dom';
 
 import * as Actions from '../store/actions';
 
-const Splash = () => (
+const Splash = props => (
   <div className="splash">
     <div className="splash__container splash__container--narrow">
       <div className="splash__header">
@@ -15,8 +14,20 @@ const Splash = () => (
         </div>
       </div>
       <div className="splash__btn-wrap">
-        <Link className="big-msg__btn" to="/about">Credits</Link>
-        <Link className="big-msg__btn" to="/hero-picker">Start Game</Link>
+        <button
+          className="big-msg__btn"
+          onClick={() => {
+            props.playSound('ui');
+            props.history.push('/about');
+          }}
+        >Credits</button>
+        <button
+          className="big-msg__btn"
+          onClick={() => {
+            props.playSound('ui');
+            props.history.push('/hero-picker');
+          }}
+        >Start Game</button>
       </div>
       <div className="splash__instructions">
         <h3 className="splash__subhead">How to Play</h3>
@@ -41,16 +52,16 @@ const Splash = () => (
           <img className="splash__icon" src="https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/ice-cream_32.png" alt="ice cream" />
           <img className="splash__icon" src="https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/hamburger_32.png" alt="hamburger" />
           <img className="splash__icon" src="https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/donut_32.png" alt="donut" />
-          <img className="splash__icon" src="https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/orange_32.png" alt="orange" />
+          <img className="splash__icon" src="https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/fries_32.png" alt="fries" />
         </div>
           Eat food you find in the grid to stay alive. It takes strength to
           fight monsters. Walk into a food to eat it.
         <h4 className="splash__bold">Your team</h4>
         <div className="splash__key-wrap">
-          <img className="splash__icon--c" src="https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/misty-knight_32.png" alt="misty knight" />
-          <img className="splash__icon--c" src="https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/wonder-woman_32.png" alt="wonder woman" />
-          <img className="splash__icon--c" src="https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/silk_32.png" alt="silk" />
-          <img className="splash__icon--c" src="https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/la-borinquena_32.png" alt="la borinqueña" />
+          <img className="splash__icon--c" src="https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/misty-knight_32_c.png" alt="misty knight" />
+          <img className="splash__icon--c" src="https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/wonder-woman_32_c.png" alt="wonder woman" />
+          <img className="splash__icon--c" src="https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/silk_32_c.png" alt="silk" />
+          <img className="splash__icon--c" src="https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/la-borinquena_32_c.png" alt="la borinqueña" />
         </div>
           Gather a team of superheroes to help you fight monsters. You&nbsp;
           can&rsquo;t do it alone! Each member of your team adds attack

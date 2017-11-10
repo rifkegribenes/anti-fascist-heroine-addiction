@@ -20,6 +20,7 @@ class Item extends React.Component {
       <button
         className={`${className} aria-button`}
         onClick={() => {
+          this.props.playSound('startGame');
           this.props.actions.setHero(this.props.id);
           this.props.actions.closeModal();
           this.props.history.push('/play');

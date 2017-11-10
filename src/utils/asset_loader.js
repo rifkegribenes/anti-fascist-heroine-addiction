@@ -2,6 +2,7 @@ import createjs from 'preload-js';
 import manifest from '../sounds/asset_manifest.json';
 
 export const assetLoader = () => {
+
   // Reset the UI
   document.getElementById('progress').style.width = '0px';
 
