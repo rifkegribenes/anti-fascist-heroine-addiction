@@ -27,6 +27,9 @@ class Board extends Component {
     this.handleKeydown = this.handleKeydown.bind(this);
     this.userInput = this.userInput.bind(this);
     this.updateDimensions = this.updateDimensions.bind(this);
+    this.step = this.step.bind(this);
+    this.play = this.play.bind(this);
+    this.pause = this.pause.bind(this);
   }
 
   componentWillMount() {
@@ -43,6 +46,7 @@ class Board extends Component {
 
   componentDidUpdate() {
     if (this.props.appState.gridFilled) {
+      console.log('cDU');
       utils.renderViewport(this.props.appState.heroPosition,
         this.props.appState.entities, this.props.appState.cellSize);
     }
@@ -106,7 +110,7 @@ class Board extends Component {
       case 'monster':
         this.props.actions.setCurrentEntity(destination);
         document.getElementById('entity').classList.remove('spin');
-        this.handleCombat(destination, newPosition, newHero);
+        this.handleCombat(destination, newPosition);
         break;
       case 'food':
         this.props.playSound('food');
@@ -162,7 +166,7 @@ class Board extends Component {
     }, 1000);
   }
 
-  handleCombat(monster, newPosition, newHero) {
+  handleCombat(monster, newPosition) {
     // define action for 'you died' and 'you won' screens
     const action = () => {
       this.props.actions.hideMsg();
@@ -391,10 +395,89 @@ class Board extends Component {
     }, 2000);
   }
 
+  monsterMovement(entities, entity, coords, change) {
+    console.log('monsterMovement');
+    if (this.props.appState.running) {
+      const [x, y] = coords;
+      const [changeX, changeY] = change;
+      const newPosition = [changeX + x, changeY + y];
+      const destination = entities[y + changeY][x + changeX];
+      if (destination.type === 'floor' || destination.type === 'hero') {
+        const grid1 = utils.changeEntity(this.props.appState.entities, { type: 'floor' }, coords);
+        console.log(`${entity.name}'s new position is ${newPosition}`);
+        const grid2 = utils.changeEntity(grid1, entity, newPosition);
+        console.log(grid2); // right
+        this.props.actions.monsterMovement(grid2);
+        console.log(this.props.appState.entities); // wrong
+        utils.renderViewport(this.props.appState.heroPosition,
+        this.props.appState.entities, this.props.appState.cellSize);
+      }
+      // handle collisions
+      if (destination.type === 'hero') {
+        this.props.actions.setCurrentEntity(entity);
+        document.getElementById('entity').classList.remove('spin');
+        this.handleCombat(entity, newPosition);
+      }
+    }
+  }
+
+  step() {
+    console.log('step');
+    if (this.props.appState.running) {
+      const currentEntities = this.props.appState.entities;
+      const heroPosition = this.props.appState.heroPosition;
+      currentEntities.map((row, rIdx) => {
+        row.map((cell, cIdx) => {
+          // only calculate movement for monsters inside current viewport
+          if (cell.type === 'monster' && utils.inViewport([cIdx, rIdx], heroPosition)) {
+            console.log(`${cell.name} is in viewport`);
+            // choose a move at random from possible moves that bring monster closer to hero
+            const newMonsterPosition = utils.monsterAI(cell, [cIdx, rIdx], heroPosition);
+            // calculate change
+            const change = [newMonsterPosition[0] - cIdx, newMonsterPosition[1] - rIdx];
+            // move monster to new position and re-render viewport
+            this.monsterMovement(currentEntities, cell, [cIdx, rIdx], change);
+          }
+          return null;
+        });
+        return null;
+      });
+    }
+  }
+
+  play() {
+    console.log('play');
+    this.props.actions.play();
+    this.run();
+  }
+
+  run() {
+    console.log('running');
+    const self = this;
+    function nextStep() {
+      console.log('nextStep');
+      if (!self.props.appState.running) {
+        console.log('clearInterval');
+        window.clearInterval(window.interval);
+        return;
+      }
+      self.step();
+    }
+    console.log('setInterval');
+    window.interval = window.setInterval(nextStep, 1000);
+  }
+
+  pause() {
+    console.log('paused');
+    window.clearInterval(window.interval);
+    this.props.actions.pause();
+  }
+
   startGame() {
     const { newMap, heroPosition, trumpPosition } =
       fillGrid(generateMap(1), 1, this.props.appState.hero);
     this.props.actions.start(newMap, heroPosition, trumpPosition);
+    this.play();
   }
 
   render() {
@@ -435,6 +518,23 @@ class Board extends Component {
                     onClick={
                       () => {
                         this.props.playSound('uiSelect');
+                        if (this.props.appState.running) {
+                          this.props.actions.pause();
+                          return;
+                        }
+                        this.props.actions.play();
+                      }}
+                    aria-label="pause"
+                    title="pause"
+                  >
+                    &#9208;
+                  </button>
+                  <button
+                    className="aria-button info__icon"
+                    onClick={
+                      () => {
+                        this.props.playSound('uiSelect');
+                        window.clearInterval(window.interval);
                         this.props.actions.restart();
                         this.props.history.push('/');
                       }}

@@ -1,7 +1,7 @@
 import update from 'immutability-helper';
 import teamHeroes from '../../utils/teamHeroes';
 
-import { SET_LEVEL, SET_HERO, UPDATE_HERO, UPDATE_TRUMP, CLOSE_MODAL, OPEN_MODAL, RESTART, START, USER_INPUT, SET_CURRENT_ENTITY, UPDATE_ENTITIES, UPDATE_MESSAGES, UPDATE_DIMENSIONS, HANDLE_STAIRCASE, UPDATE_GRID, SHOW_MSG, HIDE_MSG, TOGGLE_SOUND, TOGGLE_TORCH, SET_LOADED } from '../actions';
+import { SET_LEVEL, SET_HERO, UPDATE_HERO, UPDATE_TRUMP, CLOSE_MODAL, OPEN_MODAL, RESTART, START, USER_INPUT, SET_CURRENT_ENTITY, UPDATE_ENTITIES, UPDATE_MESSAGES, UPDATE_DIMENSIONS, HANDLE_STAIRCASE, UPDATE_GRID, SHOW_MSG, HIDE_MSG, TOGGLE_SOUND, TOGGLE_TORCH, SET_LOADED, PLAY, PAUSE } from '../actions';
 
 const INITIAL_STATE = {
   entities: [[]],
@@ -41,6 +41,7 @@ const INITIAL_STATE = {
   sound: true,
   torch: true,
   loaded: false,
+  running: false,
 };
 
 function appState(state = INITIAL_STATE, action) {
@@ -60,11 +61,26 @@ function appState(state = INITIAL_STATE, action) {
       );
 
     case SET_LOADED:
-      console.log('loaded in app state');
       return update(
         state,
         {
           loaded: { $set: true },
+        },
+      );
+
+    case PLAY:
+      return update(
+        state,
+        {
+          running: { $set: true },
+        },
+      );
+
+    case PAUSE:
+      return update(
+        state,
+        {
+          running: { $set: false },
         },
       );
 

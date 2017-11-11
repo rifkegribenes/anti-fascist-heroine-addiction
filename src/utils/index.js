@@ -8,6 +8,50 @@ export const vWidth = 20;
 // helper functions
 export const random = (min, max) => (Math.random() * (max - min)) + min;
 export const randomInt = (min, max) => Math.floor(random(min, max));
+export const inViewport = (entityCoords, heroCoords) => {
+  const [ex, ey] = entityCoords;
+  const [hx, hy] = heroCoords;
+  if (Math.abs(ex - hx) <= vWidth / 2 && Math.abs(ey - hy) <= vHeight / 2) {
+    return true;
+  }
+  return false;
+};
+export const monsterAI = (entity, entityCoords, heroCoords) => {
+  const [ex, ey] = entityCoords;
+  const [hx, hy] = heroCoords;
+  console.log(`${entity.name}: ${ex}, ${ey}`);
+
+  // find cells to N,S,E, & W of monster's current position
+  const neighborCells = [
+    [ex + 1, ey],
+    [ex, ey + 1],
+    [ex, ey - 1],
+    [ex - 1, ey],
+  ];
+  // console.log(`${entity.name} neighbor cells: ${neighborCells}`);
+
+  // helper function to calculate distance from hero
+  // const heroDistance = ([eX, eY], [hx, hy]) =>
+  //   Math.sqrt(((eX - hx) ** 2) + ((eY - hy) ** 2));
+
+  // filter neighbor cells to return only choices that move monster closer to the hero
+  const possibleMoves = neighborCells.filter(cell =>
+    Math.abs(cell[0] - hx) < Math.abs(ex - hx) ||
+    Math.abs(cell[1] - hy) < Math.abs(ey - hy));
+  // console.log(`possible moves for ${entity.name}:`);
+  // console.log(possibleMoves);
+
+  // if there are no possible moves, return current position
+  if (possibleMoves.length === 0) {
+    return entityCoords;
+  }
+
+  // choose one of the possible moves at random
+  const chosenMove = Math.floor(random(0, possibleMoves.length - 1));
+  // console.log(`chosen move index: ${chosenMove}`);
+  console.log(`moving to: ${neighborCells[chosenMove]}`);
+  return neighborCells[chosenMove];
+};
 
 // render to canvas
 const drawCell = (cellSize, ctx, level, x, y, vX, vY, cellType, opacity, hue, iconUrl) => {
@@ -120,6 +164,7 @@ const drawCell = (cellSize, ctx, level, x, y, vX, vY, cellType, opacity, hue, ic
 export const clamp = (val, min, max) => Math.min(Math.max(val, min), max);
 
 export const renderViewport = (heroPosition, entities, cellSize) => {
+  console.log('renderV');
   const [hX, hY] = heroPosition;
   const newEntities = entities.map(row => row.map((cell) => {
     const newCell = { ...cell };
