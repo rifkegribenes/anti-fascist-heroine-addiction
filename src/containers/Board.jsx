@@ -305,7 +305,7 @@ class Board extends Component {
       // update grid, replace monster with floor and move hero into it
       const [x, y] = this.props.appState.heroPosition;
       const grid1 = utils.changeEntity(this.props.appState.entities, { type: 'floor' }, [x, y]);
-      const grid2 = utils.changeEntity(grid1, newHero, newPosition);
+      const grid2 = utils.changeEntity(grid1, hero, newPosition);
       this.props.actions.updateGrid(grid2, newPosition);
       utils.renderViewport(this.props.appState.heroPosition,
         this.props.appState.entities, this.props.appState.cellSize);
@@ -407,10 +407,10 @@ class Board extends Component {
         console.log(`${entity.name}'s new position is ${newPosition}`);
         const grid2 = utils.changeEntity(grid1, entity, newPosition);
         console.log(grid2); // right
-        this.props.actions.monsterMovement(grid2);
+        this.props.actions.updateEntities(grid2);
         console.log(this.props.appState.entities); // wrong
-        utils.renderViewport(this.props.appState.heroPosition,
-        this.props.appState.entities, this.props.appState.cellSize);
+        // utils.renderViewport(this.props.appState.heroPosition,
+        // this.props.appState.entities, this.props.appState.cellSize);
       }
       // handle collisions
       if (destination.type === 'hero') {

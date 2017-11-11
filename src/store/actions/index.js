@@ -20,7 +20,6 @@ export const TOGGLE_SOUND = 'TOGGLE_SOUND';
 export const SET_LOADED = 'SET_LOADED';
 export const PLAY = 'PLAY';
 export const PAUSE = 'PAUSE';
-export const MONSTER_MOVEMENT = 'MONSTER_MOVEMENT';
 
 export function setLevel(level) {
   return ({
@@ -115,15 +114,6 @@ export function userInput(entities, heroPosition) {
     payload: {
       entities,
       heroPosition,
-    },
-  });
-}
-
-export function monsterMovement(entities) {
-  return ({
-    type: MONSTER_MOVEMENT,
-    payload: {
-      entities,
     },
   });
 }
