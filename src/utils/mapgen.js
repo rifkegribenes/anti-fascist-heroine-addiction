@@ -29,7 +29,7 @@ const generateMap = (level) => {
     const grid2 = grid;
     for (let i = y; i < y + height; i++) {
       for (let j = x; j < x + width; j++) {
-        grid2[i][j] = { type };
+        grid2[i][j] = { type, id };
       }
     }
     return grid2;
@@ -44,6 +44,7 @@ const generateMap = (level) => {
     N.y = (y - N.height) - 1;
     N.dx = randomInt(N.x, (Math.min(N.x + N.width, x + width)) - 1);
     N.dy = y - 1;
+    N.id = randomInt(0, 1000);
     roomValues.push(N);
 
     const E = { height: randomInt(min, max), width: randomInt(min, max) };
@@ -51,6 +52,7 @@ const generateMap = (level) => {
     E.y = randomInt(y, (height + y) - 1);
     E.dx = E.x - 1;
     E.dy = randomInt(E.y, (Math.min(E.y + E.height, y + height)) - 1);
+    E.id = randomInt(0, 1000);
     roomValues.push(E);
 
     const S = { height: randomInt(min, max), width: randomInt(min, max) };
@@ -58,6 +60,7 @@ const generateMap = (level) => {
     S.y = (y + height) + 1;
     S.dx = randomInt(S.x, (Math.min(S.x + S.width, x + width)) - 1);
     S.dy = y + height;
+    S.id = randomInt(0, 1000);
     roomValues.push(S);
 
     const W = { height: randomInt(min, max), width: randomInt(min, max) };
@@ -65,18 +68,20 @@ const generateMap = (level) => {
     W.y = randomInt(y, (height + y) - 1);
     W.dx = x - 1;
     W.dy = randomInt(W.y, (Math.min(W.y + W.height, y + height)) - 1);
+    S.id = randomInt(0, 1000);
     roomValues.push(W);
 
     const placedRooms = [];
+    const doors = [];
     roomValues.forEach((room) => {
       if (isValid(grid, room)) {
         placeCells(grid, room);
         // these are doors but use the same cell color as floors
-        placeCells(grid, { x: room.dx, y: room.dy }, 'floor');
+        placeCells(grid, { x: room.dx, y: room.dy }, 'door');
         placedRooms.push(room);
       }
     });
-    return { grid, placedRooms };
+    return { grid, placedRooms, doors };
   };
 
   // generate walls
@@ -100,6 +105,7 @@ const generateMap = (level) => {
     y: (gridHeight / 2) - Math.floor(min / 2), // center of grid
     height: min,
     width: max,
+    id: 0,
   };
 
   // console.log(firstRoom);

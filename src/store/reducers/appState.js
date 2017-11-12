@@ -8,6 +8,7 @@ const INITIAL_STATE = {
   gameLevel: 1,
   heroPosition: [],
   trumpPosition: [],
+  doors: [],
   hero: {
     hp: 100,
     xp: 0,
@@ -206,6 +207,7 @@ function appState(state = INITIAL_STATE, action) {
           heroPosition: { $set: action.payload.heroPosition },
           gridFilled: { $set: true },
           trumpPosition: { $set: action.payload.trumpPosition },
+          doors: { $set: action.payload.doors },
         },
       );
 

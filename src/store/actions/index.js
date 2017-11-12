@@ -158,13 +158,14 @@ export function toggleTorch(torch) {
   });
 }
 
-export function start(entities, heroPosition, trumpPosition) {
+export function start(entities, heroPosition, trumpPosition, doors) {
   return ({
     type: START,
     payload: {
       entities,
       heroPosition,
       trumpPosition,
+      doors,
     },
   });
 }

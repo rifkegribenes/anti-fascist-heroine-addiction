@@ -167,6 +167,10 @@ class Board extends Component {
   }
 
   handleCombat(monster, newPosition) {
+    // copy monster so it can be modified in combat
+    const currentMonster = { ...monster };
+    // set monster combat value to true
+    currentMonster.combat = true;
     // define action for 'you died' and 'you won' screens
     const action = () => {
       this.props.actions.hideMsg();
@@ -181,7 +185,7 @@ class Board extends Component {
     const hero = { ...this.props.appState.hero };
     const messages = [...this.props.appState.messages];
 
-    this.props.actions.setCurrentEntity(monster);
+    this.props.actions.setCurrentEntity(currentMonster);
 
     // save message to display later in info panel
     messages.push(`Your team is attacking ${monster.name}!`);
@@ -207,7 +211,7 @@ class Board extends Component {
     }
 
     // update monster health in app state after attack
-    const entities = this.props.appState.entities;
+    let entities = this.props.appState.entities;
     const [mx, my] = newPosition;
     entities[my][mx] = currentEntity;
 
@@ -265,6 +269,14 @@ class Board extends Component {
 
       // update hero health in app state after attack
       this.props.actions.updateHero(hero);
+
+      // set monster combat to false in case hero walks away
+      // will be reset to true if a new round starts
+      currentEntity.combat = false;
+      entities = this.props.appState.entities;
+      entities[my][mx] = currentEntity;
+      this.props.actions.updateEntities(entities);
+      this.props.actions.setCurrentEntity(entities[my][mx]);
 
       // save and then display newest messages
       messages.push(`Your team attacked ${currentEntity.name}. He lost ${monsterDamageTaken} HP.
@@ -396,19 +408,18 @@ class Board extends Component {
   }
 
   monsterMovement(entities, entity, coords, change) {
-    console.log('monsterMovement');
-    if (this.props.appState.running) {
+    if (this.props.appState.running && !entity.combat) {
       const [x, y] = coords;
       const [changeX, changeY] = change;
       const newPosition = [changeX + x, changeY + y];
       const destination = entities[y + changeY][x + changeX];
-      if (destination.type === 'floor' || destination.type === 'hero') {
+      if (destination.type === 'floor' ||
+        destination.type === 'door' ||
+        destination.type === 'hero') {
         const grid1 = utils.changeEntity(this.props.appState.entities, { type: 'floor' }, coords);
         console.log(`${entity.name}'s new position is ${newPosition}`);
         const grid2 = utils.changeEntity(grid1, entity, newPosition);
-        console.log(grid2); // right
         this.props.actions.updateEntities(grid2);
-        console.log(this.props.appState.entities); // wrong
         // utils.renderViewport(this.props.appState.heroPosition,
         // this.props.appState.entities, this.props.appState.cellSize);
       }
@@ -419,24 +430,30 @@ class Board extends Component {
         this.handleCombat(entity, newPosition);
       }
     }
+    if (this.props.appState.running && entity.combat) {
+      this.handleCombat(entity, coords);
+    }
   }
 
   step() {
-    console.log('step');
     if (this.props.appState.running) {
       const currentEntities = this.props.appState.entities;
       const heroPosition = this.props.appState.heroPosition;
+      const doors = this.props.appState.doors;
       currentEntities.map((row, rIdx) => {
         row.map((cell, cIdx) => {
           // only calculate movement for monsters inside current viewport
           if (cell.type === 'monster' && utils.inViewport([cIdx, rIdx], heroPosition)) {
-            console.log(`${cell.name} is in viewport`);
+            console.log(`${cell.name} is in viewport at ${cIdx}, ${rIdx}`);
             // choose a move at random from possible moves that bring monster closer to hero
-            const newMonsterPosition = utils.monsterAI(cell, [cIdx, rIdx], heroPosition);
+            const newMonsterPosition = utils.monsterAI(currentEntities,
+              [cIdx, rIdx], heroPosition, doors);
             // calculate change
-            const change = [newMonsterPosition[0] - cIdx, newMonsterPosition[1] - rIdx];
-            // move monster to new position and re-render viewport
-            this.monsterMovement(currentEntities, cell, [cIdx, rIdx], change);
+            if (newMonsterPosition) {
+              const change = [newMonsterPosition[0][0] - cIdx, newMonsterPosition[0][1] - rIdx];
+              // move monster to new position and re-render viewport
+              this.monsterMovement(currentEntities, cell, [cIdx, rIdx], change);
+            }
           }
           return null;
         });
@@ -455,7 +472,7 @@ class Board extends Component {
     console.log('running');
     const self = this;
     function nextStep() {
-      console.log('nextStep');
+      // console.log('nextStep');
       if (!self.props.appState.running) {
         console.log('clearInterval');
         window.clearInterval(window.interval);
@@ -474,9 +491,9 @@ class Board extends Component {
   }
 
   startGame() {
-    const { newMap, heroPosition, trumpPosition } =
+    const { newMap, heroPosition, trumpPosition, doors } =
       fillGrid(generateMap(1), 1, this.props.appState.hero);
-    this.props.actions.start(newMap, heroPosition, trumpPosition);
+    this.props.actions.start(newMap, heroPosition, trumpPosition, doors);
     this.play();
   }
 

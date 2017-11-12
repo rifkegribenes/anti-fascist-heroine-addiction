@@ -126,7 +126,17 @@ const fillGrid = (gameMap, level, hero) => {
       }
     }
   });
-  return { newMap, heroPosition, trumpPosition };
+
+  // generate an array of door coordinates to save to state
+  // used for Monster AI
+  const doors = [];
+  newMap.map((r, rIdx) => r.map((c, cIdx) => {
+    if (c.type === 'door') {
+      doors.push([cIdx, rIdx]);
+    }
+    return null;
+  }));
+  return { newMap, heroPosition, trumpPosition, doors };
 };
 
 export default fillGrid;
