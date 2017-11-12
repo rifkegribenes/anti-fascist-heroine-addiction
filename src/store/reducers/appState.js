@@ -20,6 +20,7 @@ const INITIAL_STATE = {
     powers: '',
     team: [],
     level: 1,
+    room: '',
   },
   messages: ['Welcome to the dungeon! Try eating some food and gathering your team members before attacking any monsters.'],
   modalOpen: true,
@@ -39,7 +40,7 @@ const INITIAL_STATE = {
   currentEntity: {},
   clipSize: 640,
   gridFilled: false,
-  sound: true,
+  sound: false,
   torch: true,
   loaded: false,
   running: false,
@@ -116,6 +117,7 @@ function appState(state = INITIAL_STATE, action) {
             attack: { $set: 10 },
             team: { $set: [] },
             level: { $set: 1 },
+            room: { $set: 0 },
           },
         },
       );
@@ -130,6 +132,7 @@ function appState(state = INITIAL_STATE, action) {
             attack: { $set: action.payload.attack },
             team: { $set: action.payload.team },
             level: { $set: action.payload.level },
+            room: { $set: action.payload.room },
           },
         },
       );
@@ -256,6 +259,7 @@ function appState(state = INITIAL_STATE, action) {
     case UPDATE_DIMENSIONS:
     // wide column max width = 675 inner width / 735 outer width
     // board space is vh - 50px (header)
+    // TODO: MOVE THIS LOGIC OUT OF THE REDUCER AND INTO UTILS OR BOARD.JSX
       if (colWide < 640 || action.payload.height < 690) { // true
         if ((action.payload.height - 70) > colWide) { // false
           clipSize = colWide;
@@ -282,6 +286,7 @@ function appState(state = INITIAL_STATE, action) {
           trumpPosition: { $set: action.payload.trumpPosition },
           entities: { $set: action.payload.entities },
           gameLevel: { $set: action.payload.gameLevel },
+          doors: { $set: action.payload.doors },
         },
         );
 

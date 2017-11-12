@@ -9,7 +9,7 @@ import InfoLeft from './InfoLeft';
 import InfoRight from './InfoRight';
 import BigMsg from './BigMsg';
 import * as utils from '../utils/index';
-import generateMap from '../utils/mapGen';
+import generateMap from '../utils/mapgen';
 import fillGrid from '../utils/fillGrid';
 // import * as aL from '../utils/asset_loader';
 
@@ -23,6 +23,10 @@ class Board extends Component {
 
   constructor(props) {
     super(props);
+
+    this.state = {
+      myReq: null,
+    }
 
     this.handleKeydown = this.handleKeydown.bind(this);
     this.userInput = this.userInput.bind(this);
@@ -46,7 +50,6 @@ class Board extends Component {
 
   componentDidUpdate() {
     if (this.props.appState.gridFilled) {
-      console.log('cDU');
       utils.renderViewport(this.props.appState.heroPosition,
         this.props.appState.entities, this.props.appState.cellSize);
     }
@@ -94,13 +97,20 @@ class Board extends Component {
   }
 
   userInput(change) {
+    const oldRoom = this.props.appState.hero.room;
     const [x, y] = this.props.appState.heroPosition;
     const [changeX, changeY] = change;
     const newPosition = [changeX + x, changeY + y];
     const newHero = this.props.appState.entities[y][x];
     const destination = this.props.appState.entities[y + changeY][x + changeX];
     if (destination.type !== 'wall' && destination.type !== 'monster' && destination.type !== 'finalMonster') {
-      const grid1 = utils.changeEntity(this.props.appState.entities, { type: 'floor' }, [x, y]);
+      // check if prevPos was a door
+      let grid1;
+      if (oldRoom === 'door') {
+        grid1 = utils.changeEntity(this.props.appState.entities, { type: 'door', room: 'door' }, [x, y]);
+      } else {
+        grid1 = utils.changeEntity(this.props.appState.entities, { type: 'floor', room: oldRoom }, [x, y]);
+      }
       const grid2 = utils.changeEntity(grid1, newHero, newPosition);
       this.props.actions.userInput(grid2, newPosition);
     }
@@ -130,7 +140,27 @@ class Board extends Component {
         document.getElementById('entity').classList.remove('spin');
         this.handleStaircase(destination);
         break;
+      case 'door':
+        this.handleDoor([...newPosition], change, this.props.appState.hero);
+        break;
       default:
+    }
+  }
+
+  handleDoor(doorCoords, entity) {
+    const [dx, dy] = doorCoords;
+    // change the room id of the entity or hero
+    console.log(`handle door for ${entity.name}`);
+    if (entity.type === 'hero') {
+      const newHero = { ...this.props.appState.hero };
+      newHero.room = 'door';
+      this.props.actions.updateHero(newHero);
+    } else if (entity.type === 'monster') {
+      const newEntity = { ...entity };
+      newEntity.room = 'door';
+      const newEntities = [...this.props.appState.entities];
+      newEntities[dy][dx] = newEntity;
+      this.props.actions.updateEntities(newEntities);
     }
   }
 
@@ -392,10 +422,10 @@ class Board extends Component {
     const level = this.props.appState.gameLevel;
     messages.push(`You found the staircase down to level ${this.props.appState.gameLevel + 1}!`);
     this.props.actions.updateMessages(messages);
-    const { newMap, heroPosition, trumpPosition } = fillGrid(generateMap(level + 1),
+    const { newMap, heroPosition, trumpPosition, doors } = fillGrid(generateMap(level + 1),
       level + 1, this.props.appState.hero);
     this.props.actions.handleStaircase(currentEntity,
-      heroPosition, trumpPosition, newMap, level + 1);
+      heroPosition, trumpPosition, newMap, level + 1, doors);
     document.getElementById('subhead').classList.add('powerUp');
     setTimeout(() => {
       utils.renderViewport(this.props.appState.heroPosition,
@@ -407,18 +437,35 @@ class Board extends Component {
     }, 2000);
   }
 
-  monsterMovement(entities, entity, coords, change) {
+  monsterMovement(entities, entity, coords, prevChange) {
     if (this.props.appState.running && !entity.combat) {
+      let change = prevChange;
+      if (!change) { change = [0, 0]; }
+      console.log(`monsterMovement change: ${change}`);
       const [x, y] = coords;
+      const oldRoom = entity.room;
       const [changeX, changeY] = change;
       const newPosition = [changeX + x, changeY + y];
       const destination = entities[y + changeY][x + changeX];
+      if (destination.type === 'door') {
+        this.handleDoor([...newPosition], entity);
+      }
       if (destination.type === 'floor' ||
         destination.type === 'door' ||
         destination.type === 'hero') {
-        const grid1 = utils.changeEntity(this.props.appState.entities, { type: 'floor' }, coords);
+        // check if prevPos was a door
+        let grid1;
+        if (oldRoom === 'door') {
+          console.log('previous location was a door');
+          grid1 = utils.changeEntity(this.props.appState.entities, { type: 'door', room: 'door' }, coords);
+        } else {
+          grid1 = utils.changeEntity(this.props.appState.entities, { type: 'floor', room: oldRoom }, coords);
+        }
         console.log(`${entity.name}'s new position is ${newPosition}`);
-        const grid2 = utils.changeEntity(grid1, entity, newPosition);
+        console.log(`saving prevChange of ${change} to ${entity.name}`);
+        const newEntity = { ...entity };
+        newEntity.prevChange = change;
+        const grid2 = utils.changeEntity(grid1, newEntity, newPosition);
         this.props.actions.updateEntities(grid2);
         // utils.renderViewport(this.props.appState.heroPosition,
         // this.props.appState.entities, this.props.appState.cellSize);
@@ -444,13 +491,17 @@ class Board extends Component {
         row.map((cell, cIdx) => {
           // only calculate movement for monsters inside current viewport
           if (cell.type === 'monster' && utils.inViewport([cIdx, rIdx], heroPosition)) {
-            console.log(`${cell.name} is in viewport at ${cIdx}, ${rIdx}`);
-            // choose a move at random from possible moves that bring monster closer to hero
+            console.log(`${cell.name} is in viewport at ${cIdx} across, ${rIdx} down`);
+            console.log(`${cell.name} prevMoveChange = ${cell.prevChange}`);
+            // choose next move in monsterAI algorithm
+            const heroRoom = this.props.appState.hero.room;
             const newMonsterPosition = utils.monsterAI(currentEntities,
-              [cIdx, rIdx], heroPosition, doors);
+              [cIdx, rIdx], heroPosition, doors, heroRoom, cell.prevChange);
             // calculate change
             if (newMonsterPosition) {
-              const change = [newMonsterPosition[0][0] - cIdx, newMonsterPosition[0][1] - rIdx];
+              console.log(`cIdx: ${cIdx}, rIdx: ${rIdx}`);
+              const change = [newMonsterPosition[0] - cIdx, newMonsterPosition[1] - rIdx];
+              console.log(`change: ${change}`);
               // move monster to new position and re-render viewport
               this.monsterMovement(currentEntities, cell, [cIdx, rIdx], change);
             }
@@ -463,7 +514,6 @@ class Board extends Component {
   }
 
   play() {
-    console.log('play');
     this.props.actions.play();
     this.run();
   }

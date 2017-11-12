@@ -11,160 +11,221 @@ export const randomInt = (min, max) => Math.floor(random(min, max));
 export const inViewport = (entityCoords, heroCoords) => {
   const [ex, ey] = entityCoords;
   const [hx, hy] = heroCoords;
-  if (Math.abs(ex - hx) <= vWidth / 2 && Math.abs(ey - hy) <= vHeight / 2) {
+  if (Math.abs(ex - hx) < vWidth / 2 && Math.abs(ey - hy) < vHeight / 2) {
     return true;
   }
   return false;
 };
-const getNearestDoor = (doors, entityCoords) => {
-  // find nearest door
-  // maximum room wall size is 12 cells
-  // so door can't be more than 12 cells away in any direction
-  const [eX, eY] = entityCoords;
-  console.log(`looking for nearest door to ${entityCoords}`);
-  console.log(`possible doors: ${doors}`);
-  // calculate distance of each door in array from entity coords
-  const doorsDistance = doors.map(door => Math.abs(door[0] - eX) + Math.abs(door[1] - eY));
-  // find closest distance
-  const nearestDoorDistance = Math.min(...doorsDistance);
-  console.log(`nearest door to ${entityCoords} is ${doors[doorsDistance.indexOf(nearestDoorDistance)]}`);
-  // return coordinates of closest door
-  return doors[doorsDistance.indexOf(nearestDoorDistance)];
+
+const arraysEqual = (arr1, arr2) => {
+  if (arr1.length !== arr2.length) { return false; }
+  for (let i = arr1.length; i--;) {
+    if (arr1[i] !== arr2[i]) { return false; }
+  }
+  return true;
 };
 
-const getNeighbors = (entities, entityCoords) => {
+const move2Door = (neighborCells, entities) => {
+  console.log(neighborCells.filter(cell => entities[cell[1]][cell[0]].type === 'door'));
+  return neighborCells.filter(cell => entities[cell[1]][cell[0]].type === 'door');
+};
+
+// this function handles 'stalemate' situations where monsters get stuck
+// in corners or doorways repeating the same 2-move sequence
+const anythingButBack = (entityCoords, prevMoveChange, neighborCells) => {
+  console.log(`prevMoveChange: ${prevMoveChange}`);
+  const [cx, cy] = prevMoveChange;
+  const [ex, ey] = entityCoords;
+  console.log(`next move in same direction would be: ${[cx + ex, cy + ey]}`);
+  // if next move in same direction is possible, take it
+  console.log(`neigborCells: (is next move in this list?)`);
+  console.log(neighborCells);
+  let nextMoveInList;
+  for (let i = neighborCells.length; i--;) {
+    if (arraysEqual(i, [cx + ex, cy + ey])) {
+      nextMoveInList = true;
+    }
+    nextMoveInList = false;
+  }
+  if (nextMoveInList) {
+    return [cx + ex, cy + ey];
+  }
+  // if not, prioritize a neighbor cell that
+  // doesn't take you back the way you came
+  const notBackwards = neighborCells.filter(cell =>
+    cell[0] !== ex - cx && cell[1] !== ey - cy);
+  if (notBackwards.length) {
+    console.log(`non-backwards random move: ${notBackwards[0]}`);
+    return notBackwards[0];
+  }
+  // if none of those choices work then maybe backwards is your only choice
+  // so go ahead and go back. but don't do it next time!!
+  return [ex - cx, ey - cy];
+};
+
+const chooseRandomMove = (neighborCells, entities, entityCoords, doorPriority, prevMoveChange) => {
+  const [ex, ey] = entityCoords;
+  console.log(`random move: ${neighborCells[randomInt(0, neighborCells.length - 1)]}`);
+  if (doorPriority) {
+    const doorCells = neighborCells.filter(cell => entities[cell[1]][cell[0]].type === 'door');
+    if (doorCells.length) {
+      console.log(`${entities[ey][ex].name} is next to a door`);
+      console.log(neighborCells.filter(cell => entities[cell[1]][cell[0]].type === 'door'));
+      return move2Door(neighborCells, entities);
+    }
+  }
+
+  return anythingButBack(entityCoords, prevMoveChange, neighborCells);
+};
+
+export const getNeighbors = (entities, entityCoords) => {
   // returns an array containing the x & y coords of each neighbor cell
-  // plus the entity object at that location
   const [ex, ey] = entityCoords;
   const neighbors = [
-    [[ex + 1, ey], entities[ey][ex + 1]],
-    [[ex, ey + 1], entities[ey + 1][ex]],
-    [[ex, ey - 1], entities[ey - 1][ex]],
-    [[ex - 1, ey], entities[ey][ex - 1]],
+    [ex + 1, ey],
+    [ex, ey + 1],
+    [ex, ey - 1],
+    [ex - 1, ey],
   ];
   // filter out cells that are not possible moves
   // (only include floor, door, & hero cells)
   return neighbors.filter(cell =>
-    cell[1].type === 'floor' ||
-    cell[1].type === 'door' ||
-    cell[1].type === 'hero',
-    );
+    entities[cell[1]][cell[0]].type === 'floor' ||
+    entities[cell[1]][cell[0]].type === 'door' ||
+    entities[cell[1]][cell[0]].type === 'hero');
 };
 
+const move2Hero = (neighborCells, entities) => {
+  console.log(neighborCells.filter(cell => entities[cell[1]][cell[0]].type === 'hero'));
+  return neighborCells.filter(cell => entities[cell[1]][cell[0]].type === 'hero');
+};
 
-export const monsterAI = (entities, entityCoords, heroCoords, doors) => {
+const moveTowardDoor = (neighborCells, bestDoor, entities, entityCoords, prevMoveChange) => {
+  const [ex, ey] = entityCoords;
+  const [bDx, bDy] = bestDoor;
+  // choose a move that brings monster closer to the best door
+  // neighborCells.forEach((cell, idx) => {
+  //   console.log(`distance from best door of neighbor cell ${idx} (${cell}):`);
+  //   console.log(`distanceX = ${(Math.abs(cell[0] - bDx))}.
+  //   distanceY = ${(Math.abs(cell[1] - bDy))}`);
+  //   console.log(`distance sum = ${(Math.abs(cell[0] - bDx)) + (Math.abs(cell[1] - bDy))}`);
+  // });
+  const closer2BestDoorMoves = neighborCells.filter(cell =>
+      (Math.abs(cell[0] - bDx) + (Math.abs(cell[1] - bDy))) <
+      (Math.abs(ex - bDx) + Math.abs(ey - bDy)));
+  console.log(`closer2Bestdoor moves for ${entities[ey][ex].name}:`);
+  console.log(closer2BestDoorMoves);
+  if (closer2BestDoorMoves.length) {
+    return closer2BestDoorMoves[0];
+  }
+  console.log('moveTowardDoor returned null, choosing random move instead');
+  return chooseRandomMove(neighborCells, entities, entityCoords, true, prevMoveChange);
+};
+
+const moveTowardHero = (neighborCells, entityCoords, heroCoords, entities, prevMoveChange) => {
   const [ex, ey] = entityCoords;
   const [hx, hy] = heroCoords;
+  const possibleMoves = neighborCells.filter(cell =>
+    (Math.abs(cell[0] - hx) + Math.abs(cell[1] - hy)) <
+    (Math.abs(ex - hx) + Math.abs(ey - hy)));
+  console.log(`possible closer2hero moves for ${entities[ey][ex].name}:`);
+  console.log(possibleMoves);
+
+  // if none exists (have to go around something in its path), then pick one move at random
+  if (!possibleMoves.length) {
+    console.log(`${entities[ey][ex].name} has no good moves, choosing one at random instead`);
+    return chooseRandomMove(neighborCells, entities, entityCoords, false, prevMoveChange);
+  }
+  return chooseRandomMove(possibleMoves, entities, entityCoords, false, prevMoveChange);
+};
+
+const getBestDoor = (doors, entityRoom, entityCoords, heroCoords) => {
+  // best door must be on border of entity's room
+  // AND bring entity closer to hero
+  const [hx, hy] = heroCoords;
+
+  // generate array of doors that are on border of monster's room
+  const monsterRoomDoors = doors.filter((door) => {
+    const { rooms } = door;
+    return rooms[0] === entityRoom || rooms[1] === entityRoom;
+  });
+  console.log(`these doors adjoin the room containing ${entityCoords}:`);
+  console.log(monsterRoomDoors);
+
+  // of those doors, choose the one that is closest to the hero
+  const doorDistances = monsterRoomDoors.map(door =>
+    Math.abs(door.coords[0] - hx) + Math.abs(door.coords[1] - hy));
+  const indexOfClosestDoor = doorDistances.indexOf(Math.min(doorDistances));
+  const closestDoor = monsterRoomDoors[indexOfClosestDoor];
+  console.log(`best door (on border of m room, closest to hero) = ${closestDoor.coords}`);
+
+  return closestDoor.coords;
+};
+
+// returns an array with xy coords of next move.
+export const monsterAI = (entities, entityCoords, heroCoords, doors, heroRoom, prevMoveChange) => {
+  console.log(`monsterAI prevMoveChange: ${prevMoveChange}`);
+  const [ex, ey] = entityCoords;
+  const entity = entities[ey][ex];
 
   // find cells to N,S,E, & W of monster's current position
   const neighborCells = getNeighbors(entities, entityCoords);
 
   // is the entity right next to the hero? if so, that's the next move
-  let nextToHero = false;
-  const heroCells = neighborCells.filter(cell => cell[1].type === 'hero');
+  const heroCells = neighborCells.filter(cell => entities[cell[1]][cell[0]].type === 'hero');
   if (heroCells.length) {
-    nextToHero = true;
-  }
-  if (nextToHero) {
-    console.log(`${entities[ey][ex].name} is nextToHero`);
-    console.log(neighborCells.filter(cell => cell[1].type === 'hero'));
-    return neighborCells.filter(cell => cell[1].type === 'hero');
+    console.log(`${entities[ey][ex].name} is nextToHero. Next move:`);
+    console.log(neighborCells.filter(cell => entities[cell[1]][cell[0]].type === 'hero'));
+    return move2Hero(neighborCells, entities);
   }
 
-  // is there a wall between the monster and the hero? if so, look for
-  // nearest door instead
-
-  // filter neighbor cells to return only choices that move monster closer to the hero
-  let possibleMoves = neighborCells.filter(cell =>
-    (Math.abs(cell[0][0] - hx) + Math.abs(cell[0][1] - hy)) <
-    (Math.abs(ex - hx) + Math.abs(ey - hy)));
-  console.log(`possible closer2hero moves for ${entities[ey][ex].name}:`);
-  console.log(possibleMoves);
-
-  // if there are multiple possible moves, choose the one that also brings
-  // monster closer to nearest door
-  if (possibleMoves.length > 1) {
-    console.log(`${entities[ey][ex].name} has multiple closer2hero moves, looking for closer2door move`);
-
-    // get coords of nearest door
-    const [dx, dy] = getNearestDoor(doors, entityCoords);
-    console.log(`${entities[ey][ex].name} nearest door: ${dx}, ${dy}`);
-    const closer2DoorMoves = possibleMoves
-    .filter(cell =>
-      (Math.abs(cell[0][0] - dx) + (Math.abs(cell[0][1] - dy))) <
-      (Math.abs(ex - dx) + Math.abs(ey - dy)));
-    console.log(`closer2door moves for ${entities[ey][ex].name}:`);
-    console.log(closer2DoorMoves);
-    if (closer2DoorMoves.length) {
-      return closer2DoorMoves[0];
-    }
+  // is the entity in a doorway? if so, finish going through it
+  if (entity.room === 'door') {
+    return anythingButBack(entityCoords, prevMoveChange, neighborCells);
   }
 
-  // if there are no possible moves, then look for a move that
-  // brings monster closer to nearest door
-  if (!possibleMoves.length) {
-    console.log(`${entities[ey][ex].name} has no possible moves to bring him closer to hero, looking for nearest door instead`);
-
-    // get coords of nearest door
-    const [dx, dy] = getNearestDoor(doors, entityCoords);
-    console.log(`${entities[ey][ex].name} nearest door: ${dx}, ${dy}`);
-    possibleMoves = neighborCells.filter(cell =>
-      (Math.abs(cell[0][0] - dx) + (Math.abs(cell[0][1] - dy))) <
-      (Math.abs(ex - dx) + Math.abs(ey - dy)));
-    console.log(`possible closer2door moves for ${entities[ey][ex].name}:`);
-    console.log(possibleMoves);
+  // are monster and hero in different rooms? if so, look for the door
+  // out of the monster's current room that brings him closest to hero
+  if (entity.room !== heroRoom) {
+    console.log(`${entity.name} is in room ${entities[ey][ex].room}. hero is in room ${heroRoom}. (should be different) Look for best door`);
+    const bestDoor = getBestDoor(doors, entity.room, entityCoords, heroCoords);
+    return moveTowardDoor(neighborCells, bestDoor, entities, entityCoords, prevMoveChange);
   }
 
-
-  // if none exists (have to go around something in its path), then pick one move at random
-  if (!possibleMoves.length) {
-    console.log(`${entities[ey][ex].name} has no good moves, choosing one at random instead`);
-    console.log(`moving to: ${neighborCells[Math.floor(random(0, 3))]}`);
-    return neighborCells[Math.floor(random(0, 3))];
-  }
-
-  // if one of the possible moves is a door, choose that one
-  let nextToDoor = false;
-  const doorCells = possibleMoves.filter(cell => cell[1].type === 'door');
-  if (doorCells.length) {
-    nextToDoor = true;
-  }
-  if (nextToDoor) {
-    console.log(`${entities[ey][ex].name} is next to a door`);
-    console.log(possibleMoves.filter(cell => cell[1].type === 'door'));
-    return possibleMoves.filter(cell => cell[1].type === 'door');
-  }
-
-  // otherwise, choose one of the possible moves at random
-  const chosenMove = Math.floor(random(0, possibleMoves.length - 1));
-  return possibleMoves[chosenMove];
+  // if hero and monster are in same room, move toward hero
+  console.log(`${entity.name} is in room ${entity.room}. hero is in room ${heroRoom}. (should be same) look for best move`);
+  return moveTowardHero(neighborCells, entityCoords, heroCoords, entities, prevMoveChange);
 };
 
 // render to canvas
-const drawCell = (cellSize, ctx, level, x, y, vX, vY, cellType, opacity, hue, iconUrl) => {
+const drawCell = (cellSize, ctx, cell, x, y, vX, vY) => {
   const img = new Image();
   const radius = Math.floor((cellSize) * 0.2) || 2;
   const size = cellSize * 2;
   ctx.clearRect(x, y, cellSize, cellSize);
-  switch (cellType) {
+  switch (cell.type) {
     case 'wall':
       ctx.lineJoin = 'round';
       ctx.lineWidth = radius;
-      ctx.strokeStyle = `hsl(${hue}, ${100 - ((level - 1) * 10)}%, ${(opacity - (level / 10)) * 100}%)`;
+      ctx.strokeStyle = `hsl(${cell.hue}, ${100 - ((cell.level - 1) * 10)}%, ${(cell.opacity - (cell.level / 10)) * 100}%)`;
       ctx.strokeRect(x + (radius / 2), y + (radius / 2), cellSize - radius, cellSize - radius);
         // ctx.fillStyle = `rgba(128, 128, 128, ${opacity})`; // gray
-      ctx.fillStyle = `hsl(${hue}, ${100 - ((level - 1) * 10)}%, ${(opacity - (level / 10)) * 100}%)`; // rainbow
+      ctx.fillStyle = `hsl(${cell.hue}, ${100 - ((cell.level - 1) * 10)}%, ${(cell.opacity - (cell.level / 10)) * 100}%)`; // rainbow
       ctx.fillRect(x + (radius / 2), y + (radius / 2), cellSize - radius, cellSize - radius);
         // ctx.fillStyle = `hsla(${hue}, 100%, 50%, ${opacity})`;
         // ctx.fillRect(x, y, cellSize, cellSize);
       break;
     case 'floor':
     case 'door':
-      ctx.fillStyle = `hsl(0, 0%, ${80 - ((level - 1) * 15)}%)`;
-      ctx.fillRect(x, y, cellSize, cellSize);
+      ctx.font = '10px Arial';
+      ctx.fillStyle = 'black';
+      ctx.fillText(`[${(x / cellSize) + 30},${(y / cellSize) + 20}]`, x, y);
+      ctx.fillText(`${Math.floor(cell.room)}`, x, y + 10);
+      // ctx.fillStyle = `hsl(0, 0%, ${80 - ((level - 1) * 15)}%)`;
+      // ctx.fillRect(x, y, cellSize, cellSize);
       break;
     case 'hero':
-      img.src = iconUrl;
+      img.src = cell.iconUrl;
       img.onload = () => {
         ctx.save();
         ctx.shadowBlur = 20;
@@ -172,7 +233,7 @@ const drawCell = (cellSize, ctx, level, x, y, vX, vY, cellType, opacity, hue, ic
         ctx.drawImage(img, x, y, cellSize, cellSize);
         ctx.restore();
       };
-      if (!iconUrl) {
+      if (!cell.iconUrl) {
         ctx.fillStyle = 'hsla(60, 100%, 50%, 1)';
         ctx.fillRect(x, y, cellSize, cellSize);
       }
@@ -180,13 +241,13 @@ const drawCell = (cellSize, ctx, level, x, y, vX, vY, cellType, opacity, hue, ic
     case 'monster':
       ctx.fillStyle = 'hsla(0, 0%, 80%, 1)';
       ctx.fillRect(x, y, cellSize, cellSize);
-      img.src = iconUrl;
+      img.src = cell.iconUrl;
       img.onload = () => {
         ctx.save();
         ctx.drawImage(img, x, y, cellSize, cellSize);
         ctx.restore();
       };
-      if (!iconUrl) {
+      if (!cell.iconUrl) {
         ctx.fillStyle = 'hsla(360, 100%, 50%, 1)';
         ctx.fillRect(x, y, cellSize, cellSize);
       }
@@ -194,13 +255,13 @@ const drawCell = (cellSize, ctx, level, x, y, vX, vY, cellType, opacity, hue, ic
     case 'food':
       ctx.fillStyle = 'hsla(0, 0%, 80%, 1)';
       ctx.fillRect(x, y, cellSize, cellSize);
-      img.src = iconUrl;
+      img.src = cell.iconUrl;
       img.onload = () => {
         ctx.save();
         ctx.drawImage(img, x, y, cellSize, cellSize);
         ctx.restore();
       };
-      if (!iconUrl) {
+      if (!cell.iconUrl) {
         ctx.fillStyle = 'hsla(120, 100%, 50%, 1)';
         ctx.fillRect(x, y, cellSize, cellSize);
       }
@@ -208,27 +269,27 @@ const drawCell = (cellSize, ctx, level, x, y, vX, vY, cellType, opacity, hue, ic
     case 'teamHero':
       ctx.fillStyle = 'hsla(0, 0%, 80%, 1)';
       ctx.fillRect(x, y, cellSize, cellSize);
-      img.src = iconUrl;
+      img.src = cell.iconUrl;
       img.onload = () => {
         ctx.save();
         // console.log(`drawing teamHero at ${x},${y}`);
         ctx.drawImage(img, x, y, cellSize, cellSize);
         ctx.restore();
       };
-      if (!iconUrl) {
+      if (!cell.iconUrl) {
         ctx.fillStyle = 'hsla(180, 100%, 50%, 1)';
         ctx.fillRect(x, y, cellSize, cellSize);
       }
       break;
     case 'finalMonster':
-      if (opacity) {
-        img.src = iconUrl;
+      if (cell.opacity) {
+        img.src = cell.iconUrl;
         img.onload = () => {
           ctx.save();
           ctx.drawImage(img, x, y, size, size);
           ctx.restore();
         };
-        if (!iconUrl) {
+        if (!cell.iconUrl) {
           ctx.fillStyle = 'black';
           ctx.fillRect(x, y, size, size);
         }
@@ -252,7 +313,6 @@ const drawCell = (cellSize, ctx, level, x, y, vX, vY, cellType, opacity, hue, ic
 export const clamp = (val, min, max) => Math.min(Math.max(val, min), max);
 
 export const renderViewport = (heroPosition, entities, cellSize) => {
-  console.log('renderV');
   const [hX, hY] = heroPosition;
   const newEntities = entities.map(row => row.map((cell) => {
     const newCell = { ...cell };
@@ -279,10 +339,7 @@ export const renderViewport = (heroPosition, entities, cellSize) => {
         // TODO:
         // add logic here to only draw cells if they are DIFFERENT from
         // last tick (need to pass last state into this function to compare)
-        drawCell(
-            cellSize, ctx, newCell.level, x, y, vX, vY,
-            newCell.type, newCell.opacity, newCell.hue, newCell.iconUrl,
-            );
+        drawCell(cellSize, ctx, newCell, x, y, vX, vY);
         return null;
       }));
 };
