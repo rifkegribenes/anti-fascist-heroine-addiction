@@ -26,7 +26,7 @@ class Board extends Component {
 
     this.state = {
       myReq: null,
-    }
+    };
 
     this.handleKeydown = this.handleKeydown.bind(this);
     this.userInput = this.userInput.bind(this);

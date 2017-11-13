@@ -38,7 +38,7 @@ const anythingButBack = (entityCoords, prevMoveChange, possibleMoves) => {
   const [ex, ey] = entityCoords;
   console.log(`next move in same direction would be: ${[cx + ex, cy + ey]}`);
   // if next move in same direction is possible, take it
-  console.log(`possibleMoves: (is next move in this list?)`);
+  console.log('possibleMoves: (is next move in this list?)');
   console.log(possibleMoves);
   let nextMoveInList;
   for (let i = possibleMoves.length; i--;) {
@@ -162,7 +162,7 @@ const getBestDoor = (doors, entityRoom, entityCoords, heroCoords) => {
   // of those doors, choose the one that is closest to the hero
   const doorDistances = monsterRoomDoors.map(door =>
     Math.abs(door.coords[0] - hx) + Math.abs(door.coords[1] - hy));
-  console.log(`doorDistances: `);
+  console.log('doorDistances: ');
   console.log(doorDistances);
   console.log(`smallest distance = ${Math.min(doorDistances)}`);
   const indexOfClosestDoor = doorDistances.indexOf(Math.min(...doorDistances));
