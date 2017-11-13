@@ -32,16 +32,16 @@ const move2Door = (neighborCells, entities) => {
 
 // this function handles 'stalemate' situations where monsters get stuck
 // in corners or doorways repeating the same 2-move sequence
-const anythingButBack = (entityCoords, prevMoveChange, neighborCells) => {
+const anythingButBack = (entityCoords, prevMoveChange, possibleMoves) => {
   console.log(`prevMoveChange: ${prevMoveChange}`);
   const [cx, cy] = prevMoveChange;
   const [ex, ey] = entityCoords;
   console.log(`next move in same direction would be: ${[cx + ex, cy + ey]}`);
   // if next move in same direction is possible, take it
-  console.log(`neigborCells: (is next move in this list?)`);
-  console.log(neighborCells);
+  console.log(`possibleMoves: (is next move in this list?)`);
+  console.log(possibleMoves);
   let nextMoveInList;
-  for (let i = neighborCells.length; i--;) {
+  for (let i = possibleMoves.length; i--;) {
     if (arraysEqual(i, [cx + ex, cy + ey])) {
       nextMoveInList = true;
     }
@@ -52,7 +52,7 @@ const anythingButBack = (entityCoords, prevMoveChange, neighborCells) => {
   }
   // if not, prioritize a neighbor cell that
   // doesn't take you back the way you came
-  const notBackwards = neighborCells.filter(cell =>
+  const notBackwards = possibleMoves.filter(cell =>
     cell[0] !== ex - cx && cell[1] !== ey - cy);
   if (notBackwards.length) {
     console.log(`non-backwards random move: ${notBackwards[0]}`);
@@ -63,19 +63,20 @@ const anythingButBack = (entityCoords, prevMoveChange, neighborCells) => {
   return [ex - cx, ey - cy];
 };
 
-const chooseRandomMove = (neighborCells, entities, entityCoords, doorPriority, prevMoveChange) => {
+const chooseRandomMove = (possibleMoves, entities, entityCoords, doorPriority, prevMoveChange) => {
   const [ex, ey] = entityCoords;
-  console.log(`random move: ${neighborCells[randomInt(0, neighborCells.length - 1)]}`);
   if (doorPriority) {
-    const doorCells = neighborCells.filter(cell => entities[cell[1]][cell[0]].type === 'door');
+    const doorCells = possibleMoves.filter(cell => entities[cell[1]][cell[0]].type === 'door');
     if (doorCells.length) {
       console.log(`${entities[ey][ex].name} is next to a door`);
-      console.log(neighborCells.filter(cell => entities[cell[1]][cell[0]].type === 'door'));
-      return move2Door(neighborCells, entities);
+      console.log(possibleMoves.filter(cell => entities[cell[1]][cell[0]].type === 'door'));
+      return move2Door(possibleMoves, entities);
     }
   }
-
-  return anythingButBack(entityCoords, prevMoveChange, neighborCells);
+  if (prevMoveChange !== [0, 0]) {
+    return anythingButBack(entityCoords, prevMoveChange, possibleMoves);
+  }
+  return possibleMoves[randomInt(0, possibleMoves.length - 1)];
 };
 
 export const getNeighbors = (entities, entityCoords) => {
@@ -131,7 +132,13 @@ const moveTowardHero = (neighborCells, entityCoords, heroCoords, entities, prevM
   console.log(`possible closer2hero moves for ${entities[ey][ex].name}:`);
   console.log(possibleMoves);
 
-  // if none exists (have to go around something in its path), then pick one move at random
+  // if there's only one move, take it!
+  if (possibleMoves.length === 1) {
+    return possibleMoves[0];
+  }
+
+  // if no possible moves bring monster closer to hero
+  // (have to go around something in its path), then pick one move at random
   if (!possibleMoves.length) {
     console.log(`${entities[ey][ex].name} has no good moves, choosing one at random instead`);
     return chooseRandomMove(neighborCells, entities, entityCoords, false, prevMoveChange);
@@ -155,7 +162,11 @@ const getBestDoor = (doors, entityRoom, entityCoords, heroCoords) => {
   // of those doors, choose the one that is closest to the hero
   const doorDistances = monsterRoomDoors.map(door =>
     Math.abs(door.coords[0] - hx) + Math.abs(door.coords[1] - hy));
-  const indexOfClosestDoor = doorDistances.indexOf(Math.min(doorDistances));
+  console.log(`doorDistances: `);
+  console.log(doorDistances);
+  console.log(`smallest distance = ${Math.min(doorDistances)}`);
+  const indexOfClosestDoor = doorDistances.indexOf(Math.min(...doorDistances));
+  console.log(`indexOfClosestDoor: ${indexOfClosestDoor}`);
   const closestDoor = monsterRoomDoors[indexOfClosestDoor];
   console.log(`best door (on border of m room, closest to hero) = ${closestDoor.coords}`);
 
@@ -181,6 +192,7 @@ export const monsterAI = (entities, entityCoords, heroCoords, doors, heroRoom, p
 
   // is the entity in a doorway? if so, finish going through it
   if (entity.room === 'door') {
+    console.log(`${entity.name} IS IN A DOORWAY (utils)`);
     return anythingButBack(entityCoords, prevMoveChange, neighborCells);
   }
 

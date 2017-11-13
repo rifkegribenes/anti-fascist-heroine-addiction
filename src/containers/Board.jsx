@@ -150,7 +150,7 @@ class Board extends Component {
   handleDoor(doorCoords, entity) {
     const [dx, dy] = doorCoords;
     // change the room id of the entity or hero
-    console.log(`handle door for ${entity.name}`);
+    console.log(`${entity.name} IS IN A DOORWAY`);
     if (entity.type === 'hero') {
       const newHero = { ...this.props.appState.hero };
       newHero.room = 'door';
@@ -160,6 +160,7 @@ class Board extends Component {
       newEntity.room = 'door';
       const newEntities = [...this.props.appState.entities];
       newEntities[dy][dx] = newEntity;
+      console.log(`${newEntity.name}'s new room is ${newEntity.room}`);
       this.props.actions.updateEntities(newEntities);
     }
   }
@@ -445,9 +446,11 @@ class Board extends Component {
       const [x, y] = coords;
       const oldRoom = entity.room;
       const [changeX, changeY] = change;
-      const newPosition = [changeX + x, changeY + y];
-      const destination = entities[y + changeY][x + changeX];
+      const newPosition = [changeX + x, changeY + y]; // new coordinates
+      const destination = entities[y + changeY][x + changeX]; // what's there
+      console.log(`destination: ${destination.type} at ${newPosition}`);
       if (destination.type === 'door') {
+        console.log(`${entity.name} is about to go through a door`);
         this.handleDoor([...newPosition], entity);
       }
       if (destination.type === 'floor' ||
@@ -497,9 +500,11 @@ class Board extends Component {
             const heroRoom = this.props.appState.hero.room;
             const newMonsterPosition = utils.monsterAI(currentEntities,
               [cIdx, rIdx], heroPosition, doors, heroRoom, cell.prevChange);
+            console.log(`newMonsterPos: ${newMonsterPosition}, ${typeof newMonsterPosition}`);
             // calculate change
             if (newMonsterPosition) {
-              console.log(`cIdx: ${cIdx}, rIdx: ${rIdx}`);
+              console.log(`cIdx: ${cIdx}, ${typeof cIdx}. rIdx: ${rIdx}, ${typeof rIdx}.`);
+              console.log(`newMonsterPosition[0]: ${newMonsterPosition[0]}, ${typeof newMonsterPosition[0]}. newMonsterPosition[1]: ${newMonsterPosition[1]}, ${typeof newMonsterPosition[1]}.`);
               const change = [newMonsterPosition[0] - cIdx, newMonsterPosition[1] - rIdx];
               console.log(`change: ${change}`);
               // move monster to new position and re-render viewport
