@@ -162,6 +162,8 @@ class Board extends Component {
       newEntities[dy][dx] = newEntity;
       console.log(`${newEntity.name}'s new room is ${newEntity.room}`);
       this.props.actions.updateEntities(newEntities);
+      console.log(`after state update, cell prev containing door is now:`);
+      console.log(this.props.appState.entities[dy][dx]);
     }
   }
 

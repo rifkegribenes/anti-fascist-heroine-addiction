@@ -34,6 +34,10 @@ const move2Door = (neighborCells, entities) => {
 // in corners or doorways repeating the same 2-move sequence
 const anythingButBack = (entityCoords, prevMoveChange, possibleMoves) => {
   console.log(`prevMoveChange: ${prevMoveChange}`);
+  if (prevMoveChange === [0, 0]) {
+    // then skip all the rest of the logic and just return a random move
+    return possibleMoves[randomInt(0, possibleMoves.length - 1)];
+  }
   const [cx, cy] = prevMoveChange;
   const [ex, ey] = entityCoords;
   console.log(`next move in same direction would be: ${[cx + ex, cy + ey]}`);
@@ -50,7 +54,7 @@ const anythingButBack = (entityCoords, prevMoveChange, possibleMoves) => {
   if (nextMoveInList) {
     return [cx + ex, cy + ey];
   }
-  // if not, prioritize a neighbor cell that
+  // if not, prioritize a possible move that
   // doesn't take you back the way you came
   const notBackwards = possibleMoves.filter(cell =>
     cell[0] !== ex - cx && cell[1] !== ey - cy);
@@ -168,7 +172,7 @@ const getBestDoor = (doors, entityRoom, entityCoords, heroCoords) => {
   const indexOfClosestDoor = doorDistances.indexOf(Math.min(...doorDistances));
   console.log(`indexOfClosestDoor: ${indexOfClosestDoor}`);
   const closestDoor = monsterRoomDoors[indexOfClosestDoor];
-  console.log(`best door (on border of m room, closest to hero) = ${closestDoor.coords}`);
+  console.log(`best door = ${closestDoor.coords}`);
 
   return closestDoor.coords;
 };
