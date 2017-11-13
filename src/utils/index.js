@@ -27,14 +27,15 @@ const arraysEqual = (arr1, arr2) => {
 
 const move2Door = (neighborCells, entities) => {
   console.log(neighborCells.filter(cell => entities[cell[1]][cell[0]].type === 'door'));
-  return neighborCells.filter(cell => entities[cell[1]][cell[0]].type === 'door');
+  return neighborCells.filter(cell => entities[cell[1]][cell[0]].type === 'door')[0];
 };
 
 // this function handles 'stalemate' situations where monsters get stuck
 // in corners or doorways repeating the same 2-move sequence
 const anythingButBack = (entityCoords, prevMoveChange, possibleMoves) => {
   console.log(`prevMoveChange: ${prevMoveChange}`);
-  if (prevMoveChange === [0, 0]) {
+  if (prevMoveChange[0] === 0 && prevMoveChange[1] === 0) {
+    console.log('previous move change was 0,0, any random move is OK');
     // then skip all the rest of the logic and just return a random move
     return possibleMoves[randomInt(0, possibleMoves.length - 1)];
   }
@@ -102,7 +103,7 @@ export const getNeighbors = (entities, entityCoords) => {
 
 const move2Hero = (neighborCells, entities) => {
   console.log(neighborCells.filter(cell => entities[cell[1]][cell[0]].type === 'hero'));
-  return neighborCells.filter(cell => entities[cell[1]][cell[0]].type === 'hero');
+  return neighborCells.filter(cell => entities[cell[1]][cell[0]].type === 'hero')[0];
 };
 
 const moveTowardDoor = (neighborCells, bestDoor, entities, entityCoords, prevMoveChange) => {
@@ -214,7 +215,7 @@ export const monsterAI = (entities, entityCoords, heroCoords, doors, heroRoom, p
 };
 
 // render to canvas
-const drawCell = (cellSize, ctx, cell, x, y, vX, vY) => {
+const drawCell = (cellSize, ctx, cell, x, y) => {
   const img = new Image();
   const radius = Math.floor((cellSize) * 0.2) || 2;
   const size = cellSize * 2;
@@ -355,7 +356,7 @@ export const renderViewport = (heroPosition, entities, cellSize) => {
         // TODO:
         // add logic here to only draw cells if they are DIFFERENT from
         // last tick (need to pass last state into this function to compare)
-        drawCell(cellSize, ctx, newCell, x, y, vX, vY);
+        drawCell(cellSize, ctx, newCell, x, y);
         return null;
       }));
 };

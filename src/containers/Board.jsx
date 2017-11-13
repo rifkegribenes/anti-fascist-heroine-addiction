@@ -147,26 +147,6 @@ class Board extends Component {
     }
   }
 
-  handleDoor(doorCoords, entity) {
-    const [dx, dy] = doorCoords;
-    // change the room id of the entity or hero
-    console.log(`${entity.name} IS IN A DOORWAY`);
-    if (entity.type === 'hero') {
-      const newHero = { ...this.props.appState.hero };
-      newHero.room = 'door';
-      this.props.actions.updateHero(newHero);
-    } else if (entity.type === 'monster') {
-      const newEntity = { ...entity };
-      newEntity.room = 'door';
-      const newEntities = [...this.props.appState.entities];
-      newEntities[dy][dx] = newEntity;
-      console.log(`${newEntity.name}'s new room is ${newEntity.room}`);
-      this.props.actions.updateEntities(newEntities);
-      console.log(`after state update, cell prev containing door is now:`);
-      console.log(this.props.appState.entities[dy][dx]);
-    }
-  }
-
   addTeamHero(teamHero) {
     const hero = { ...this.props.appState.hero };
     const messages = [...this.props.appState.messages];
@@ -442,48 +422,51 @@ class Board extends Component {
 
   monsterMovement(entities, entity, coords, prevChange) {
     if (this.props.appState.running && !entity.combat) {
-      let change = prevChange;
-      if (!change) { change = [0, 0]; }
-      console.log(`monsterMovement change: ${change}`);
+      // define constants
+      const newEntity = { ...entity };
+      console.log(`monsterMovement change: ${prevChange}`);
       const [x, y] = coords;
-      const oldRoom = entity.room;
-      const [changeX, changeY] = change;
+      const [changeX, changeY] = prevChange;
       const newPosition = [changeX + x, changeY + y]; // new coordinates
       const destination = entities[y + changeY][x + changeX]; // what's there
+      let grid1; // for updating render at end of method
       console.log(`destination: ${destination.type} at ${newPosition}`);
-      if (destination.type === 'door') {
+
+      // handle room change on entering doorway
+      if (destination.room === 'door') {
         console.log(`${entity.name} is about to go through a door`);
-        this.handleDoor([...newPosition], entity);
+        newEntity.room = 'door';
       }
-      if (destination.type === 'floor' ||
-        destination.type === 'door' ||
-        destination.type === 'hero') {
-        // check if prevPos was a door
-        let grid1;
-        if (oldRoom === 'door') {
-          console.log('previous location was a door');
-          grid1 = utils.changeEntity(this.props.appState.entities, { type: 'door', room: 'door' }, coords);
-        } else {
-          grid1 = utils.changeEntity(this.props.appState.entities, { type: 'floor', room: oldRoom }, coords);
-        }
-        console.log(`${entity.name}'s new position is ${newPosition}`);
-        console.log(`saving prevChange of ${change} to ${entity.name}`);
-        const newEntity = { ...entity };
-        newEntity.prevChange = change;
-        const grid2 = utils.changeEntity(grid1, newEntity, newPosition);
-        this.props.actions.updateEntities(grid2);
-        // utils.renderViewport(this.props.appState.heroPosition,
-        // this.props.appState.entities, this.props.appState.cellSize);
+
+      // if moving from one floor cell to another,
+      // just replace vacated cell with floor
+      if (destination.type === 'floor' && entity.room !== 'door') {
+        grid1 = utils.changeEntity(this.props.appState.entities, { type: 'floor', room: entity.room }, coords);
       }
+
+      // if leaving doorway, replace vacated cell with door
+      if (entity.room === 'door') {
+        console.log(`${entity.name} is about to exit a door`);
+        newEntity.room = this.props.appState.entities[y][x].room;
+        grid1 = utils.changeEntity(this.props.appState.entities, { type: 'door', room: 'door' }, coords);
+      }
+
+      console.log(`${entity.name}'s new position is ${newPosition}`);
+      console.log(`saving prevChange of ${prevChange} to ${entity.name}`);
+      newEntity.prevChange = prevChange;
+
+      // save updated entity info to app state
+      const grid2 = utils.changeEntity(grid1, newEntity, newPosition);
+      this.props.actions.updateEntities(grid2);
+
       // handle collisions
       if (destination.type === 'hero') {
-        this.props.actions.setCurrentEntity(entity);
+        newEntity.combat = true;
+        console.log('collision');
+        this.props.actions.setCurrentEntity(newEntity);
         document.getElementById('entity').classList.remove('spin');
-        this.handleCombat(entity, newPosition);
+        this.handleCombat(newEntity, newPosition);
       }
-    }
-    if (this.props.appState.running && entity.combat) {
-      this.handleCombat(entity, coords);
     }
   }
 

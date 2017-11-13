@@ -18,7 +18,7 @@ export const assetLoader = () => {
 
   // File complete handler
   const handleFileLoad = (event) => {
-    // console.log(`Preloaded: ${event.item.id}`);
+    console.log(`Preloaded: ${event.item.id}`);
     // createjs.Sound.play(event.item.id);
     // const file = preload.getResult(event.item.id);
 
