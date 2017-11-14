@@ -26,6 +26,7 @@ const UglifyJsPluginConfig = new webpack.optimize.UglifyJsPlugin({
 });
 
 module.exports = {
+  devtool: 'cheap-module-source-map',
   devServer: {
     host: 'localhost',
     port: '3000',
@@ -62,12 +63,14 @@ module.exports = {
     filename: 'index.js',
     path: path.join(__dirname, '/build'),
   },
-  devtool: 'cheap-module-source-map',
   plugins: dev ?
   [
     HTMLWebpackPluginConfig,
     new webpack.HotModuleReplacementPlugin(),
     new webpack.NamedModulesPlugin(),
+    new webpack.LoaderOptionsPlugin({
+      debug: true,
+    }),
   ] :
   [HTMLWebpackPluginConfig, DefinePluginConfig, UglifyJsPluginConfig],
 };

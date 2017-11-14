@@ -21,6 +21,7 @@ export const SET_LOADED = 'SET_LOADED';
 export const PLAY = 'PLAY';
 export const PAUSE = 'PAUSE';
 export const UPDATE_ENTITY = 'UPDATE_ENTITY';
+export const UPDATE_COMBAT = 'UPDATE_COMBAT';
 
 export function setLevel(level) {
   return ({
@@ -214,5 +215,15 @@ export function updateMessages(messages) {
   return ({
     type: UPDATE_MESSAGES,
     payload: messages,
+  });
+}
+
+export function updateCombat(name, init) {
+  return ({
+    type: UPDATE_COMBAT,
+    payload: {
+      name,
+      init,
+    },
   });
 }

@@ -179,11 +179,13 @@ class Board extends Component {
     }, 1000);
   }
 
-  handleCombat(monster, newPosition) {
+  handleCombat(monster, newPosition, init) {
     // copy monster so it can be modified in combat
     const currentMonster = { ...monster };
     // set monster combat value to true
-    currentMonster.combat = true;
+    let initiator = init;
+    if (!initiator) { initiator = 'hero'; }
+    this.props.actions.updateCombat(currentMonster.name, initiator);
     // define action for 'you died' and 'you won' screens
     const action = () => {
       this.props.actions.hideMsg();
@@ -421,32 +423,32 @@ class Board extends Component {
   }
 
   monsterMovement(entities, entity, coords, prevChange) {
-    if (entity.combat) {
+    if (this.props.appState.combat === entity.name) {
       console.log(`${entity.name} is in combat and is not moving`);
       return;
     }
     if (this.props.appState.running && !entity.combat) {
+      console.log(`${entity.name} monsterMovement ////////`);
       // define constants
       const newEntity = { ...entity };
-      console.log(`monsterMovement change: ${prevChange}`);
       const [x, y] = coords;
       const [changeX, changeY] = prevChange;
       const newPosition = [changeX + x, changeY + y]; // new coordinates
       const destination = entities[y + changeY][x + changeX]; // what's there
       let grid1; // for updating render at end of method
-      console.log(`destination: ${destination.type} at ${newPosition}`);
 
       // FLOOR => FLOOR
       // HERO => FLOOR
       // just replace vacated cell with floor
       if (destination.type === 'floor' && entity.room !== 'door') {
+        console.log(`${entity.name} FLOOR => FLOOR`);
         grid1 = utils.changeEntity(this.props.appState.entities, { type: 'floor', room: entity.room }, coords);
       }
 
       // FLOOR => HERO IN DOORWAY
       // replace vacated cell with floor, handle doorway, handle combat
       if (destination.type === 'hero' && destination.room === 'door') {
-        console.log(`${entity.name} is about to attack IN A DOORWAY`);
+        console.log(`${entity.name} FLOOR => HERO IN DOORWAY`);
         newEntity.room = 'door';
         newEntity.combat = true;
         this.props.actions.updateEntity(newEntity, coords);
@@ -454,13 +456,14 @@ class Board extends Component {
         this.props.actions.setCurrentEntity(newEntity);
         document.getElementById('entity').classList.remove('spin');
         this.handleCombat(newEntity, newPosition);
+        return;
       }
 
       // FLOOR => DOOR
       // HERO => DOOR
       // change room type to door, replace vacated cell with floor
       if (destination.room === 'door' && destination.type === 'door') {
-        console.log(`${entity.name} is about to go through a door`);
+        console.log(`${entity.name} FLOOR => DOOR`);
         newEntity.room = 'door';
         grid1 = utils.changeEntity(this.props.appState.entities, { type: 'floor', room: entity.room }, coords);
       }
@@ -468,8 +471,9 @@ class Board extends Component {
       // FLOOR => HERO
       // handle combat
       if (destination.type === 'hero' && destination.room !== 'door') {
-        console.log(`${entity.name} is about to attack`);
-        newEntity.combat = true;
+        console.log(`${entity.name} FLOOR => HERO`);
+        this.props.actions.updateCombat(newEntity.name);
+        console.log(`updating ${entity.name} to combat state`);
         this.props.actions.setCurrentEntity(newEntity);
         document.getElementById('entity').classList.remove('spin');
         this.handleCombat(newEntity, newPosition);
@@ -479,15 +483,15 @@ class Board extends Component {
       // DOOR => FLOOR
       // replace vacated cell with door
       if (entity.room === 'door' && destination.type === 'floor') {
-        console.log(`${entity.name} is about to exit a door`);
-        newEntity.room = this.props.appState.entities[y][x].room;
+        console.log(`${entity.name} DOOR => FLOOR`);
+        newEntity.room = this.props.appState.entities[changeY + y][changeX + x].room;
         grid1 = utils.changeEntity(this.props.appState.entities, { type: 'door', room: entity.room }, coords);
       }
 
       // DOOR => HERO
       // replace vacated cell with door, handle combat
       if (entity.room === 'door' && destination.type === 'hero') {
-        console.log(`${entity.name} is about to exit a door and attack`);
+        console.log(`${entity.name} DOOR => HERO`);
         newEntity.room = this.props.appState.entities[y][x].room;
         newEntity.combat = true;
         this.props.actions.setCurrentEntity(newEntity);
@@ -496,15 +500,10 @@ class Board extends Component {
         return;
       }
 
-      console.log(`${entity.name}'s new position is ${newPosition}`);
-      console.log(`saving prevChange of ${prevChange} to ${entity.name}`);
       newEntity.prevChange = prevChange;
 
       // save updated entity info to app state
-      console.log('params sending to changeEntity:');
-      console.log(grid1);
-      console.log(newEntity.room);
-      console.log(newPosition);
+      console.log(`${entity.name} saving updated entity info to app state ////`);
       const grid2 = utils.changeEntity(grid1, newEntity, newPosition);
       this.props.actions.updateEntities(grid2);
     }
@@ -512,26 +511,22 @@ class Board extends Component {
 
   step() {
     if (this.props.appState.running) {
+      console.log('STEP @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@');
       const currentEntities = this.props.appState.entities;
       const heroPosition = this.props.appState.heroPosition;
       const doors = this.props.appState.doors;
       currentEntities.map((row, rIdx) => {
         row.map((cell, cIdx) => {
           // only calculate movement for monsters inside current viewport
-          if (cell.type === 'monster' && utils.inViewport([cIdx, rIdx], heroPosition)) {
-            console.log(`${cell.name} is in viewport at ${cIdx} across, ${rIdx} down`);
-            console.log(`${cell.name} prevMoveChange = ${cell.prevChange}`);
+          if (cell.type === 'monster' && utils.inViewport([cIdx, rIdx], heroPosition) && cell.name !== this.props.appState.combat) {
             // choose next move in monsterAI algorithm
             const heroRoom = this.props.appState.hero.room;
             const newMonsterPosition = utils.monsterAI(currentEntities,
               [cIdx, rIdx], heroPosition, doors, heroRoom, cell.prevChange);
-            console.log(`newMonsterPos: ${newMonsterPosition}, ${typeof newMonsterPosition}`);
+
             // calculate change
             if (newMonsterPosition) {
-              console.log(`cIdx: ${cIdx}, ${typeof cIdx}. rIdx: ${rIdx}, ${typeof rIdx}.`);
-              console.log(`newMonsterPosition[0]: ${newMonsterPosition[0]}, ${typeof newMonsterPosition[0]}. newMonsterPosition[1]: ${newMonsterPosition[1]}, ${typeof newMonsterPosition[1]}.`);
               const change = [newMonsterPosition[0] - cIdx, newMonsterPosition[1] - rIdx];
-              console.log(`change: ${change}`);
               // move monster to new position and re-render viewport
               this.monsterMovement(currentEntities, cell, [cIdx, rIdx], change);
             }
