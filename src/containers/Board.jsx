@@ -432,23 +432,63 @@ class Board extends Component {
       let grid1; // for updating render at end of method
       console.log(`destination: ${destination.type} at ${newPosition}`);
 
-      // handle room change on entering doorway
-      if (destination.room === 'door') {
-        console.log(`${entity.name} is about to go through a door`);
-        newEntity.room = 'door';
-      }
-
-      // if moving from one floor cell to another,
+      // FLOOR => FLOOR
+      // HERO => FLOOR
       // just replace vacated cell with floor
       if (destination.type === 'floor' && entity.room !== 'door') {
         grid1 = utils.changeEntity(this.props.appState.entities, { type: 'floor', room: entity.room }, coords);
       }
 
-      // if leaving doorway, replace vacated cell with door
-      if (entity.room === 'door') {
+      // FLOOR => HERO IN DOORWAY
+      // replace vacated cell with floor, handle doorway, handle combat
+      if (destination.type === 'hero' && destination.room === 'door') {
+        console.log(`${entity.name} is about to attack IN A DOORWAY`);
+        newEntity.room = 'door';
+        newEntity.combat = true;
+        grid1 = utils.changeEntity(this.props.appState.entities, { type: 'floor', room: entity.room }, coords);
+        this.props.actions.setCurrentEntity(newEntity);
+        document.getElementById('entity').classList.remove('spin');
+        this.handleCombat(newEntity, newPosition);
+      }
+
+      // FLOOR => DOOR
+      // HERO => DOOR
+      // change room type to door, replace vacated cell with floor
+      if (destination.room === 'door' && destination.type === 'door') {
+        console.log(`${entity.name} is about to go through a door`);
+        newEntity.room = 'door';
+        grid1 = utils.changeEntity(this.props.appState.entities, { type: 'floor', room: entity.room }, coords);
+      }
+
+      // FLOOR => HERO
+      // handle combat
+      if (destination.type === 'hero' && destination.room !== 'door') {
+        console.log(`${entity.name} is about to attack`);
+        newEntity.combat = true;
+        this.props.actions.setCurrentEntity(newEntity);
+        document.getElementById('entity').classList.remove('spin');
+        this.handleCombat(newEntity, newPosition);
+        return;
+      }
+
+      // DOOR => FLOOR
+      // replace vacated cell with door
+      if (entity.room === 'door' && destination.type === 'floor') {
         console.log(`${entity.name} is about to exit a door`);
         newEntity.room = this.props.appState.entities[y][x].room;
-        grid1 = utils.changeEntity(this.props.appState.entities, { type: 'door', room: 'door' }, coords);
+        grid1 = utils.changeEntity(this.props.appState.entities, { type: 'door', room: entity.room }, coords);
+      }
+
+      // DOOR => HERO
+      // replace vacated cell with door, handle combat
+      if (entity.room === 'door' && destination.type === 'hero') {
+        console.log(`${entity.name} is about to exit a door and attack`);
+        newEntity.room = this.props.appState.entities[y][x].room;
+        newEntity.combat = true;
+        this.props.actions.setCurrentEntity(newEntity);
+        document.getElementById('entity').classList.remove('spin');
+        this.handleCombat(newEntity, newPosition);
+        return;
       }
 
       console.log(`${entity.name}'s new position is ${newPosition}`);
@@ -456,17 +496,12 @@ class Board extends Component {
       newEntity.prevChange = prevChange;
 
       // save updated entity info to app state
+      console.log('params sending to changeEntity:');
+      console.log(grid1);
+      console.log(newEntity.room);
+      console.log(newPosition);
       const grid2 = utils.changeEntity(grid1, newEntity, newPosition);
       this.props.actions.updateEntities(grid2);
-
-      // handle collisions
-      if (destination.type === 'hero') {
-        newEntity.combat = true;
-        console.log('collision');
-        this.props.actions.setCurrentEntity(newEntity);
-        document.getElementById('entity').classList.remove('spin');
-        this.handleCombat(newEntity, newPosition);
-      }
     }
   }
 

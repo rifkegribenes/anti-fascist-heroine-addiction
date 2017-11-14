@@ -17,14 +17,6 @@ export const inViewport = (entityCoords, heroCoords) => {
   return false;
 };
 
-const arraysEqual = (arr1, arr2) => {
-  if (arr1.length !== arr2.length) { return false; }
-  for (let i = arr1.length; i--;) {
-    if (arr1[i] !== arr2[i]) { return false; }
-  }
-  return true;
-};
-
 const move2Door = (neighborCells, entities) => {
   console.log(neighborCells.filter(cell => entities[cell[1]][cell[0]].type === 'door'));
   return neighborCells.filter(cell => entities[cell[1]][cell[0]].type === 'door')[0];
@@ -32,6 +24,18 @@ const move2Door = (neighborCells, entities) => {
 
 // this function handles 'stalemate' situations where monsters get stuck
 // in corners or doorways repeating the same 2-move sequence
+const goThroughTheDoor = (entityCoords, prevMoveChange, possibleMoves) => {
+  if (prevMoveChange[0] === 0 && prevMoveChange[1] === 0) {
+    console.log('previous move change was 0,0, any random move is OK');
+    // then skip all the rest of the logic and just return a random move
+    return possibleMoves[randomInt(0, possibleMoves.length - 1)];
+  }
+  const [cx, cy] = prevMoveChange;
+  const [ex, ey] = entityCoords;
+  console.log(`next move in same direction would be: ${[cx + ex, cy + ey]}`);
+  return [cx + ex, cy + ey];
+};
+
 const anythingButBack = (entityCoords, prevMoveChange, possibleMoves) => {
   console.log(`prevMoveChange: ${prevMoveChange}`);
   if (prevMoveChange[0] === 0 && prevMoveChange[1] === 0) {
@@ -47,7 +51,7 @@ const anythingButBack = (entityCoords, prevMoveChange, possibleMoves) => {
   console.log(possibleMoves);
   let nextMoveInList;
   for (let i = possibleMoves.length; i--;) {
-    if (arraysEqual(i, [cx + ex, cy + ey])) {
+    if (i[0] === (cx + ex) && i[1] === (cy + ey)) {
       nextMoveInList = true;
     }
     nextMoveInList = false;
@@ -198,7 +202,7 @@ export const monsterAI = (entities, entityCoords, heroCoords, doors, heroRoom, p
   // is the entity in a doorway? if so, finish going through it
   if (entity.room === 'door') {
     console.log(`${entity.name} IS IN A DOORWAY (utils)`);
-    return anythingButBack(entityCoords, prevMoveChange, neighborCells);
+    return goThroughTheDoor(entityCoords, prevMoveChange, neighborCells);
   }
 
   // are monster and hero in different rooms? if so, look for the door
