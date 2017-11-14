@@ -1,7 +1,7 @@
 import update from 'immutability-helper';
 import teamHeroes from '../../utils/teamHeroes';
 
-import { SET_LEVEL, SET_HERO, UPDATE_HERO, UPDATE_TRUMP, CLOSE_MODAL, OPEN_MODAL, RESTART, START, USER_INPUT, SET_CURRENT_ENTITY, UPDATE_ENTITIES, UPDATE_MESSAGES, UPDATE_DIMENSIONS, HANDLE_STAIRCASE, UPDATE_GRID, SHOW_MSG, HIDE_MSG, TOGGLE_SOUND, TOGGLE_TORCH, SET_LOADED, PLAY, PAUSE } from '../actions';
+import { SET_LEVEL, SET_HERO, UPDATE_HERO, UPDATE_TRUMP, CLOSE_MODAL, OPEN_MODAL, RESTART, START, USER_INPUT, SET_CURRENT_ENTITY, UPDATE_ENTITIES, UPDATE_ENTITY, UPDATE_MESSAGES, UPDATE_DIMENSIONS, HANDLE_STAIRCASE, UPDATE_GRID, SHOW_MSG, HIDE_MSG, TOGGLE_SOUND, TOGGLE_TORCH, SET_LOADED, PLAY, PAUSE } from '../actions';
 
 const INITIAL_STATE = {
   entities: [[]],
@@ -51,6 +51,13 @@ function appState(state = INITIAL_STATE, action) {
   let colWide = 640;
   if (document.getElementById('colWide')) {
     colWide = document.getElementById('colWide').clientWidth;
+  }
+  let coords;
+  let x;
+  let y;
+  if (action.payload && action.payload.coords) {
+    coords = action.payload.coords;
+    [x, y] = { coords };
   }
   switch (action.type) {
 
@@ -237,6 +244,15 @@ function appState(state = INITIAL_STATE, action) {
         state,
         {
           entities: { $set: action.payload.entities },
+        },
+      );
+
+    case UPDATE_ENTITY:
+      console.log(`Now updating ${action.payload.entity.name} to combat = ${action.payload.entity.combat}`);
+      return update(
+        state,
+        {
+          entities: { [y]: { [x]: { $set: action.payload.entity } } },
         },
       );
 

@@ -421,6 +421,10 @@ class Board extends Component {
   }
 
   monsterMovement(entities, entity, coords, prevChange) {
+    if (entity.combat) {
+      console.log(`${entity.name} is in combat and is not moving`);
+      return;
+    }
     if (this.props.appState.running && !entity.combat) {
       // define constants
       const newEntity = { ...entity };
@@ -445,6 +449,7 @@ class Board extends Component {
         console.log(`${entity.name} is about to attack IN A DOORWAY`);
         newEntity.room = 'door';
         newEntity.combat = true;
+        this.props.actions.updateEntity(newEntity, coords);
         grid1 = utils.changeEntity(this.props.appState.entities, { type: 'floor', room: entity.room }, coords);
         this.props.actions.setCurrentEntity(newEntity);
         document.getElementById('entity').classList.remove('spin');

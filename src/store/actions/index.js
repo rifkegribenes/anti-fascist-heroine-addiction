@@ -20,6 +20,7 @@ export const TOGGLE_SOUND = 'TOGGLE_SOUND';
 export const SET_LOADED = 'SET_LOADED';
 export const PLAY = 'PLAY';
 export const PAUSE = 'PAUSE';
+export const UPDATE_ENTITY = 'UPDATE_ENTITY';
 
 export function setLevel(level) {
   return ({
@@ -175,6 +176,16 @@ export function updateEntities(entities) {
     type: UPDATE_ENTITIES,
     payload: {
       entities,
+    },
+  });
+}
+
+export function updateEntity(entity, coords) {
+  return ({
+    type: UPDATE_ENTITY,
+    payload: {
+      entity,
+      coords,
     },
   });
 }

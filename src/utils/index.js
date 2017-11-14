@@ -106,6 +106,7 @@ export const getNeighbors = (entities, entityCoords) => {
 };
 
 const move2Hero = (neighborCells, entities) => {
+  console.log('move2Hero');
   console.log(neighborCells.filter(cell => entities[cell[1]][cell[0]].type === 'hero'));
   return neighborCells.filter(cell => entities[cell[1]][cell[0]].type === 'hero')[0];
 };
