@@ -20,7 +20,7 @@ const INITIAL_STATE = {
     powers: '',
     team: [],
     level: 1,
-    room: '',
+    room: 0,
   },
   messages: ['Welcome to the dungeon! Try eating some food and gathering your team members before attacking any monsters.'],
   modalOpen: true,

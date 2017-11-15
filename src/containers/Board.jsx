@@ -40,6 +40,7 @@ class Board extends Component {
   }
 
   componentDidMount() {
+    this.props.actions.restart();
     this.updateDimensions();
     this.startGame();
     window.addEventListener('keydown', this.handleKeydown);
@@ -58,6 +59,7 @@ class Board extends Component {
   componentWillUnmount() {
     window.removeEventListener('keydown', this.handleKeydown);
     window.removeEventListener('resize', this.updateDimensions);
+    window.clearInterval(window.interval);
   }
 
   updateDimensions() {
@@ -112,9 +114,16 @@ class Board extends Component {
         grid1 = utils.changeEntity(this.props.appState.entities, { type: 'floor', room: oldRoom }, [x, y]);
       }
       const grid2 = utils.changeEntity(grid1, newHero, newPosition);
-      this.props.actions.userInput(grid2, newPosition);
+      this.props.actions.updateEntities(grid2, newPosition);
     }
     // handle collisions
+    if (destination.room === 'door' && destination.type === 'door') {
+      console.log(`${this.props.appState.hero.name} FLOOR => DOOR`);
+      newHero.room = 'door';
+      const grid1 = utils.changeEntity(this.props.appState.entities, { type: 'floor', room: 'door' }, [x, y]);
+      const grid2 = utils.changeEntity(grid1, newHero, newPosition);
+      this.props.actions.updateEntities(grid2, newPosition);
+    }
     switch (destination.type) {
       case 'finalMonster':
       case 'monster':
@@ -139,9 +148,6 @@ class Board extends Component {
         this.props.actions.setCurrentEntity(destination);
         document.getElementById('entity').classList.remove('spin');
         this.handleStaircase(destination);
-        break;
-      case 'door':
-        this.handleDoor([...newPosition], change, this.props.appState.hero);
         break;
       default:
     }
@@ -295,6 +301,8 @@ class Board extends Component {
   }
 
   heroDeath(monster) {
+    // stop gameloop
+    window.clearInterval(window.interval);
     // define action for 'you died' screen
     const action = () => {
       this.props.actions.hideMsg();
@@ -381,6 +389,8 @@ class Board extends Component {
   }
 
   gameWin(monster, monsterDamageTaken) {
+    // stop gameloop
+    window.clearInterval(window.interval);
     // define action for 'you won' screen
     const action = () => {
       this.props.actions.hideMsg();
