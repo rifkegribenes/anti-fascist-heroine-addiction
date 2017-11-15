@@ -40,7 +40,6 @@ class Board extends Component {
   }
 
   componentDidMount() {
-    this.props.actions.restart();
     this.updateDimensions();
     this.startGame();
     window.addEventListener('keydown', this.handleKeydown);
@@ -99,6 +98,7 @@ class Board extends Component {
   }
 
   userInput(change) {
+    console.log('userInput');
     const oldRoom = this.props.appState.hero.room;
     const [x, y] = this.props.appState.heroPosition;
     const [changeX, changeY] = change;
@@ -117,13 +117,14 @@ class Board extends Component {
       this.props.actions.updateEntities(grid2, newPosition);
     }
     // handle collisions
-    if (destination.room === 'door' && destination.type === 'door') {
-      console.log(`${this.props.appState.hero.name} FLOOR => DOOR`);
-      newHero.room = 'door';
-      const grid1 = utils.changeEntity(this.props.appState.entities, { type: 'floor', room: 'door' }, [x, y]);
-      const grid2 = utils.changeEntity(grid1, newHero, newPosition);
-      this.props.actions.updateEntities(grid2, newPosition);
-    }
+    // if (destination.room === 'door' && destination.type === 'door') {
+    //   console.log(`${this.props.appState.hero.name} FLOOR => DOOR`);
+    //   newHero.room = 'door';
+    //   const grid1 = utils.changeEntity(this.props.appState.entities,
+    //   { type: 'floor', room: 'door' }, [x, y]);
+    //   const grid2 = utils.changeEntity(grid1, newHero, newPosition);
+    //   this.props.actions.updateEntities(grid2, newPosition);
+    // }
     switch (destination.type) {
       case 'finalMonster':
       case 'monster':
