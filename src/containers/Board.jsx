@@ -179,56 +179,32 @@ class Board extends Component {
     }, 1000);
   }
 
-  handleCombat(monster, newPosition, init) {
-    // copy monster so it can be modified in combat
-    const currentMonster = { ...monster };
-    // set monster combat value to true
-    let initiator = init;
-    if (!initiator) { initiator = 'hero'; }
-    this.props.actions.updateCombat(currentMonster.name, initiator);
-    // define action for 'you died' and 'you won' screens
-    const action = () => {
-      this.props.actions.hideMsg();
-      this.props.history.push('/');
-      this.props.actions.restart();
-    };
+  heroAttack(hero, monster, heroCoords, monsterCoords) {
+    const [hx, hy] = heroCoords;
 
     // check if final battle
     const finalBattle = (monster.type === 'finalMonster');
 
-    // get values for hero and messages from app state
-    const hero = { ...this.props.appState.hero };
-    const messages = [...this.props.appState.messages];
-
-    this.props.actions.setCurrentEntity(currentMonster);
-
-    // save message to display later in info panel
-    messages.push(`Your team is attacking ${monster.name}!`);
-
-    // check hero level
-    const heroLevel = Math.floor(hero.xp / 100) + 1;
-
-    // HERO ATTACK //
-
     // generate random number for attack sound
-    let sound = Math.floor(utils.random(1, 8));
+    const sound = Math.floor(utils.random(1, 8));
     this.props.playSound(`combat${sound}`);
 
     // calculate damage and update monster health
     const monsterDamageTaken = Math.floor(hero.attack *
-      utils.random(1, 1.3) * (((heroLevel - 1) * 0.5) + 1));
-    const currentEntity = monster;
-    currentEntity.health -= monsterDamageTaken;
+      utils.random(1, 1.3) * (((hero.level - 1) * 0.5) + 1));
+    const newMonster = monster;
+    newMonster.health -= monsterDamageTaken;
 
-    // monster can't have negative health
-    if (currentEntity.health < 0) {
-      currentEntity.health = 0;
+    // handle monster death
+    if (newMonster.health < 0) {
+      newMonster.health = 0;
+      this.monsterDeath(hero, newMonster, monsterDamageTaken, monsterCoords);
     }
 
     // update monster health in app state after attack
-    let entities = this.props.appState.entities;
-    const [mx, my] = newPosition;
-    entities[my][mx] = currentEntity;
+    const entities = this.props.appState.entities;
+    const [mx, my] = monsterCoords;
+    entities[my][mx] = newMonster;
 
     // if final monster also update his other 3 blocks
     if (finalBattle) {
@@ -239,8 +215,8 @@ class Board extends Component {
       const [mx2, my2] = trumpPosition[2];
       const [mx3, my3] = trumpPosition[3];
 
-      const currentEntityViz = { ...currentEntity, opacity: 1 };
-      const currentEntityInv = { ...currentEntity, opacity: 0 };
+      const currentEntityViz = { ...monster, opacity: 1 };
+      const currentEntityInv = { ...monster, opacity: 0 };
 
       entities[my0][mx0] = currentEntityViz;
       entities[my1][mx1] = currentEntityInv;
@@ -249,150 +225,205 @@ class Board extends Component {
     }
 
     this.props.actions.updateEntities(entities);
-    this.props.actions.setCurrentEntity(currentEntity);
+    this.props.actions.setCurrentEntity(monster);
 
     // calculate shake animation
-    const shake = ['shake', 'shake-hard', 'shake-rotate', 'shake-crazy'];
-    let shakeClass = shake[Math.floor(utils.random(0, 4))];
+    const shakeClass = utils.shake[Math.floor(utils.random(0, 4))];
     const entityShake = shakeClass;
-    let shakeDuration = utils.clamp(monsterDamageTaken * 9, 100, 500);
+    const shakeDuration = utils.clamp(monsterDamageTaken * 9, 100, 500);
     document.getElementById('entity').classList.add(entityShake);
     setTimeout(() => {
       document.getElementById('entity').classList.remove(entityShake);
     }, shakeDuration);
 
-    // if monster is still alive...
-    if (this.props.appState.currentEntity.health > 0) {
-      // MONSTER ATTACK //
-
-      // generate random number for attack sound
-      sound = Math.floor(utils.random(1, 8));
-      this.props.playSound(`combat${sound}`);
-
-      const heroDamageTaken = Math.floor(utils.random(0.7, 1.3) * currentEntity.damage);
-      utils.changeEntity(this.props.appState.entities, monster, newPosition);
-      hero.hp -= heroDamageTaken;
-
-      // calculate shake animation
-      shakeClass = shake[Math.floor(utils.random(0, 4))];
-      const heroShake = shakeClass;
-      shakeDuration = utils.clamp(heroDamageTaken * 9, 100, 500);
-      document.getElementById('hero').classList.add(heroShake);
-      setTimeout(() => {
-        document.getElementById('hero').classList.remove(heroShake);
-      }, shakeDuration);
-
-      // update hero health in app state after attack
-      this.props.actions.updateHero(hero);
-
-      // set monster combat to false in case hero walks away
-      // will be reset to true if a new round starts
-      currentEntity.combat = false;
-      entities = this.props.appState.entities;
-      entities[my][mx] = currentEntity;
-      this.props.actions.updateEntities(entities);
-      this.props.actions.setCurrentEntity(entities[my][mx]);
-
-      // save and then display newest messages
-      messages.push(`Your team attacked ${currentEntity.name}. He lost ${monsterDamageTaken} HP.
-      ${currentEntity.name} hit back. You lost ${heroDamageTaken} HP.`);
-      this.props.actions.updateMessages(messages);
-
-      // HANDLE HERO DEATH //
-      // display message
-      if (hero.hp - heroDamageTaken <= 0) {
-        document.getElementById('hero').classList.add('spin');
-        this.props.playSound('heroDeath');
-        setTimeout(() => {
-          messages.push(`You died! ${currentEntity.youDiedMsg}.`);
-          this.props.actions.updateMessages(messages);
-          this.props.playSound('evilLaugh');
-          this.props.actions.showMsg({
-            title: 'You died!',
-            imgUrl: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/you-died.png',
-            imgAlt: 'skull and crossbones',
-            news: `${utils.badNews[Math.floor(utils.random(0, 13))]}!`,
-            body1: `You were defeated by ${currentEntity.name}`,
-            body2: currentEntity.bio,
-            action,
-            actionText: 'Play Again',
-          });
-        }, 1000);
-        return;
-      }
-
-       // HANDLE MONSTER DEATH //
-    } else if (currentEntity.health <= 0) {
-      document.getElementById('entity').classList.add('spin');
-      this.props.playSound('heroDeath');
-      setTimeout(() => {
-        document.getElementById('entity').classList.remove('spin');
-      }, 1000);
-
-      // update grid, replace monster with floor and move hero into it
-      const [x, y] = this.props.appState.heroPosition;
-      const grid1 = utils.changeEntity(this.props.appState.entities, { type: 'floor' }, [x, y]);
-      const grid2 = utils.changeEntity(grid1, hero, newPosition);
-      this.props.actions.updateGrid(grid2, newPosition);
-      utils.renderViewport(this.props.appState.heroPosition,
-        this.props.appState.entities, this.props.appState.cellSize);
-
-      // update xp slider
-      hero.xp += 25;
-      updateXP(hero.xp);
-
-      // update hero level
-      hero.level = Math.floor(hero.xp / 100) + 1;
-      if (hero.xp % 100 === 0) {
-        // add and remove powerup class
-        document.getElementById('hero').classList.add('powerUp');
-        document.getElementById('hero-level').classList.add('powerUp');
-        setTimeout(() => {
-          document.getElementById('hero').classList.remove('powerUp');
-          document.getElementById('hero-level').classList.remove('powerUp');
-        }, 2000);
-
-        // display level up message
-        messages.push(`Level UP!! Your team is now prepared to take on level ${hero.level} monsters.`);
-        this.props.actions.updateMessages(messages);
-
-        // update hero state in redux store with updated level & xp
-        this.props.actions.updateHero(hero);
-
-        // this.props.actions.setCurrentEntity(currentEntity);
-        // what happens if we remove this line? ^^
-      }
-
-       // HANDLE GAME WIN  //
-      if (monster.type === 'finalMonster') {
-        messages.push(`You did it! Your attack of [${monsterDamageTaken}] defeated ${currentEntity.name}.`); // fix this msg later
-        setTimeout(() => messages.push('You won! blah blah blah.'), 1000); // fix this msg later
-        this.props.playSound('gameWin');
-        this.props.actions.showMsg({
-          title: 'You won!',
-          imgUrl: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/rainbow.png',
-          imgAlt: 'rainbow',
-          news: `${utils.goodNews[Math.floor(utils.random(0, 13))]}!`,
-          body1: 'You and your team defeated the biggest monster of all! Great work!',
-          body2: null,
-          action,
-          actionText: 'Play Again',
-        });
-        setTimeout(() => {
-          document.getElementById('msgTitle').classList.remove('powerUp');
-          document.getElementById('msgTitle').classList.remove('blink');
-        }, 1000);
-        return;
-      }
-      messages.push(`You did it! Your attack of [${monsterDamageTaken}] defeated ${currentEntity.name}.`); // fix this msg later
-      setTimeout(() => messages.push('You gained 10XP.'), 1000); // fix this msg later
-      // TODO: level up screen
-      if ((hero.xp + 10) % 100 === 0) {
-        setTimeout(() => messages.push('LEVEL UP!'), 3000);
-      }
-    }
+    // save and display newest message
+    const messages = [...this.props.appState.messages];
+    messages.push(`Your team attacked ${monster.name}. He lost ${monsterDamageTaken} HP.`);
     this.props.actions.updateMessages(messages);
+
+    // if monster is still alive and hero has not moved away
+    if (this.props.appState.currentEntity.health > 0 &&
+      this.props.appState.heroPosition[0] === hx && this.props.appState.heroPosition[1] === hy) {
+      this.monsterAttack(monster, hero, monsterCoords);
+    }
+  }
+
+  monsterAttack(monster, hero, monsterCoords) {
+    const newHero = { ...hero };
+    const newMonster = { ...monster };
+    // generate random number for attack sound
+    const sound = Math.floor(utils.random(1, 8));
+    this.props.playSound(`combat${sound}`);
+
+    const heroDamageTaken = Math.floor(utils.random(0.7, 1.3) * monster.damage);
+    utils.changeEntity(this.props.appState.entities, monster, monsterCoords);
+    newHero.hp -= heroDamageTaken;
+
+    // calculate shake animation
+    const shakeClass = utils.shake[Math.floor(utils.random(0, 4))];
+    const heroShake = shakeClass;
+    const shakeDuration = utils.clamp(heroDamageTaken * 9, 100, 500);
+    document.getElementById('hero').classList.add(heroShake);
+    setTimeout(() => {
+      document.getElementById('hero').classList.remove(heroShake);
+    }, shakeDuration);
+
+    // update hero health in app state after attack
     this.props.actions.updateHero(hero);
+
+    // hero death
+    if (this.props.appState.hero.hp <= 0) {
+      this.heroDeath(monster);
+      return;
+    }
+
+    // set combat to false in case hero walks away
+    // will be reset to true if a new round starts
+    this.props.actions.updateCombat('', '');
+
+    // update changes to monster in app state
+    const entities = this.props.appState.entities;
+    const [mx, my] = monsterCoords;
+    entities[my][mx] = newMonster;
+    this.props.actions.updateEntities(entities);
+    this.props.actions.setCurrentEntity(entities[my][mx]);
+
+    // save and display newest messages
+    const messages = [...this.props.appState.messages];
+    messages.push(`${monster.name} attacked. You lost ${heroDamageTaken} HP.`);
+    this.props.actions.updateMessages(messages);
+  }
+
+  heroDeath(monster) {
+    // define action for 'you died' screen
+    const action = () => {
+      this.props.actions.hideMsg();
+      this.props.history.push('/');
+      this.props.actions.restart();
+    };
+    document.getElementById('hero').classList.add('spin');
+    this.props.playSound('heroDeath');
+
+    // display message
+    const messages = [...this.props.appState.messages];
+    setTimeout(() => {
+      messages.push(`You died! ${monster.youDiedMsg}.`);
+      this.props.actions.updateMessages(messages);
+      this.props.playSound('evilLaugh');
+      this.props.actions.showMsg({
+        title: 'You died!',
+        imgUrl: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/you-died.png',
+        imgAlt: 'skull and crossbones',
+        news: `${utils.badNews[Math.floor(utils.random(0, 13))]}!`,
+        body1: `You were defeated by ${monster.name}`,
+        body2: monster.bio,
+        action,
+        actionText: 'Play Again',
+      });
+    }, 1000);
+  }
+
+  heroLevelUp(hero) {
+    // add and remove powerup class
+    document.getElementById('hero').classList.add('powerUp');
+    document.getElementById('hero-level').classList.add('powerUp');
+    setTimeout(() => {
+      document.getElementById('hero').classList.remove('powerUp');
+      document.getElementById('hero-level').classList.remove('powerUp');
+    }, 2000);
+
+    // display level up message
+    const messages = [...this.props.appState.messages];
+    messages.push(`Level UP!! Your team is now prepared to take on level ${hero.level} monsters.`);
+    this.props.actions.updateMessages(messages);
+
+    // update hero state in redux store with updated level & xp
+    this.props.actions.updateHero(hero);
+  }
+
+  monsterDeath(hero, monster, monsterDamageTaken, monsterCoords) {
+    // display message and update visuals in info panel
+    document.getElementById('entity').classList.add('spin');
+    this.props.playSound('heroDeath');
+    const messages = [...this.props.appState.messages];
+    messages.push(`${utils.goodNews[Math.floor(utils.random(0, 13))]}! Your attack of [${monsterDamageTaken}] defeated ${monster.name}. You gained 25XP.`);
+    this.props.actions.updateMessages(messages);
+    setTimeout(() => {
+      document.getElementById('entity').classList.remove('spin');
+    }, 1000);
+
+    if (monster.type === 'finalMonster') {
+      this.gameWin(monster, monsterDamageTaken);
+      return;
+    }
+
+    // reset combat name in appState to empty string
+    this.props.actions.updateCombat('', '');
+
+    // update grid, replace monster with floor and move hero into it
+    const [x, y] = this.props.appState.heroPosition;
+    const grid1 = utils.changeEntity(this.props.appState.entities, { type: 'floor' }, [x, y]);
+    const grid2 = utils.changeEntity(grid1, hero, monsterCoords);
+    this.props.actions.updateGrid(grid2, monsterCoords);
+    utils.renderViewport(this.props.appState.heroPosition,
+      this.props.appState.entities, this.props.appState.cellSize);
+
+    // update xp slider
+    const newHero = { ...hero };
+    newHero.xp += 25;
+    updateXP(newHero.xp);
+
+    // update hero level
+    newHero.level = Math.floor(hero.xp / 100) + 1;
+    if (newHero.xp % 100 === 0) {
+      this.heroLevelUp(newHero);
+    }
+  }
+
+  gameWin(monster, monsterDamageTaken) {
+    // define action for 'you won' screen
+    const action = () => {
+      this.props.actions.hideMsg();
+      this.props.history.push('/');
+      this.props.actions.restart();
+    };
+    const messages = [...this.props.appState.messages];
+    messages.push(`${utils.goodNews[Math.floor(utils.random(0, 13))]}! Your attack of [${monsterDamageTaken}] defeated ${monster.name}.`); // fix this msg later
+    setTimeout(() => messages.push('You won! blah blah blah.'), 1000); // fix this msg later
+    this.props.playSound('gameWin');
+    this.props.actions.showMsg({
+      title: 'You won!',
+      imgUrl: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/rainbow.png',
+      imgAlt: 'rainbow',
+      news: `${utils.goodNews[Math.floor(utils.random(0, 13))]}!`,
+      body1: 'You and your team defeated the biggest monster of all! Great work!',
+      body2: null,
+      action,
+      actionText: 'Play Again',
+    });
+    setTimeout(() => {
+      document.getElementById('msgTitle').classList.remove('powerUp');
+      document.getElementById('msgTitle').classList.remove('blink');
+    }, 1000);
+  }
+
+  handleCombat(monster, monsterCoords, heroCoords, init) {
+    // set monster combat value to true
+    let initiator = init;
+    if (!initiator) { initiator = 'hero'; }
+    this.props.actions.updateCombat(monster.name, initiator);
+
+    // update current entity in info panel
+    this.props.actions.setCurrentEntity(monster);
+
+    // set combat flow
+    if (initiator === 'hero') {
+      // hero attacks first
+      this.heroAttack(this.props.appState.hero, monster, heroCoords, monsterCoords);
+      return;
+    }
+    // otherwise, monster attacks first
+    this.monsterAttack(monster, this.props.appState.hero, monsterCoords);
   }
 
   handleStaircase() {
@@ -427,7 +458,7 @@ class Board extends Component {
       console.log(`${entity.name} is in combat and is not moving`);
       return;
     }
-    if (this.props.appState.running && !entity.combat) {
+    if (this.props.appState.running && this.props.appState.combat !== entity.name) {
       console.log(`${entity.name} monsterMovement ////////`);
       // define constants
       const newEntity = { ...entity };
@@ -455,7 +486,7 @@ class Board extends Component {
         grid1 = utils.changeEntity(this.props.appState.entities, { type: 'floor', room: entity.room }, coords);
         this.props.actions.setCurrentEntity(newEntity);
         document.getElementById('entity').classList.remove('spin');
-        this.handleCombat(newEntity, newPosition);
+        this.handleCombat(newEntity, coords, newPosition, newEntity.name);
         return;
       }
 
@@ -476,7 +507,7 @@ class Board extends Component {
         console.log(`updating ${entity.name} to combat state`);
         this.props.actions.setCurrentEntity(newEntity);
         document.getElementById('entity').classList.remove('spin');
-        this.handleCombat(newEntity, newPosition);
+        this.handleCombat(newEntity, coords, newPosition, newEntity.name);
         return;
       }
 
@@ -496,7 +527,7 @@ class Board extends Component {
         newEntity.combat = true;
         this.props.actions.setCurrentEntity(newEntity);
         document.getElementById('entity').classList.remove('spin');
-        this.handleCombat(newEntity, newPosition);
+        this.handleCombat(newEntity, coords, newPosition, newEntity.name);
         return;
       }
 
