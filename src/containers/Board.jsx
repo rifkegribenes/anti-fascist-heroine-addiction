@@ -269,7 +269,7 @@ class Board extends Component {
     }, shakeDuration);
 
     // update hero health in app state after attack
-    this.props.actions.updateHero(hero);
+    this.props.actions.updateHero(newHero);
 
     // hero death
     if (this.props.appState.hero.hp <= 0) {

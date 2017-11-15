@@ -316,6 +316,7 @@ function appState(state = INITIAL_STATE, action) {
         );
 
     case RESTART:
+      console.log('restart');
       return INITIAL_STATE;
 
     default:
