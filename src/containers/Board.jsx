@@ -11,8 +11,43 @@ import BigMsg from './BigMsg';
 import * as utils from '../utils/index';
 import generateMap from '../utils/mapgen';
 import fillGrid from '../utils/fillGrid';
-// import * as aL from '../utils/asset_loader';
 
+// http://paulirish.com/2011/requestanimationframe-for-smart-animating/
+// http://my.opera.com/emoller/blog/2011/12/20/requestanimationframe-for-smart-er-animating
+
+// requestAnimationFrame polyfill by Erik Möller. fixes from Paul Irish and Tino Zijdel
+
+// MIT license
+
+let lastRender = 0;
+
+const animate = () => {
+  let lastTime = 0;
+  const vendors = ['ms', 'moz', 'webkit', 'o'];
+  for (let x = 0; x < vendors.length && !window.requestAnimationFrame; ++x) {
+    window.requestAnimationFrame = window[`${vendors[x]}RequestAnimationFrame`];
+    window.cancelAnimationFrame = window[`${vendors[x]}CancelAnimationFrame`]
+    || window[`${vendors[x]}CancelRequestAnimationFrame`];
+  }
+
+  if (!window.requestAnimationFrame) {
+    window.requestAnimationFrame = (callback) => {
+      const currTime = new Date().getTime();
+      const timeToCall = Math.max(0, 16 - (currTime - lastTime));
+      const id = window.setTimeout(() => { callback(currTime + timeToCall); },
+        timeToCall);
+      lastTime = currTime + timeToCall;
+      return id;
+    };
+  }
+
+  if (!window.cancelAnimationFrame) {
+    window.cancelAnimationFrame = (id) => {
+      clearTimeout(id);
+    };
+  }
+};
+animate();
 
 const updateXP = (xp) => {
   const width = xp / 3;
@@ -31,9 +66,10 @@ class Board extends Component {
     this.handleKeydown = this.handleKeydown.bind(this);
     this.userInput = this.userInput.bind(this);
     this.updateDimensions = this.updateDimensions.bind(this);
-    this.step = this.step.bind(this);
+    // this.step = this.step.bind(this);
     this.play = this.play.bind(this);
     this.pause = this.pause.bind(this);
+    this.gameLoop = this.gameLoop.bind(this);
   }
 
   componentWillMount() {
@@ -49,16 +85,17 @@ class Board extends Component {
   }
 
   componentDidUpdate() {
-    if (this.props.appState.gridFilled) {
-      utils.renderViewport(this.props.appState.heroPosition,
-        this.props.appState.entities, this.props.appState.cellSize);
-    }
+    // if (this.props.appState.gridFilled) {
+    //   utils.renderViewport(this.props.appState.heroPosition,
+    //     this.props.appState.entities, this.props.appState.cellSize);
+    // }
   }
 
   componentWillUnmount() {
     window.removeEventListener('keydown', this.handleKeydown);
     window.removeEventListener('resize', this.updateDimensions);
     window.clearInterval(window.interval);
+    cancelAnimationFrame(this.state.myReq);
   }
 
   updateDimensions() {
@@ -98,11 +135,13 @@ class Board extends Component {
   }
 
   userInput(change) {
-    console.log('userInput');
     const oldRoom = this.props.appState.hero.room;
     const [x, y] = this.props.appState.heroPosition;
     const [changeX, changeY] = change;
+    const nx = changeX + x;
+    const ny = changeY + y;
     const newPosition = [changeX + x, changeY + y];
+    console.log(`new hero position: ${newPosition}`);
     const newHero = this.props.appState.entities[y][x];
     const destination = this.props.appState.entities[y + changeY][x + changeX];
     if (destination.type !== 'wall' && destination.type !== 'monster' && destination.type !== 'finalMonster') {
@@ -114,17 +153,21 @@ class Board extends Component {
         grid1 = utils.changeEntity(this.props.appState.entities, { type: 'floor', room: oldRoom }, [x, y]);
       }
       const grid2 = utils.changeEntity(grid1, newHero, newPosition);
+      this.props.actions.updateGrid(grid2, newPosition);
+      console.log(nx, ny);
+      console.log(this.props.appState.entities[ny][nx]);
+    }
+
+    // handle collisions
+    if (destination.room === 'door' && destination.type === 'door') {
+      console.log(`${this.props.appState.hero.name} FLOOR => DOOR`);
+      newHero.room = 'door';
+      const grid1 = utils.changeEntity(this.props.appState.entities,
+      { type: 'floor', room: 'door' }, [x, y]);
+      const grid2 = utils.changeEntity(grid1, newHero, newPosition);
       this.props.actions.updateEntities(grid2, newPosition);
     }
-    // handle collisions
-    // if (destination.room === 'door' && destination.type === 'door') {
-    //   console.log(`${this.props.appState.hero.name} FLOOR => DOOR`);
-    //   newHero.room = 'door';
-    //   const grid1 = utils.changeEntity(this.props.appState.entities,
-    //   { type: 'floor', room: 'door' }, [x, y]);
-    //   const grid2 = utils.changeEntity(grid1, newHero, newPosition);
-    //   this.props.actions.updateEntities(grid2, newPosition);
-    // }
+    console.log(destination.type);
     switch (destination.type) {
       case 'finalMonster':
       case 'monster':
@@ -304,6 +347,7 @@ class Board extends Component {
   heroDeath(monster) {
     // stop gameloop
     window.clearInterval(window.interval);
+    cancelAnimationFrame(this.state.myReq);
     // define action for 'you died' screen
     const action = () => {
       this.props.actions.hideMsg();
@@ -392,6 +436,7 @@ class Board extends Component {
   gameWin(monster, monsterDamageTaken) {
     // stop gameloop
     window.clearInterval(window.interval);
+    cancelAnimationFrame(this.state.myReq);
     // define action for 'you won' screen
     const action = () => {
       this.props.actions.hideMsg();
@@ -465,7 +510,7 @@ class Board extends Component {
   }
 
   monsterMovement(entities, entity, coords, prevChange) {
-    if (this.props.appState.combat === entity.name) {
+    if (this.props.appState.combat === entity.name && this.props.appState.gridFilled) {
       console.log(`${entity.name} is in combat and is not moving`);
       return;
     }
@@ -551,12 +596,41 @@ class Board extends Component {
     }
   }
 
-  step() {
+  gameLoop(timestamp, grid2, newPosition) {
+    console.log('gameloop');
     if (this.props.appState.running) {
-      console.log('STEP @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@');
+      const progress = timestamp - lastRender;
+      // if (progress > 20) {
+        console.log('GAMELOOP@@@@@@@@@@@@@@@@@@@@@@@@@@@');
+        console.log(progress);
+        this.update(grid2, newPosition);
+        this.draw();
+        lastRender = timestamp;
+        setTimeout(() => {
+          const myReq = requestAnimationFrame(() => {
+            this.gameLoop(timestamp,
+            this.props.appState.entities, this.props.appState.heroPosition);
+          });
+          this.setState({ myReq });
+        }, 1000);
+    // }
+  }
+}
+
+  update(grid2, newPosition) {
+    // if (this.props.appState.gridFilled) {
+      console.log('update');
+      // update position and object values for hero and all entities
+      // for time elapsed since last render
       const currentEntities = this.props.appState.entities;
+      console.log(currentEntities);
       const heroPosition = this.props.appState.heroPosition;
       const doors = this.props.appState.doors;
+
+      // calculate hero movement
+      this.props.actions.updateEntities(currentEntities, newPosition);
+
+      // calculate monster movement
       currentEntities.map((row, rIdx) => {
         row.map((cell, cIdx) => {
           // only calculate movement for monsters inside current viewport
@@ -577,41 +651,89 @@ class Board extends Component {
         });
         return null;
       });
-    }
+    // }
   }
+
+  // step() {
+  //   if (this.props.appState.running) {
+  //     console.log('STEP @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@');
+  //     const currentEntities = this.props.appState.entities;
+  //     const heroPosition = this.props.appState.heroPosition;
+  //     const doors = this.props.appState.doors;
+  //     currentEntities.map((row, rIdx) => {
+  //       row.map((cell, cIdx) => {
+  //         // only calculate movement for monsters inside current viewport
+  //         if (cell.type === 'monster' && utils.inViewport([cIdx, rIdx],
+  //          heroPosition) && cell.name !== this.props.appState.combat) {
+  //           // choose next move in monsterAI algorithm
+  //           const heroRoom = this.props.appState.hero.room;
+  //           const newMonsterPosition = utils.monsterAI(currentEntities,
+  //             [cIdx, rIdx], heroPosition, doors, heroRoom, cell.prevChange);
+
+  //           // calculate change
+  //           if (newMonsterPosition) {
+  //             const change = [newMonsterPosition[0] - cIdx, newMonsterPosition[1] - rIdx];
+  //             // move monster to new position and re-render viewport
+  //             this.monsterMovement(currentEntities, cell, [cIdx, rIdx], change);
+  //           }
+  //         }
+  //         return null;
+  //       });
+  //       return null;
+  //     });
+  //   }
+  // }
 
   play() {
     this.props.actions.play();
-    this.run();
+    console.log('running');
+    const myReq = requestAnimationFrame(this.gameLoop);
+    console.log(myReq);
+    this.setState({ myReq });
   }
 
-  run() {
-    console.log('running');
-    const self = this;
-    function nextStep() {
-      // console.log('nextStep');
-      if (!self.props.appState.running) {
-        console.log('clearInterval');
-        window.clearInterval(window.interval);
-        return;
-      }
-      self.step();
-    }
-    console.log('setInterval');
-    window.interval = window.setInterval(nextStep, 1000);
-  }
+  // run() {
+  //   console.log('running');
+  //   const self = this;
+  //   function nextStep() {
+  //     // console.log('nextStep');
+  //     if (!self.props.appState.running) {
+  //       console.log('clearInterval');
+  //       window.clearInterval(window.interval);
+  //       return;
+  //     }
+  //     self.step();
+  //   }
+  //   console.log('setInterval');
+  //   window.interval = window.setInterval(nextStep, 1000);
+  // }
 
   pause() {
     console.log('paused');
     window.clearInterval(window.interval);
+    cancelAnimationFrame(this.state.myReq);
     this.props.actions.pause();
   }
 
   startGame() {
+    console.log('start');
     const { newMap, heroPosition, trumpPosition, doors } =
       fillGrid(generateMap(1), 1, this.props.appState.hero);
+    console.log(newMap);
     this.props.actions.start(newMap, heroPosition, trumpPosition, doors);
-    this.play();
+    setTimeout(() => {
+      console.log(this.props.appState.gridFilled);
+      this.play();
+    }, 100);
+  }
+
+  draw() {
+    if (this.props.appState.gridFilled) {
+      console.log('draw');
+      console.log(this.props.appState.entities);
+      utils.renderViewport(this.props.appState.heroPosition,
+        this.props.appState.entities, this.props.appState.cellSize);
+    }
   }
 
   render() {

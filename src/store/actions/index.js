@@ -161,6 +161,7 @@ export function toggleTorch(torch) {
 }
 
 export function start(entities, heroPosition, trumpPosition, doors) {
+  console.log('actions/index.js > start');
   return ({
     type: START,
     payload: {
