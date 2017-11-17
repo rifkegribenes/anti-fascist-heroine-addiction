@@ -7,6 +7,7 @@ import Splash from './containers/Splash';
 import Board from './containers/Board';
 import About from './containers/About';
 import HeroPicker from './containers/HeroPicker';
+import BigMsg from './containers/BigMsg';
 import * as Actions from './store/actions';
 import * as aL from './utils/asset_loader';
 import sounds from './utils/sounds';
@@ -59,6 +60,12 @@ class App extends React.Component {
               exact
               path="/play"
               render={routeProps => <Board {...routeProps} playSound={this.playSound} />
+              }
+            />
+            <Route
+              exact
+              path="/gameover"
+              render={routeProps => <BigMsg {...routeProps} playSound={this.playSound} />
               }
             />
           </Switch>

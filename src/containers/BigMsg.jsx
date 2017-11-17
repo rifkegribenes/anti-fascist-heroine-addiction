@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
-import * as Actions from '../store/actions';
+// import * as Actions from '../store/actions';
 
 const teamList = (arr) => {
   if (arr && arr.length) {
@@ -62,8 +62,8 @@ const mapStateToProps = state => ({
   appState: state.appState,
 });
 
-const mapDispatchToProps = dispatch => ({
-  actions: bindActionCreators({ ...Actions }, dispatch),
-});
+// const mapDispatchToProps = dispatch => ({
+//   actions: bindActionCreators({ ...Actions }, dispatch),
+// });
 
-export default connect(mapStateToProps, mapDispatchToProps)(BigMsg);
+export default connect(mapStateToProps)(BigMsg);

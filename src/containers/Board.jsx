@@ -7,19 +7,14 @@ import { withRouter } from 'react-router';
 import * as Actions from '../store/actions';
 import InfoLeft from './InfoLeft';
 import InfoRight from './InfoRight';
-import BigMsg from './BigMsg';
 import * as utils from '../utils/index';
 import generateMap from '../utils/mapgen';
 import fillGrid from '../utils/fillGrid';
 
 // http://paulirish.com/2011/requestanimationframe-for-smart-animating/
 // http://my.opera.com/emoller/blog/2011/12/20/requestanimationframe-for-smart-er-animating
-
 // requestAnimationFrame polyfill by Erik Möller. fixes from Paul Irish and Tino Zijdel
-
 // MIT license
-
-let lastRender = 0;
 
 const animate = () => {
   let lastTime = 0;
@@ -48,6 +43,8 @@ const animate = () => {
   }
 };
 animate();
+
+let lastRender = 0;
 
 const updateXP = (xp) => {
   const width = xp / 3;
@@ -138,8 +135,6 @@ class Board extends Component {
     const oldRoom = this.props.appState.hero.room;
     const [x, y] = this.props.appState.heroPosition;
     const [changeX, changeY] = change;
-    const nx = changeX + x;
-    const ny = changeY + y;
     const newPosition = [changeX + x, changeY + y];
     console.log(`new hero position: ${newPosition}`);
     const newHero = this.props.appState.entities[y][x];
@@ -154,8 +149,6 @@ class Board extends Component {
       }
       const grid2 = utils.changeEntity(grid1, newHero, newPosition);
       this.props.actions.updateGrid(grid2, newPosition);
-      console.log(nx, ny);
-      console.log(this.props.appState.entities[ny][nx]);
       this.draw();
     }
 
@@ -169,11 +162,15 @@ class Board extends Component {
       this.props.actions.updateEntities(grid2, newPosition);
     }
     console.log(destination.type);
+    console.log(destination.room);
     switch (destination.type) {
       case 'finalMonster':
       case 'monster':
         this.props.actions.setCurrentEntity(destination);
         document.getElementById('entity').classList.remove('spin');
+        console.log('calling handle combat');
+        console.log(destination);
+        console.log(newPosition);
         this.handleCombat(destination, newPosition);
         break;
       case 'food':
@@ -231,6 +228,7 @@ class Board extends Component {
   }
 
   heroAttack(hero, monster, heroCoords, monsterCoords) {
+    console.log('heroAttack');
     const [hx, hy] = heroCoords;
 
     // check if final battle
@@ -260,7 +258,6 @@ class Board extends Component {
     // if final monster also update his other 3 blocks
     if (finalBattle) {
       const trumpPosition = [...this.props.appState.trumpPosition];
-      // console.log(trumpPosition);
       const [mx0, my0] = trumpPosition[0];
       const [mx1, my1] = trumpPosition[1];
       const [mx2, my2] = trumpPosition[2];
@@ -374,6 +371,7 @@ class Board extends Component {
         action,
         actionText: 'Play Again',
       });
+      this.props.history.push('/gameover');
     }, 1000);
   }
 
@@ -448,26 +446,30 @@ class Board extends Component {
     messages.push(`${utils.goodNews[Math.floor(utils.random(0, 13))]}! Your attack of [${monsterDamageTaken}] defeated ${monster.name}.`); // fix this msg later
     setTimeout(() => messages.push('You won! blah blah blah.'), 1000); // fix this msg later
     this.props.playSound('gameWin');
-    this.props.actions.showMsg({
-      title: 'You won!',
-      imgUrl: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/rainbow.png',
-      imgAlt: 'rainbow',
-      news: `${utils.goodNews[Math.floor(utils.random(0, 13))]}!`,
-      body1: 'You and your team defeated the biggest monster of all! Great work!',
-      body2: null,
-      action,
-      actionText: 'Play Again',
-    });
     setTimeout(() => {
       document.getElementById('msgTitle').classList.remove('powerUp');
       document.getElementById('msgTitle').classList.remove('blink');
+      this.props.actions.showMsg({
+        title: 'You won!',
+        imgUrl: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/rainbow.png',
+        imgAlt: 'rainbow',
+        news: `${utils.goodNews[Math.floor(utils.random(0, 13))]}!`,
+        body1: 'You and your team defeated the biggest monster of all! Great work!',
+        body2: null,
+        action,
+        actionText: 'Play Again',
+      });
+      this.props.history.push('/gameover');
     }, 1000);
   }
 
   handleCombat(monster, monsterCoords, heroCoords, init) {
+    console.log('handleCombat');
+
     // set monster combat value to true
     let initiator = init;
     if (!initiator) { initiator = 'hero'; }
+    console.log(initiator);
     this.props.actions.updateCombat(monster.name, initiator);
 
     // update current entity in info panel
@@ -516,7 +518,6 @@ class Board extends Component {
       return;
     }
     if (this.props.appState.running && this.props.appState.combat !== entity.name) {
-      console.log(`${entity.name} monsterMovement ////////`);
       // define constants
       const newEntity = { ...entity };
       const [x, y] = coords;
@@ -524,6 +525,7 @@ class Board extends Component {
       const newPosition = [changeX + x, changeY + y]; // new coordinates
       const destination = entities[y + changeY][x + changeX]; // what's there
       let grid1; // for updating render at end of method
+      console.log(`${entity.name}: room ${entity.room}`);
 
       // FLOOR => FLOOR
       // HERO => FLOOR
@@ -591,19 +593,15 @@ class Board extends Component {
       newEntity.prevChange = prevChange;
 
       // save updated entity info to app state
-      console.log(`${entity.name} saving updated entity info to app state ////`);
       const grid2 = utils.changeEntity(grid1, newEntity, newPosition);
       this.props.actions.updateEntities(grid2);
     }
   }
 
   gameLoop(timestamp, grid2, newPosition) {
-    console.log('gameloop');
     if (this.props.appState.running) {
-      const progress = timestamp - lastRender;
-      // if (progress > 20) {
+      // const progress = timestamp - lastRender;
       console.log('GAMELOOP@@@@@@@@@@@@@@@@@@@@@@@@@@@');
-      console.log(progress);
       this.update(grid2, newPosition);
       this.draw();
       lastRender = timestamp;
@@ -614,7 +612,6 @@ class Board extends Component {
         });
         this.setState({ myReq });
       }, 1000);
-    // }
     }
   }
 
@@ -624,7 +621,6 @@ class Board extends Component {
       // update position and object values for hero and all entities
       // for time elapsed since last render
     const currentEntities = this.props.appState.entities;
-    console.log(currentEntities);
     const heroPosition = this.props.appState.heroPosition;
     const doors = this.props.appState.doors;
 
@@ -634,8 +630,9 @@ class Board extends Component {
       // calculate monster movement
     currentEntities.map((row, rIdx) => {
       row.map((cell, cIdx) => {
-          // only calculate movement for monsters inside current viewport
-        if (cell.type === 'monster' && utils.inViewport([cIdx, rIdx], heroPosition) && cell.name !== this.props.appState.combat) {
+        // don't move monsters who are currently in combat
+        if (cell.type === 'monster' && cell.name !==
+          this.props.appState.combat) {
             // choose next move in monsterAI algorithm
           const heroRoom = this.props.appState.hero.room;
           const newMonsterPosition = utils.monsterAI(currentEntities,
@@ -655,59 +652,12 @@ class Board extends Component {
     // }
   }
 
-  // step() {
-  //   if (this.props.appState.running) {
-  //     console.log('STEP @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@');
-  //     const currentEntities = this.props.appState.entities;
-  //     const heroPosition = this.props.appState.heroPosition;
-  //     const doors = this.props.appState.doors;
-  //     currentEntities.map((row, rIdx) => {
-  //       row.map((cell, cIdx) => {
-  //         // only calculate movement for monsters inside current viewport
-  //         if (cell.type === 'monster' && utils.inViewport([cIdx, rIdx],
-  //          heroPosition) && cell.name !== this.props.appState.combat) {
-  //           // choose next move in monsterAI algorithm
-  //           const heroRoom = this.props.appState.hero.room;
-  //           const newMonsterPosition = utils.monsterAI(currentEntities,
-  //             [cIdx, rIdx], heroPosition, doors, heroRoom, cell.prevChange);
-
-  //           // calculate change
-  //           if (newMonsterPosition) {
-  //             const change = [newMonsterPosition[0] - cIdx, newMonsterPosition[1] - rIdx];
-  //             // move monster to new position and re-render viewport
-  //             this.monsterMovement(currentEntities, cell, [cIdx, rIdx], change);
-  //           }
-  //         }
-  //         return null;
-  //       });
-  //       return null;
-  //     });
-  //   }
-  // }
-
   play() {
     this.props.actions.play();
     console.log('running');
     const myReq = requestAnimationFrame(this.gameLoop);
-    console.log(myReq);
     this.setState({ myReq });
   }
-
-  // run() {
-  //   console.log('running');
-  //   const self = this;
-  //   function nextStep() {
-  //     // console.log('nextStep');
-  //     if (!self.props.appState.running) {
-  //       console.log('clearInterval');
-  //       window.clearInterval(window.interval);
-  //       return;
-  //     }
-  //     self.step();
-  //   }
-  //   console.log('setInterval');
-  //   window.interval = window.setInterval(nextStep, 1000);
-  // }
 
   pause() {
     console.log('paused');
@@ -717,21 +667,17 @@ class Board extends Component {
   }
 
   startGame() {
-    console.log('start');
     const { newMap, heroPosition, trumpPosition, doors } =
       fillGrid(generateMap(1), 1, this.props.appState.hero);
-    console.log(newMap);
     this.props.actions.start(newMap, heroPosition, trumpPosition, doors);
     setTimeout(() => {
-      console.log(this.props.appState.gridFilled);
       this.play();
-    }, 100);
+    }, 200);
   }
 
   draw() {
+    console.log('draw');
     if (this.props.appState.gridFilled) {
-      console.log('draw');
-      console.log(this.props.appState.entities);
       utils.renderViewport(this.props.appState.heroPosition,
         this.props.appState.entities, this.props.appState.cellSize);
     }
@@ -753,109 +699,102 @@ class Board extends Component {
     }
     return (
       <div>
-        {this.props.appState.bigMsg.show &&
-          <BigMsg
-            handleKeydown={this.handleKeydown}
-          />
-        }
-        {!this.props.appState.bigMsg.show &&
-          <div className="container">
-            <div className="col col--narrow">
-              <InfoLeft
-                hero={this.props.appState.hero}
-                header=""
-              />
-            </div>
-            <div className="col col--wide" id="colWide">
-              <div className="info__controls">
-                <span className="info__subhead" id="subhead">Level:&nbsp;{this.props.appState.gameLevel}</span>
-                <div className="info__icons-wrap">
-                  <button
-                    className="aria-button info__icon"
-                    onClick={
-                      () => {
-                        this.props.playSound('uiSelect');
-                        if (this.props.appState.running) {
-                          this.props.actions.pause();
-                          return;
-                        }
-                        this.props.actions.play();
-                      }}
-                    aria-label="pause"
-                    title="pause"
-                  >
-                    &#9208;
-                  </button>
-                  <button
-                    className="aria-button info__icon"
-                    onClick={
-                      () => {
-                        this.props.playSound('uiSelect');
-                        window.clearInterval(window.interval);
-                        this.props.actions.restart();
-                        this.props.history.push('/');
-                      }}
-                    aria-label="restart game"
-                    title="restart game"
-                  >
-                    <i className="icon icon-sync ctrl-icon" />
-                  </button>
-                  <button
-                    className="aria-button info__icon"
-                    onClick={
-                      () => {
-                        this.props.playSound('uiSelect');
-                        this.props.actions.toggleSound(this.props.appState.sound);
-                      }}
-                    aria-label="toggle sound"
-                    title="toggle sound"
-                  >
-                    <i className={this.props.appState.sound ? 'icon icon-volume_off ctrl-icon' : 'icon icon-volume_up ctrl-icon'} />
-                  </button>
-                  <button
-                    className="aria-button info__icon"
-                    onClick={
-                      () => {
-                        this.props.playSound('uiSelect');
-                        this.props.actions.toggleTorch(this.props.appState.torch);
-                      }}
-                    aria-label="toggle torch"
-                    title="toggle torch"
-                  >
-                    <i className="icon icon-flashlight ctrl-icon" />
-                  </button>
-                  <a
-                    className="aria-button info__icon"
-                    href="https://github.com/rifkegribenes/dungeon-crawler"
-                    rel="noopener noreferrer"
-                    target="_blank"
-                    title="github"
-                  >
-                    <i className="icon icon-github ctrl-icon" />
-                  </a>
-                </div>
+        <div className="container">
+          <div className="col col--narrow">
+            <InfoLeft
+              hero={this.props.appState.hero}
+              header=""
+            />
+          </div>
+          <div className="col col--wide" id="colWide">
+            <div className="info__controls">
+              <span className="info__subhead" id="subhead">Level:&nbsp;{this.props.appState.gameLevel}</span>
+              <div className="info__icons-wrap">
+                <button
+                  className="aria-button info__icon"
+                  onClick={
+                    () => {
+                      this.props.playSound('uiSelect');
+                      if (this.props.appState.running) {
+                        this.props.actions.pause();
+                        return;
+                      }
+                      this.props.actions.play();
+                    }}
+                  aria-label="pause"
+                  title="pause"
+                >
+                  &#9208;
+                </button>
+                <button
+                  className="aria-button info__icon"
+                  onClick={
+                    () => {
+                      this.props.playSound('uiSelect');
+                      window.clearInterval(window.interval);
+                      this.props.actions.restart();
+                      this.props.history.push('/');
+                    }}
+                  aria-label="restart game"
+                  title="restart game"
+                >
+                  <i className="icon icon-sync ctrl-icon" />
+                </button>
+                <button
+                  className="aria-button info__icon"
+                  onClick={
+                    () => {
+                      this.props.playSound('uiSelect');
+                      this.props.actions.toggleSound(this.props.appState.sound);
+                    }}
+                  aria-label="toggle sound"
+                  title="toggle sound"
+                >
+                  <i className={this.props.appState.sound ? 'icon icon-volume_off ctrl-icon' : 'icon icon-volume_up ctrl-icon'} />
+                </button>
+                <button
+                  className="aria-button info__icon"
+                  onClick={
+                    () => {
+                      this.props.playSound('uiSelect');
+                      this.props.actions.toggleTorch(this.props.appState.torch);
+                    }}
+                  aria-label="toggle torch"
+                  title="toggle torch"
+                >
+                  <i className="icon icon-flashlight ctrl-icon" />
+                </button>
+                <a
+                  className="aria-button info__icon"
+                  href="https://github.com/rifkegribenes/dungeon-crawler"
+                  rel="noopener noreferrer"
+                  target="_blank"
+                  title="github"
+                >
+                  <i className="icon icon-github ctrl-icon" />
+                </a>
               </div>
-              <canvas
-                id="board"
-                className="board"
-                width={20 * cellSize}
-                height={20 * cellSize}
-                style={canvasStyle}
-              />
             </div>
-            <div className="col col--narrow">
-              <InfoRight
-                entity={this.props.appState.currentEntity}
-                header={this.props.appState.header}
-              />
-              <div className="message">
-                <ul className="message__list">
-                  {messageList.reverse()}
-                </ul>
-              </div>
+            <canvas
+              id="board"
+              className="board"
+              width={20 * cellSize}
+              height={20 * cellSize}
+              style={canvasStyle}
+            />
+          </div>
+          <div className="col col--narrow">
+            <InfoRight
+              entity={this.props.appState.currentEntity}
+              header={this.props.appState.header}
+            />
+            <div className="message">
+              <ul className="message__list">
+                {messageList.reverse()}
+              </ul>
             </div>
           </div>
-        }
+        </div>
       </div>
     );
   }
