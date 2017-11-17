@@ -225,10 +225,10 @@ const drawCell = (cellSize, ctx, cell, x, y) => {
       break;
     case 'floor':
     case 'door':
-      ctx.font = '10px Arial';
-      ctx.fillStyle = 'black';
-      ctx.fillText(`[${(x / cellSize) + 30},${(y / cellSize) + 20}]`, x, y);
-      ctx.fillText(`${Math.floor(cell.room)}`, x, y + 10);
+      // ctx.font = '10px Arial';
+      // ctx.fillStyle = 'black';
+      // ctx.fillText(`[${(x / cellSize) + 30},${(y / cellSize) + 20}]`, x, y);
+      // ctx.fillText(`${Math.floor(cell.room)}`, x, y + 10);
       // ctx.fillStyle = `hsl(0, 0%, ${80 - ((level - 1) * 15)}%)`;
       // ctx.fillRect(x, y, cellSize, cellSize);
       break;

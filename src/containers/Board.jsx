@@ -156,6 +156,7 @@ class Board extends Component {
       this.props.actions.updateGrid(grid2, newPosition);
       console.log(nx, ny);
       console.log(this.props.appState.entities[ny][nx]);
+      this.draw();
     }
 
     // handle collisions
@@ -601,56 +602,56 @@ class Board extends Component {
     if (this.props.appState.running) {
       const progress = timestamp - lastRender;
       // if (progress > 20) {
-        console.log('GAMELOOP@@@@@@@@@@@@@@@@@@@@@@@@@@@');
-        console.log(progress);
-        this.update(grid2, newPosition);
-        this.draw();
-        lastRender = timestamp;
-        setTimeout(() => {
-          const myReq = requestAnimationFrame(() => {
-            this.gameLoop(timestamp,
+      console.log('GAMELOOP@@@@@@@@@@@@@@@@@@@@@@@@@@@');
+      console.log(progress);
+      this.update(grid2, newPosition);
+      this.draw();
+      lastRender = timestamp;
+      setTimeout(() => {
+        const myReq = requestAnimationFrame(() => {
+          this.gameLoop(timestamp,
             this.props.appState.entities, this.props.appState.heroPosition);
-          });
-          this.setState({ myReq });
-        }, 1000);
+        });
+        this.setState({ myReq });
+      }, 1000);
     // }
+    }
   }
-}
 
   update(grid2, newPosition) {
     // if (this.props.appState.gridFilled) {
-      console.log('update');
+    console.log('update');
       // update position and object values for hero and all entities
       // for time elapsed since last render
-      const currentEntities = this.props.appState.entities;
-      console.log(currentEntities);
-      const heroPosition = this.props.appState.heroPosition;
-      const doors = this.props.appState.doors;
+    const currentEntities = this.props.appState.entities;
+    console.log(currentEntities);
+    const heroPosition = this.props.appState.heroPosition;
+    const doors = this.props.appState.doors;
 
       // calculate hero movement
-      this.props.actions.updateEntities(currentEntities, newPosition);
+    this.props.actions.updateEntities(currentEntities, newPosition);
 
       // calculate monster movement
-      currentEntities.map((row, rIdx) => {
-        row.map((cell, cIdx) => {
+    currentEntities.map((row, rIdx) => {
+      row.map((cell, cIdx) => {
           // only calculate movement for monsters inside current viewport
-          if (cell.type === 'monster' && utils.inViewport([cIdx, rIdx], heroPosition) && cell.name !== this.props.appState.combat) {
+        if (cell.type === 'monster' && utils.inViewport([cIdx, rIdx], heroPosition) && cell.name !== this.props.appState.combat) {
             // choose next move in monsterAI algorithm
-            const heroRoom = this.props.appState.hero.room;
-            const newMonsterPosition = utils.monsterAI(currentEntities,
+          const heroRoom = this.props.appState.hero.room;
+          const newMonsterPosition = utils.monsterAI(currentEntities,
               [cIdx, rIdx], heroPosition, doors, heroRoom, cell.prevChange);
 
             // calculate change
-            if (newMonsterPosition) {
-              const change = [newMonsterPosition[0] - cIdx, newMonsterPosition[1] - rIdx];
+          if (newMonsterPosition) {
+            const change = [newMonsterPosition[0] - cIdx, newMonsterPosition[1] - rIdx];
               // move monster to new position and re-render viewport
-              this.monsterMovement(currentEntities, cell, [cIdx, rIdx], change);
-            }
+            this.monsterMovement(currentEntities, cell, [cIdx, rIdx], change);
           }
-          return null;
-        });
+        }
         return null;
       });
+      return null;
+    });
     // }
   }
 
