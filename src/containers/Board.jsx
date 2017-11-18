@@ -593,6 +593,10 @@ class Board extends Component {
       newEntity.prevChange = prevChange;
 
       // save updated entity info to app state
+      console.log('passing these args to changeEntity:');
+      console.log(grid1);
+      console.log(newEntity);
+      console.log(newPosition);
       const grid2 = utils.changeEntity(grid1, newEntity, newPosition);
       this.props.actions.updateEntities(grid2);
     }
