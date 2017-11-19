@@ -22,8 +22,7 @@ const move2Door = (neighborCells, entities) => {
   return neighborCells.filter(cell => entities[cell[1]][cell[0]].type === 'door')[0];
 };
 
-// this function handles 'stalemate' situations where monsters get stuck
-// in corners or doorways repeating the same 2-move sequence
+// handle monster stuck in doorway
 const goThroughTheDoor = (entityCoords, prevMoveChange, possibleMoves) => {
   if (prevMoveChange[0] === 0 && prevMoveChange[1] === 0) {
     console.log('goThroughTheDoor initial/random');
@@ -32,8 +31,19 @@ const goThroughTheDoor = (entityCoords, prevMoveChange, possibleMoves) => {
   }
   const [cx, cy] = prevMoveChange;
   const [ex, ey] = entityCoords;
+  let nextMoveInList;
+  for (let i = 0; i < possibleMoves.length; i++) {
+    if (i[0] === (cx + ex) && i[1] === (cy + ey)) {
+      nextMoveInList = true;
+    }
+    nextMoveInList = false;
+  }
+  if (!nextMoveInList) {
+    console.log('cant go through door, something is in the way, backing up');
+    return [ex - cx, ey - cy];
+  }
   console.log('goThroughTheDoor same direction');
-  return [cx + ex, cy + ey];
+  return [ex + cx, ey + cy];
 };
 
 const anythingButBack = (entityCoords, prevMoveChange, possibleMoves) => {
@@ -49,7 +59,7 @@ const anythingButBack = (entityCoords, prevMoveChange, possibleMoves) => {
   console.log('possibleMoves: (is nextMoveSameDir in this list?)');
   console.log(possibleMoves);
   let nextMoveInList;
-  for (let i = possibleMoves.length; i--;) {
+  for (let i = 0; i < possibleMoves.length; i++) {
     if (i[0] === (cx + ex) && i[1] === (cy + ey)) {
       nextMoveInList = true;
     }

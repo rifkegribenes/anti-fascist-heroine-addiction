@@ -210,8 +210,6 @@ function appState(state = INITIAL_STATE, action) {
       );
 
     case START:
-      console.log('setting gridFilled to true');
-      console.log(action.payload.entities);
       return update(
         state,
         {
