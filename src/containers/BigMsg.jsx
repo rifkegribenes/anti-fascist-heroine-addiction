@@ -1,8 +1,8 @@
 import React from 'react';
-// import { connect } from 'react-redux';
-// import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 
-// import * as Actions from '../store/actions';
+import * as Actions from '../store/actions';
 
 const teamList = (arr) => {
   if (arr && arr.length) {
@@ -19,7 +19,7 @@ class BigMsg extends React.Component {
 
   componentDidMount() {
     window.removeEventListener('keydown', this.props.handleKeydown);
-    if (this.props.title === 'You won!') {
+    if (this.props.appState.bigMsg.title === 'You won!') {
       document.getElementById('msgTitle').classList.remove('blink');
       document.getElementById('msgTitle').classList.add('powerUp');
       setTimeout(() => {
@@ -32,25 +32,25 @@ class BigMsg extends React.Component {
     return (
       <div className="big-msg" style={this.props.style}>
         <div className="big-msg__container">
-          <h2 className="big-msg__title blink" id="msgTitle">{this.props.title}</h2>
-          <div id="msgImg" className={this.props.title === 'You won!' ? 'big-msg__img-wrap' : ''}>
-            <img src={this.props.imgUrl} className="big-msg__img" alt={this.props.imgAlt} />
+          <h2 className="big-msg__title blink" id="msgTitle">{this.props.appState.bigMsg.title}</h2>
+          <div id="msgImg" className={this.props.appState.bigMsg.title === 'You won!' ? 'big-msg__img-wrap' : ''}>
+            <img src={this.props.appState.bigMsg.imgUrl} className="big-msg__img" alt={this.props.appState.bigMsg.imgAlt} />
           </div>
-          {this.props.title === 'You won!' &&
+          {this.props.appState.bigMsg.title === 'You won!' &&
             <div className="big-msg__team--wrapper">
-              {teamList(this.props.team)}
+              {teamList(this.props.appState.hero.team)}
             </div>
           }
-          <div className="big-msg__news">{this.props.news}</div>
-          <div className="big-msg__body1">{this.props.body1}</div>
-          {this.props.body2 &&
-            <div className="big-msg__body2">{this.props.body2}</div>
+          <div className="big-msg__news">{this.props.appState.bigMsg.news}</div>
+          <div className="big-msg__body1">{this.props.appState.bigMsg.body1}</div>
+          {this.props.appState.bigMsg.body2 &&
+            <div className="big-msg__body2">{this.props.appState.bigMsg.body2}</div>
           }
           <button
             className="big-msg__btn"
-            onClick={this.props.action}
+            onClick={this.props.appState.bigMsg.action}
           >
-            {this.props.actionText}
+            {this.props.appState.bigMsg.actionText}
           </button>
         </div>
       </div>
@@ -58,12 +58,12 @@ class BigMsg extends React.Component {
   }
 }
 
-// const mapStateToProps = state => ({
-//   appState: state.appState,
-// });
+const mapStateToProps = state => ({
+  appState: state.appState,
+});
 
-// const mapDispatchToProps = dispatch => ({
-//   actions: bindActionCreators({ ...Actions }, dispatch),
-// });
+const mapDispatchToProps = dispatch => ({
+  actions: bindActionCreators({ ...Actions }, dispatch),
+});
 
-export default BigMsg;
+export default connect(mapStateToProps, mapDispatchToProps)(BigMsg);

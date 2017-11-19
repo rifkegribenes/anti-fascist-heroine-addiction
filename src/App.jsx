@@ -62,7 +62,7 @@ class App extends React.Component {
               render={routeProps => <Board {...routeProps} playSound={this.playSound} />
               }
             />
-{/*            <Route
+            {/*            <Route
               exact
               path="/gameover"
               render={routeProps => <BigMsg {...routeProps} playSound={this.playSound} />

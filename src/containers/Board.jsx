@@ -44,7 +44,7 @@ const animate = () => {
 };
 animate();
 
-let lastRender = 0;
+// const lastRender = 0;
 
 const updateXP = (xp) => {
   const width = xp / 3;
@@ -81,11 +81,15 @@ class Board extends Component {
     document.getElementById('board').focus();
   }
 
-  componentDidUpdate() {
-    // if (this.props.appState.gridFilled) {
-    //   utils.renderViewport(this.props.appState.heroPosition,
-    //     this.props.appState.entities, this.props.appState.cellSize);
-    // }
+  componentDidUpdate(prevProps) {
+    console.log('cDU');
+    if (!prevProps.appState.gridFilled) {
+      console.log('!prevProps.appState.gridFilled');
+      if (this.props.appState.gridFilled) {
+        console.log('gridFilled');
+        this.play();
+      }
+    }
   }
 
   componentWillUnmount() {
@@ -608,7 +612,7 @@ class Board extends Component {
       console.log('GAMELOOP@@@@@@@@@@@@@@@@@@@@@@@@@@@');
       this.update(grid2, newPosition);
       this.draw();
-      lastRender = timestamp;
+      // lastRender = timestamp;
       setTimeout(() => {
         const myReq = requestAnimationFrame(() => {
           this.gameLoop(timestamp,
@@ -674,9 +678,6 @@ class Board extends Component {
     const { newMap, heroPosition, trumpPosition, doors } =
       fillGrid(generateMap(1), 1, this.props.appState.hero);
     this.props.actions.start(newMap, heroPosition, trumpPosition, doors);
-    setTimeout(() => {
-      this.play();
-    }, 200);
   }
 
   draw() {
