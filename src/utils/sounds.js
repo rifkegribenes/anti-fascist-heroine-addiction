@@ -1,5 +1,5 @@
 const sounds = {
-  ui: '../sounds/sfx_sounds_button11.mp3',
+  ui: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/sounds/sfx_sounds_button11.mp3',
   uiSelect: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/sounds/sfx_menu_select1.mp3',
   // chooseHero: '',
   startGame: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/sounds/270333__littlerobotsoundfactory__jingle-win-00.mp3',

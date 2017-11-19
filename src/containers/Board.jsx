@@ -173,9 +173,8 @@ class Board extends Component {
         this.props.actions.setCurrentEntity(destination);
         document.getElementById('entity').classList.remove('spin');
         console.log('calling handle combat');
-        console.log(destination);
         console.log(newPosition);
-        this.handleCombat(destination, newPosition);
+        this.handleCombat(destination, newPosition, this.props.appState.heroPosition, 'hero');
         break;
       case 'food':
         this.props.playSound('food');
@@ -233,6 +232,7 @@ class Board extends Component {
 
   heroAttack(hero, monster, heroCoords, monsterCoords) {
     console.log('heroAttack');
+    console.log(heroCoords);
     const [hx, hy] = heroCoords;
 
     // check if final battle
@@ -247,6 +247,7 @@ class Board extends Component {
       utils.random(1, 1.3) * (((hero.level - 1) * 0.5) + 1));
     const newMonster = monster;
     newMonster.health -= monsterDamageTaken;
+    console.log(`monster health = ${newMonster.health}`);
 
     // handle monster death
     if (newMonster.health < 0) {
@@ -258,6 +259,7 @@ class Board extends Component {
     const entities = this.props.appState.entities;
     const [mx, my] = monsterCoords;
     entities[my][mx] = newMonster;
+    console.log(`entities[my][mx] = ${entities[my][mx]}`);
 
     // if final monster also update his other 3 blocks
     if (finalBattle) {
@@ -276,6 +278,7 @@ class Board extends Component {
       entities[my3][mx3] = currentEntityInv;
     }
 
+    console.log('updating entities, setting current entity to monster');
     this.props.actions.updateEntities(entities);
     this.props.actions.setCurrentEntity(monster);
 
@@ -287,15 +290,18 @@ class Board extends Component {
     setTimeout(() => {
       document.getElementById('entity').classList.remove(entityShake);
     }, shakeDuration);
+    console.log(`calculating shake animation: ${entityShake}`);
 
     // save and display newest message
     const messages = [...this.props.appState.messages];
     messages.push(`Your team attacked ${monster.name}. He lost ${monsterDamageTaken} HP.`);
     this.props.actions.updateMessages(messages);
+    console.log(`updating messages`);
 
     // if monster is still alive and hero has not moved away
     if (this.props.appState.currentEntity.health > 0 &&
       this.props.appState.heroPosition[0] === hx && this.props.appState.heroPosition[1] === hy) {
+      console.log(`switching to monster attack`);
       this.monsterAttack(monster, hero, monsterCoords);
     }
   }
@@ -469,6 +475,7 @@ class Board extends Component {
 
   handleCombat(monster, monsterCoords, heroCoords, init) {
     console.log('handleCombat');
+    console.log(`heroCoords: ${heroCoords}`);
 
     // set monster combat value to true
     let initiator = init;
@@ -597,10 +604,6 @@ class Board extends Component {
       newEntity.prevChange = prevChange;
 
       // save updated entity info to app state
-      console.log('passing these args to changeEntity:');
-      console.log(grid1);
-      console.log(newEntity);
-      console.log(newPosition);
       const grid2 = utils.changeEntity(grid1, newEntity, newPosition);
       this.props.actions.updateEntities(grid2);
     }

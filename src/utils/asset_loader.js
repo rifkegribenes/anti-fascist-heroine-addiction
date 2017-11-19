@@ -1,5 +1,5 @@
 import createjs from 'preload-js';
-import Sound from 'createjs-soundjs';
+// import Sound from 'createjs-soundjs';
 import manifest from '../sounds/asset_manifest.json';
 
 export const assetLoader = () => {
@@ -20,7 +20,7 @@ export const assetLoader = () => {
   // File complete handler
   const handleFileLoad = (event) => {
     console.log(`Preloaded: ${event.item.id}`);
-    Sound.play(event.item.id);
+    // Sound.play(event.item.id);
     // const file = preload.getResult(event.item.id);
 
     // Get a reference to the loaded file and

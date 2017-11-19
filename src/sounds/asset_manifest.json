@@ -9,15 +9,13 @@
 	  { "id": "combat2", "src": "https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/sounds/sfx_exp_odd6.mp3" },
 	  { "id": "combat3", "src": "https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/sounds/sfx_exp_odd7.mp3" },
 	  { "id": "combat4", "src": "https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/sounds/sfx_exp_various1.mp3" },
-	  { "id": "combat5b", "src": "https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/sounds/sfx_sounds_impact7.mp3" },
+	  { "id": "combat5", "src": "https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/sounds/sfx_sounds_impact7.mp3" },
 	  { "id": "combat6", "src": "https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/sounds/sfx_sounds_impact8.mp3" },
 	  { "id": "combat7", "src": "https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/sounds/sfx_sounds_impact10.mp3" },
 	  { "id": "combat8", "src": "https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/sounds/sfx_sounds_impact11.mp3" },
 	  { "id": "movement", "src": "https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/sounds/pop_drip.mp3" },
 	  { "id": "heroDeath", "src": "https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/sounds/Shut_Down1.mp3" },
 	  { "id": "staircase", "src": "https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/sounds/sfx_movement_portal1.mp3" },
-	  { "id": "gameLevelUp", "src": "https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/sounds/" },
-	  { "id": "bossFight", "src": "https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/sounds/" },
 	  { "id": "evilLaugh", "src": "https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/sounds/322459__lalazzylee1__game-boss-or-character-laughter.mp3" },
 	  { "id": "gameOver", "src": "https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/sounds/sfx_sound_shutdown2.mp3" }
 	]
