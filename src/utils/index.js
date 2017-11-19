@@ -24,6 +24,7 @@ const move2Door = (neighborCells, entities) => {
 
 // handle monster stuck in doorway
 const goThroughTheDoor = (entityCoords, prevMoveChange, possibleMoves) => {
+  console.log('trying to go through a door');
   if (prevMoveChange[0] === 0 && prevMoveChange[1] === 0) {
     console.log('goThroughTheDoor initial/random');
     // then skip all the rest of the logic and just return a random move
@@ -31,19 +32,17 @@ const goThroughTheDoor = (entityCoords, prevMoveChange, possibleMoves) => {
   }
   const [cx, cy] = prevMoveChange;
   const [ex, ey] = entityCoords;
-  let nextMoveInList;
+  console.log(`entityCoords: ${entityCoords}`);
+  console.log(`prevMoveChange: ${prevMoveChange}`);
+  console.log(`possibleMoves: ${possibleMoves}`);
   for (let i = 0; i < possibleMoves.length; i++) {
-    if (i[0] === (cx + ex) && i[1] === (cy + ey)) {
-      nextMoveInList = true;
+    if (possibleMoves[i][0] === (cx + ex) && possibleMoves[i][1] === (cy + ey)) {
+      console.log('goThroughTheDoor same direction');
+      return [ex + cx, ey + cy];
     }
-    nextMoveInList = false;
   }
-  if (!nextMoveInList) {
-    console.log('cant go through door, something is in the way, backing up');
-    return [ex - cx, ey - cy];
-  }
-  console.log('goThroughTheDoor same direction');
-  return [ex + cx, ey + cy];
+  console.log('cant go through door, something is in the way, backing up');
+  return [ex - cx, ey - cy];
 };
 
 const anythingButBack = (entityCoords, prevMoveChange, possibleMoves) => {
@@ -58,16 +57,10 @@ const anythingButBack = (entityCoords, prevMoveChange, possibleMoves) => {
   // if next move in same direction is possible, take it
   console.log('possibleMoves: (is nextMoveSameDir in this list?)');
   console.log(possibleMoves);
-  let nextMoveInList;
   for (let i = 0; i < possibleMoves.length; i++) {
-    if (i[0] === (cx + ex) && i[1] === (cy + ey)) {
-      nextMoveInList = true;
+    if (possibleMoves[i][0] === (cx + ex) && possibleMoves[i][1] === (cy + ey)) {
+      return [cx + ex, cy + ey];
     }
-    nextMoveInList = false;
-  }
-  console.log(`nextMoveInList: ${nextMoveInList}`);
-  if (nextMoveInList) {
-    return [cx + ex, cy + ey];
   }
   // if not, prioritize a possible move that
   // doesn't take you back the way you came
@@ -163,6 +156,7 @@ const moveTowardHero = (neighborCells, entityCoords, heroCoords, entities, prevM
 
 const getBestDoor = (doors, entityRoom, entityCoords, heroCoords) => {
   console.log('getBestDoor');
+  console.log(doors);
   // best door must be on border of entity's room
   // AND bring entity closer to hero
   const [hx, hy] = heroCoords;
@@ -201,6 +195,10 @@ export const monsterAI = (entities, entityCoords, heroCoords, doors, heroRoom, p
   // is the entity in a doorway? if so, finish going through it
   if (entity.room === 'door') {
     console.log(`${entity.name} in doorway`);
+    console.log('calling goThroughTheDoor with these params:');
+    console.log(`entityCoords: ${entityCoords}`);
+    console.log(`prevMoveChange: ${prevMoveChange}`);
+    console.log(`neighborCells: ${neighborCells}`);
     return goThroughTheDoor(entityCoords, prevMoveChange, neighborCells);
   }
 
@@ -235,11 +233,10 @@ const drawCell = (cellSize, ctx, cell, x, y) => {
       break;
     case 'floor':
     case 'door':
-      // ctx.font = '10px Arial';
-      // ctx.fillStyle = 'black';
-      // ctx.fillText(`[${(x / cellSize) + 30},${(y / cellSize) + 20}]`, x, y);
-      // ctx.fillText(`${Math.floor(cell.room)}`, x, y + 10);
-      // ctx.fillStyle = `hsl(0, 0%, ${80 - ((level - 1) * 15)}%)`;
+      ctx.font = '10px Arial';
+      ctx.fillStyle = 'black';
+      ctx.fillText(`${Math.floor(cell.room)}`, x, y + 10);
+      // ctx.fillStyle = `hsl(0, 0%, ${80 - ((cell.level - 1) * 15)}%)`;
       // ctx.fillRect(x, y, cellSize, cellSize);
       break;
     case 'hero':

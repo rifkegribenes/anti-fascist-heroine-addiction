@@ -609,17 +609,19 @@ class Board extends Component {
   update(grid2, newPosition) {
     // if (this.props.appState.gridFilled) {
     console.log('update');
-      // update position and object values for hero and all entities
-      // for time elapsed since last render
+    // update position and object values for hero and all entities
+    // for time elapsed since last render
     const currentEntities = this.props.appState.entities;
     const heroPosition = this.props.appState.heroPosition;
     const doors = this.props.appState.doors;
 
-      // calculate hero movement
+    // calculate hero movement
     this.props.actions.updateEntities(currentEntities, newPosition);
 
-      // calculate monster movement
-    currentEntities.map((row, rIdx) => {
+    // calculate monster movement only if doors has populated from fillGrid
+    console.log(doors);
+    if (doors) {
+      currentEntities.map((row, rIdx) => {
       row.map((cell, cIdx) => {
         // don't move monsters who are currently in combat
         if (cell.type === 'monster' && cell.name !==
@@ -639,7 +641,8 @@ class Board extends Component {
         return null;
       });
       return null;
-    });
+      });
+    }
     // }
   }
 
