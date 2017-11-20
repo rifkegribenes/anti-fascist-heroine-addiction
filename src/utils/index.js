@@ -18,45 +18,45 @@ export const inViewport = (entityCoords, heroCoords) => {
 };
 
 const move2Door = (neighborCells, entities) => {
-  console.log('move2Door');
+  // console.log('move2Door');
   return neighborCells.filter(cell => entities[cell[1]][cell[0]].type === 'door')[0];
 };
 
 // handle monster stuck in doorway
 const goThroughTheDoor = (entityCoords, prevMoveChange, possibleMoves) => {
-  console.log('trying to go through a door');
+  // console.log('trying to go through a door');
   if (prevMoveChange[0] === 0 && prevMoveChange[1] === 0) {
-    console.log('goThroughTheDoor initial/random');
+    // console.log('goThroughTheDoor initial/random');
     // then skip all the rest of the logic and just return a random move
     return possibleMoves[randomInt(0, possibleMoves.length - 1)];
   }
   const [cx, cy] = prevMoveChange;
   const [ex, ey] = entityCoords;
-  console.log(`entityCoords: ${entityCoords}`);
-  console.log(`prevMoveChange: ${prevMoveChange}`);
-  console.log(`possibleMoves: ${possibleMoves}`);
+  // console.log(`entityCoords: ${entityCoords}`);
+  // console.log(`prevMoveChange: ${prevMoveChange}`);
+  // console.log(`possibleMoves: ${possibleMoves}`);
   for (let i = 0; i < possibleMoves.length; i++) {
     if (possibleMoves[i][0] === (cx + ex) && possibleMoves[i][1] === (cy + ey)) {
-      console.log('goThroughTheDoor same direction');
+      // console.log('goThroughTheDoor same direction');
       return [ex + cx, ey + cy];
     }
   }
-  console.log('cant go through door, something is in the way, backing up');
+  // console.log('cant go through door, something is in the way, backing up');
   return [ex - cx, ey - cy];
 };
 
 const anythingButBack = (entityCoords, prevMoveChange, possibleMoves) => {
   if (prevMoveChange[0] === 0 && prevMoveChange[1] === 0) {
-    console.log('anythingButBack initial/random');
+    // console.log('anythingButBack initial/random');
     // then skip all the rest of the logic and just return a random move
     return possibleMoves[randomInt(0, possibleMoves.length - 1)];
   }
   const [cx, cy] = prevMoveChange;
   const [ex, ey] = entityCoords;
-  console.log(`anythingButBack nextMoveSameDir: ${[cx + ex, cy + ey]}`);
+  // console.log(`anythingButBack nextMoveSameDir: ${[cx + ex, cy + ey]}`);
   // if next move in same direction is possible, take it
-  console.log('possibleMoves: (is nextMoveSameDir in this list?)');
-  console.log(possibleMoves);
+  // console.log('possibleMoves: (is nextMoveSameDir in this list?)');
+  // console.log(possibleMoves);
   for (let i = 0; i < possibleMoves.length; i++) {
     if (possibleMoves[i][0] === (cx + ex) && possibleMoves[i][1] === (cy + ey)) {
       return [cx + ex, cy + ey];
@@ -67,30 +67,29 @@ const anythingButBack = (entityCoords, prevMoveChange, possibleMoves) => {
   const notBackwards = possibleMoves.filter(cell =>
     cell[0] !== ex - cx && cell[1] !== ey - cy);
   if (notBackwards.length) {
-    console.log(`notBackwards random move: ${notBackwards[0]}`);
+    // console.log(`notBackwards random move: ${notBackwards[0]}`);
     return notBackwards[0];
   }
   // if none of those choices work then maybe backwards is your only choice
   // so go ahead and go back. but don't do it next time!!
-  console.log('goin backwards anyway');
+  // console.log('goin backwards anyway');
   return [ex - cx, ey - cy];
 };
 
 const chooseRandomMove = (possibleMoves, entities, entityCoords, doorPriority, prevMoveChange) => {
-  console.log('chooseRandomMove');
-  const [ex, ey] = entityCoords;
+  // console.log('chooseRandomMove');
   if (doorPriority) {
     const doorCells = possibleMoves.filter(cell => entities[cell[1]][cell[0]].type === 'door');
     if (doorCells.length) {
-      console.log(`chooseRandomMove: ${entities[ey][ex].name} is next2Door`);
+      // console.log(`chooseRandomMove: ${entities[ey][ex].name} is next2Door`);
       return move2Door(possibleMoves, entities);
     }
   }
   if (prevMoveChange.reduce((a, b) => a + b) !== 0) {
-    console.log('chooseRandomMove: return anythingButBack');
+    // console.log('chooseRandomMove: return anythingButBack');
     return anythingButBack(entityCoords, prevMoveChange, possibleMoves);
   }
-  console.log('chooseRandomMove: return randmom from possibleMoves');
+  // console.log('chooseRandomMove: return randmom from possibleMoves');
   return possibleMoves[randomInt(0, possibleMoves.length - 1)];
 };
 
@@ -112,12 +111,12 @@ export const getNeighbors = (entities, entityCoords) => {
 };
 
 const move2Hero = (neighborCells, entities) => {
-  console.log('move2Hero');
+  // console.log('move2Hero');
   return neighborCells.filter(cell => entities[cell[1]][cell[0]].type === 'hero')[0];
 };
 
 const moveTowardDoor = (neighborCells, bestDoor, entities, entityCoords, prevMoveChange) => {
-  console.log('moveTowardDoor');
+  // console.log('moveTowardDoor');
   const [ex, ey] = entityCoords;
   const [bDx, bDy] = bestDoor;
   const closer2BestDoorMoves = neighborCells.filter(cell =>
@@ -126,12 +125,12 @@ const moveTowardDoor = (neighborCells, bestDoor, entities, entityCoords, prevMov
   if (closer2BestDoorMoves.length) {
     return closer2BestDoorMoves[0];
   }
-  console.log('moveTowardDoor returned null, choosing random move instead');
+  // console.log('moveTowardDoor returned null, choosing random move instead');
   return chooseRandomMove(neighborCells, entities, entityCoords, true, prevMoveChange);
 };
 
 const moveTowardHero = (neighborCells, entityCoords, heroCoords, entities, prevMoveChange) => {
-  console.log('moveTowardHero');
+  // console.log('moveTowardHero');
   const [ex, ey] = entityCoords;
   const [hx, hy] = heroCoords;
   const possibleMoves = neighborCells.filter(cell =>
@@ -140,23 +139,22 @@ const moveTowardHero = (neighborCells, entityCoords, heroCoords, entities, prevM
 
   // if there's only one move, take it!
   if (possibleMoves.length === 1) {
-    console.log('moveTowardHero: only 1 move');
+    // console.log('moveTowardHero: only 1 move');
     return possibleMoves[0];
   }
 
   // if no possible moves bring monster closer to hero
   // (have to go around something in its path), then pick one move at random
   if (!possibleMoves.length) {
-    console.log('moveTowardHero: choosing random from neighbors');
+    // console.log('moveTowardHero: choosing random from neighbors');
     return chooseRandomMove(neighborCells, entities, entityCoords, false, prevMoveChange);
   }
-  console.log('moveTowardHero: choosing random from possibleMoves');
+  // console.log('moveTowardHero: choosing random from possibleMoves');
   return chooseRandomMove(possibleMoves, entities, entityCoords, false, prevMoveChange);
 };
 
 const getBestDoor = (doors, entityRoom, entityCoords, heroCoords) => {
-  console.log('getBestDoor');
-  console.log(doors);
+  // console.log('getBestDoor');
   // best door must be on border of entity's room
   // AND bring entity closer to hero
   const [hx, hy] = heroCoords;
@@ -180,7 +178,7 @@ const getBestDoor = (doors, entityRoom, entityCoords, heroCoords) => {
 export const monsterAI = (entities, entityCoords, heroCoords, doors, heroRoom, prevMoveChange) => {
   const [ex, ey] = entityCoords;
   const entity = entities[ey][ex];
-  console.log(`monsterAI ${entity.name} ////////////////`);
+  // console.log(`monsterAI ${entity.name} ////////////////`);
 
   // find cells to N,S,E, & W of monster's current position
   const neighborCells = getNeighbors(entities, entityCoords);
@@ -194,11 +192,11 @@ export const monsterAI = (entities, entityCoords, heroCoords, doors, heroRoom, p
 
   // is the entity in a doorway? if so, finish going through it
   if (entity.room === 'door') {
-    console.log(`${entity.name} in doorway`);
-    console.log('calling goThroughTheDoor with these params:');
-    console.log(`entityCoords: ${entityCoords}`);
-    console.log(`prevMoveChange: ${prevMoveChange}`);
-    console.log(`neighborCells: ${neighborCells}`);
+    // console.log(`${entity.name} in doorway`);
+    // console.log('calling goThroughTheDoor with these params:');
+    // console.log(`entityCoords: ${entityCoords}`);
+    // console.log(`prevMoveChange: ${prevMoveChange}`);
+    // console.log(`neighborCells: ${neighborCells}`);
     return goThroughTheDoor(entityCoords, prevMoveChange, neighborCells);
   }
 
@@ -233,9 +231,9 @@ const drawCell = (cellSize, ctx, cell, x, y) => {
       break;
     case 'floor':
     case 'door':
-      ctx.font = '10px Arial';
-      ctx.fillStyle = 'black';
-      ctx.fillText(`${Math.floor(cell.room)}`, x, y + 10);
+      // ctx.font = '10px Arial';
+      // ctx.fillStyle = 'black';
+      // ctx.fillText(`${Math.floor(cell.room)}`, x, y + 10);
       // ctx.fillStyle = `hsl(0, 0%, ${80 - ((cell.level - 1) * 15)}%)`;
       // ctx.fillRect(x, y, cellSize, cellSize);
       break;

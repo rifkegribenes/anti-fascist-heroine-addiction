@@ -110,10 +110,11 @@ function appState(state = INITIAL_STATE, action) {
       );
 
     case SET_HERO:
+
       return update(
         state,
         {
-          hero: {
+          hero: { $merge: {
             name: { $set: action.payload.name },
             cardUrl: { $set: action.payload.cardUrl },
             iconUrl: { $set: action.payload.iconUrl },
@@ -124,7 +125,8 @@ function appState(state = INITIAL_STATE, action) {
             attack: { $set: 10 },
             team: { $set: [] },
             level: { $set: 1 },
-            room: { $set: 0 },
+            // room: { $set: 0 },
+          },
           },
         },
       );
@@ -133,13 +135,14 @@ function appState(state = INITIAL_STATE, action) {
       return update(
         state,
         {
-          hero: {
+          hero: { $merge: {
             hp: { $set: action.payload.hp },
             xp: { $set: action.payload.xp },
             attack: { $set: action.payload.attack },
             team: { $set: action.payload.team },
             level: { $set: action.payload.level },
-            room: { $set: action.payload.room },
+            // room: { $set: action.payload.room },
+          },
           },
         },
       );
@@ -252,7 +255,16 @@ function appState(state = INITIAL_STATE, action) {
       return update(
         state,
         {
-          entities: { [y]: { [x]: { $set: action.payload.entity } } },
+          entities: { [y]: { [x]: { $merge: {
+            name: { $set: action.payload.entity.name },
+            bio: { $set: action.payload.entity.bio },
+            iconUrl: { $set: action.payload.entity.iconUrl },
+            cardUrl: { $set: action.payload.entity.cardUrl },
+            type: { $set: action.payload.entity.type },
+            damage: { $set: action.payload.entity.damage },
+            level: { $set: action.payload.entity.level },
+            health: { $set: action.payload.entity.health },
+          } } } },
         },
       );
 

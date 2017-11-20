@@ -121,16 +121,22 @@ const fillGrid = (gameMap, level, hero) => {
     newMap[topLeft[1]][topLeft[0] + 1] = fmInv;
   }
 
-  // randomly place other entities on floor tiles throughout grid
+  // randomly place other entities on floor cells throughout grid,
+  // avoiding floor cells with doors as immediate neighbors because
+  // monsters can't move through food or teamHeroes
   [foods, monsters, teamHeroArray, staircases].forEach((entities) => {
     while (entities.length) {
       const x = Math.floor(Math.random() * utils.gridWidth);
       const y = Math.floor(Math.random() * utils.gridHeight);
       if (newMap[y][x].type === 'floor') {
-        // assign a room ID to each entity placed in the grod
-        const room = newMap[y][x].room;
-        newMap[y][x] = entities.pop();
-        newMap[y][x].room = room;
+        const neighborCells = utils.getNeighbors(newMap, [x, y]);
+        const neighborDoors = neighborCells.filter(cell => newMap[cell[1]][cell[0]].type === 'door');
+        if (!neighborDoors.length) {
+          // assign a room ID to each entity placed in the grod
+          const room = newMap[y][x].room;
+          newMap[y][x] = entities.pop();
+          newMap[y][x].room = room;
+        }
       }
     }
   });
