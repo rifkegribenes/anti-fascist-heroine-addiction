@@ -139,7 +139,7 @@ class Board extends Component {
     const [x, y] = this.props.appState.heroPosition;
     const [changeX, changeY] = change;
     const newPosition = [changeX + x, changeY + y];
-    const newHero = this.props.appState.entities[y][x];
+    const newHero = this.props.appState.hero;
     const destination = this.props.appState.entities[y + changeY][x + changeX];
     // for any valid destination type
     // (for wall do nothing)
@@ -147,15 +147,24 @@ class Board extends Component {
       let grid1;
       let grid2;
 
-      // ANYTHING => UNOCCUPIED DOORWAY
-      // change hero room to door, replace vacated cell with floor
-      if (destination.room === 'door' && (destination.type === 'door' || destination.type === 'floor')) {
-        // newHero.room = 'door';
-        this.props.actions.updateHero(newHero);
-        grid1 = utils.changeEntity(this.props.appState.entities, { type: 'floor' }, [x, y]);
+      // FLOOR => FLOOR
+      // replace vacated cell with floor
+      if (destination.type === 'floor' && destination.room !== 'door') {
+        grid1 = utils.changeEntity(this.props.appState.entities, { type: 'floor', room: oldRoom }, [x, y]);
         grid2 = utils.changeEntity(grid1, newHero, newPosition);
         this.props.actions.updateGrid(grid2, newPosition);
         this.draw();
+      }
+
+      // ANYTHING => UNOCCUPIED DOORWAY
+      // change hero room to door, replace vacated cell with floor
+      if (destination.room === 'door' && (destination.type === 'door' || destination.type === 'floor')) {
+        newHero.room = 'door';
+        grid1 = utils.changeEntity(this.props.appState.entities, { type: 'floor', room: oldRoom }, [x, y]);
+        grid2 = utils.changeEntity(grid1, newHero, newPosition);
+        this.props.actions.updateGrid(grid2, newPosition);
+        this.draw();
+        this.props.actions.updateHero(newHero);
         return;
       }
 
@@ -163,9 +172,9 @@ class Board extends Component {
       // replace vacated cell with floor, change hero room, handle entity
       if (destination.room === 'door' && destination.type !== 'door' && destination.type !== 'floor') {
         console.log('Hero => MONSTER IN DOORWAY');
-        // newHero.room = 'door';
+        newHero.room = 'door';
         this.props.actions.updateHero(newHero);
-        grid1 = utils.changeEntity(this.props.appState.entities, { type: 'floor' }, [x, y]);
+        grid1 = utils.changeEntity(this.props.appState.entities, { type: 'floor', room: oldRoom }, [x, y]);
         grid2 = utils.changeEntity(grid1, newHero, newPosition);
         this.props.actions.updateGrid(grid2, newPosition);
         this.props.actions.setCurrentEntity(destination);
@@ -178,9 +187,9 @@ class Board extends Component {
       // DOOR => FLOOR
       // replace vacated cell with door
       if (oldRoom === 'door' && destination.type === 'floor') {
-        // newHero.room = destination.room;
+        newHero.room = destination.room;
         this.props.actions.updateHero(newHero);
-        grid1 = utils.changeEntity(this.props.appState.entities, { type: 'door' }, [x, y]);
+        grid1 = utils.changeEntity(this.props.appState.entities, { type: 'door', room: 'door' }, [x, y]);
         grid2 = utils.changeEntity(grid1, newHero, newPosition);
         this.props.actions.updateGrid(grid2, newPosition);
         this.draw();
@@ -189,9 +198,9 @@ class Board extends Component {
       // DOOR => ANY ENTITY NOT IN DOORWAY
       // replace vacated cell with door, handle entity
       if (oldRoom === 'door' && destination.type !== 'floor') {
-        // newHero.room = this.props.appState.entities[y][x].room;
+        newHero.room = this.props.appState.entities[y][x].room;
         this.props.actions.updateHero(newHero);
-        grid1 = utils.changeEntity(this.props.appState.entities, { type: 'door' }, [x, y]);
+        grid1 = utils.changeEntity(this.props.appState.entities, { type: 'door', room: 'door' }, [x, y]);
         grid2 = utils.changeEntity(grid1, newHero, newPosition);
         this.props.actions.updateGrid(grid2, newPosition);
         this.props.actions.setCurrentEntity(destination);
@@ -228,7 +237,7 @@ class Board extends Component {
       // ANYTHING BUT DOOR => ENTITY NOT IN DOORWAY
       // replace vacated cell with floor, handle entity
       if (destination.room !== 'door') {
-        grid1 = utils.changeEntity(this.props.appState.entities, { type: 'floor' }, [x, y]);
+        grid1 = utils.changeEntity(this.props.appState.entities, { type: 'floor', room: oldRoom }, [x, y]);
         grid2 = utils.changeEntity(grid1, newHero, newPosition);
         this.props.actions.updateGrid(grid2, newPosition);
         this.props.actions.setCurrentEntity(destination);
@@ -591,6 +600,7 @@ class Board extends Component {
       // define constants
       const newEntity = { ...entity };
       const [x, y] = coords;
+      const oldRoom = entities[y][x].room;
       const [changeX, changeY] = prevChange;
       const newPosition = [changeX + x, changeY + y]; // new coordinates
       const destination = entities[y + changeY][x + changeX]; // what's there
@@ -601,7 +611,7 @@ class Board extends Component {
       // just replace vacated cell with floor
       if (destination.type === 'floor' && entity.room !== 'door') {
         // console.log(`${entity.name} FLOOR => FLOOR`);
-        grid1 = utils.changeEntity(this.props.appState.entities, { type: 'floor' }, coords);
+        grid1 = utils.changeEntity(this.props.appState.entities, { type: 'floor', room: oldRoom }, coords);
       }
 
       // FLOOR => HERO IN DOORWAY
@@ -611,7 +621,7 @@ class Board extends Component {
         // newEntity.room = 'door';
         newEntity.combat = true;
         this.props.actions.updateEntity(newEntity, coords);
-        grid1 = utils.changeEntity(this.props.appState.entities, { type: 'floor' }, coords);
+        grid1 = utils.changeEntity(this.props.appState.entities, { type: 'floor', room: oldRoom }, coords);
         this.props.actions.setCurrentEntity(newEntity);
         document.getElementById('entity').classList.remove('spin');
         this.handleCombat(newEntity, coords, newPosition, newEntity.name);
@@ -622,14 +632,13 @@ class Board extends Component {
       // HERO => DOOR
       // change room type to door, replace vacated cell with floor
       if (destination.room === 'door' && (destination.type === 'door' || destination.type === 'floor')) {
-        // console.log(`${entity.name} FLOOR => DOOR`);
-        // newEntity.room = 'door';
-        this.props.actions.updateEntity(newEntity, coords);
-        grid1 = utils.changeEntity(this.props.appState.entities, { type: 'floor' }, coords);
+        console.log(`${entity.name} FLOOR (${Math.floor(oldRoom)})=> DOOR`);
+        newEntity.room = 'door';
+        grid1 = utils.changeEntity(this.props.appState.entities, { type: 'floor', room: oldRoom }, coords);
       }
 
       // FLOOR => HERO
-      // handle combat
+      // handle combat, replace vacated cell with floor
       if (destination.type === 'hero' && destination.room !== 'door') {
         // console.log(`${entity.name} FLOOR => HERO`);
         this.props.actions.updateCombat(newEntity.name);
@@ -643,9 +652,9 @@ class Board extends Component {
       // replace vacated cell with door
       if (entity.room === 'door' && destination.type === 'floor') {
         // console.log(`${entity.name} DOOR => FLOOR`);
-        // newEntity.room = this.props.appState.entities[changeY + y][changeX + x].room;
+        newEntity.room = this.props.appState.entities[changeY + y][changeX + x].room;
         this.props.actions.updateEntity(newEntity, coords);
-        grid1 = utils.changeEntity(this.props.appState.entities, { type: 'door' }, coords);
+        grid1 = utils.changeEntity(this.props.appState.entities, { type: 'door', room: 'door' }, coords);
       }
 
       // DOOR => HERO

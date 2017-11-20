@@ -110,11 +110,10 @@ function appState(state = INITIAL_STATE, action) {
       );
 
     case SET_HERO:
-
       return update(
         state,
         {
-          hero: { $merge: {
+          hero: {
             name: { $set: action.payload.name },
             cardUrl: { $set: action.payload.cardUrl },
             iconUrl: { $set: action.payload.iconUrl },
@@ -125,24 +124,24 @@ function appState(state = INITIAL_STATE, action) {
             attack: { $set: 10 },
             team: { $set: [] },
             level: { $set: 1 },
-            // room: { $set: 0 },
-          },
+            room: { $set: 0 },
           },
         },
       );
 
     case UPDATE_HERO:
+      console.log('check hero xp here:');
+      console.log(action.payload);
       return update(
         state,
         {
-          hero: { $merge: {
+          hero: {
             hp: { $set: action.payload.hp },
             xp: { $set: action.payload.xp },
             attack: { $set: action.payload.attack },
             team: { $set: action.payload.team },
             level: { $set: action.payload.level },
-            // room: { $set: action.payload.room },
-          },
+            room: { $set: action.payload.room },
           },
         },
       );
@@ -256,14 +255,14 @@ function appState(state = INITIAL_STATE, action) {
         state,
         {
           entities: { [y]: { [x]: { $merge: {
-            name: { $set: action.payload.entity.name },
-            bio: { $set: action.payload.entity.bio },
-            iconUrl: { $set: action.payload.entity.iconUrl },
-            cardUrl: { $set: action.payload.entity.cardUrl },
-            type: { $set: action.payload.entity.type },
-            damage: { $set: action.payload.entity.damage },
-            level: { $set: action.payload.entity.level },
-            health: { $set: action.payload.entity.health },
+            name: action.payload.entity.name,
+            bio: action.payload.entity.bio,
+            iconUrl: action.payload.entity.iconUrl,
+            cardUrl: action.payload.entity.cardUrl,
+            type: action.payload.entity.type,
+            damage: action.payload.entity.damage,
+            level: action.payload.entity.level,
+            health: action.payload.entity.health,
           } } } },
         },
       );

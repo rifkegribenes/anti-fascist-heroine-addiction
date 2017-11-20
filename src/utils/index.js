@@ -17,10 +17,9 @@ export const inViewport = (entityCoords, heroCoords) => {
   return false;
 };
 
-const move2Door = (neighborCells, entities) => {
+const move2Door = (neighborCells, entities) =>
   // console.log('move2Door');
-  return neighborCells.filter(cell => entities[cell[1]][cell[0]].type === 'door')[0];
-};
+   neighborCells.filter(cell => entities[cell[1]][cell[0]].type === 'door')[0];
 
 // handle monster stuck in doorway
 const goThroughTheDoor = (entityCoords, prevMoveChange, possibleMoves) => {
@@ -110,10 +109,9 @@ export const getNeighbors = (entities, entityCoords) => {
     entities[cell[1]][cell[0]].type === 'hero');
 };
 
-const move2Hero = (neighborCells, entities) => {
+const move2Hero = (neighborCells, entities) =>
   // console.log('move2Hero');
-  return neighborCells.filter(cell => entities[cell[1]][cell[0]].type === 'hero')[0];
-};
+   neighborCells.filter(cell => entities[cell[1]][cell[0]].type === 'hero')[0];
 
 const moveTowardDoor = (neighborCells, bestDoor, entities, entityCoords, prevMoveChange) => {
   // console.log('moveTowardDoor');
@@ -231,9 +229,9 @@ const drawCell = (cellSize, ctx, cell, x, y) => {
       break;
     case 'floor':
     case 'door':
-      // ctx.font = '10px Arial';
-      // ctx.fillStyle = 'black';
-      // ctx.fillText(`${Math.floor(cell.room)}`, x, y + 10);
+      ctx.font = '10px Arial';
+      ctx.fillStyle = 'black';
+      ctx.fillText(`${Math.floor(cell.room)}`, x, y + 10);
       // ctx.fillStyle = `hsl(0, 0%, ${80 - ((cell.level - 1) * 15)}%)`;
       // ctx.fillRect(x, y, cellSize, cellSize);
       break;
