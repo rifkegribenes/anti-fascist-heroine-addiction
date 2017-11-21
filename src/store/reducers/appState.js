@@ -283,6 +283,7 @@ function appState(state = INITIAL_STATE, action) {
       );
 
     case UPDATE_COMBAT:
+      console.log(action.payload);
       console.log(`Now updating ${action.payload.name} to combat state`);
       return update(
         state,

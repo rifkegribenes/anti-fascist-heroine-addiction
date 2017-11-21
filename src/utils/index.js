@@ -215,23 +215,21 @@ export const monsterAI = (entities, entityCoords, heroCoords, doors, heroRoom, p
 
   // is the entity in a doorway? if so, finish going through it
   if (entity.room === 'door') {
-    // console.log(`${entity.name} in doorway`);
-    // console.log('calling goThroughTheDoor with these params:');
-    // console.log(`entityCoords: ${entityCoords}`);
-    // console.log(`prevMoveChange: ${prevMoveChange}`);
-    // console.log(`neighborCells: ${neighborCells}`);
     return goThroughTheDoor(entityCoords, prevMoveChange, neighborCells);
   }
 
   // are monster and hero in different rooms? if so, look for the door
   // out of the monster's current room that brings him closest to hero
   if (entity.room !== heroRoom) {
-    // console.log(`${entities[ey][ex].name} is in room ${entity.room}. Hero is in room ${heroRoom}. Calling getBestDoor.`);
+    console.log(`${entities[ey][ex].name} is in room ${entity.room}.
+      Hero is in room ${heroRoom}. Calling getBestDoor.`);
     const bestDoor = getBestDoor(doors, entity.room, entityCoords, heroCoords);
     return moveTowardDoor(neighborCells, bestDoor, entities, entityCoords, prevMoveChange);
   }
 
   // if hero and monster are in same room, move toward hero
+  console.log(`${entities[ey][ex].name} is in room ${entity.room}.
+      Hero is in room ${heroRoom}. Calling moveTowardHero.`);
   return moveTowardHero(neighborCells, entityCoords, heroCoords, entities, prevMoveChange);
 };
 
