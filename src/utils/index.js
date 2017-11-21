@@ -94,16 +94,40 @@ const chooseRandomMove = (possibleMoves, entities, entityCoords, doorPriority, p
 
 export const getNeighbors = (entities, entityCoords) => {
   // returns an array containing the x & y coords of each neighbor cell
-  const [ex, ey] = entityCoords;
-  const neighbors = [
+  const neighbors = (coords) => {
+    const [ex, ey] = coords;
+    return [
     [ex + 1, ey],
     [ex, ey + 1],
     [ex, ey - 1],
     [ex - 1, ey],
-  ];
+    ];
+  };
+
   // filter out cells that are not possible moves
-  // (only include floor, door, & hero cells)
-  return neighbors.filter(cell =>
+  // (only include floor, door, & hero cells that are not
+  // next to another monster cell)
+  const possibleMoves = [];
+  neighbors(entityCoords).map((n1) => {
+      //  for each of the 4 neighbor cells (n1)
+    const n2Arr = neighbors(n1);
+      //  loop through ITS neighbors cells (n2)
+    for (let i = 0; i < n2Arr.length; i++) {
+      const n2curr = n2Arr[i];
+      const entityAtN2Curr = entities[n2curr[1]][n2curr[0]];
+      if (entityAtN2Curr.type === 'monster' || entityAtN2Curr.type === 'finalMonster') {
+        // console.log(`neighbor cell ${n2curr} of ${n1} is a monster`);
+        break;
+      }
+      if (possibleMoves.indexOf(n1) === -1) {
+        // console.log(`none of ${n1}'s neighbors are monsters, pushing to possibleMoves`);
+        possibleMoves.push(n1);
+      }
+    }
+    return null;
+  });
+
+  return possibleMoves.filter(cell =>
     entities[cell[1]][cell[0]].type === 'floor' ||
     entities[cell[1]][cell[0]].type === 'door' ||
     entities[cell[1]][cell[0]].type === 'hero');
@@ -179,6 +203,7 @@ export const monsterAI = (entities, entityCoords, heroCoords, doors, heroRoom, p
   // console.log(`monsterAI ${entity.name} ////////////////`);
 
   // find cells to N,S,E, & W of monster's current position
+  // that are valid move types (floor, door, hero, not next to another monster)
   const neighborCells = getNeighbors(entities, entityCoords);
 
   // is the entity right next to the hero? if so, that's the next move
@@ -201,6 +226,7 @@ export const monsterAI = (entities, entityCoords, heroCoords, doors, heroRoom, p
   // are monster and hero in different rooms? if so, look for the door
   // out of the monster's current room that brings him closest to hero
   if (entity.room !== heroRoom) {
+    // console.log(`${entities[ey][ex].name} is in room ${entity.room}. Hero is in room ${heroRoom}. Calling getBestDoor.`);
     const bestDoor = getBestDoor(doors, entity.room, entityCoords, heroCoords);
     return moveTowardDoor(neighborCells, bestDoor, entities, entityCoords, prevMoveChange);
   }

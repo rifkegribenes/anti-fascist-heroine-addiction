@@ -220,6 +220,7 @@ export function updateMessages(messages) {
 }
 
 export function updateCombat(name, init) {
+  console.log('updateCombat');
   return ({
     type: UPDATE_COMBAT,
     payload: {

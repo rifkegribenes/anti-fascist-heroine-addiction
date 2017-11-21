@@ -250,7 +250,6 @@ function appState(state = INITIAL_STATE, action) {
       );
 
     case UPDATE_ENTITY:
-      console.log(`Now updating ${action.payload.entity.name} to combat = ${action.payload.entity.combat}`);
       return update(
         state,
         {
@@ -284,6 +283,7 @@ function appState(state = INITIAL_STATE, action) {
       );
 
     case UPDATE_COMBAT:
+      console.log(`Now updating ${action.payload.name} to combat state`);
       return update(
         state,
         {

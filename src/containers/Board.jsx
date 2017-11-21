@@ -89,6 +89,9 @@ class Board extends Component {
         this.play();
       }
     }
+    if (this.props.appState.hero.room !== this.props.appState.entities[this.props.appState.heroPosition[1]][this.props.appState.heroPosition[0]].room) {
+      console.log(`hero room from app state: ${this.props.appState.hero.room}, hero room from entities: ${this.props.appState.entities[this.props.appState.heroPosition[1]][this.props.appState.heroPosition[0]].room}`);
+    }
   }
 
   componentWillUnmount() {
@@ -304,7 +307,12 @@ class Board extends Component {
   }
 
   heroAttack(hero, monster, heroCoords, monsterCoords) {
+    console.log('hero attack');
     const [hx, hy] = heroCoords;
+
+    // set monster to combat = true
+    console.log(`${monster.name} to combat mode`);
+    this.props.actions.updateCombat(monster.name, 'monster');
 
     // check if final battle
     const finalBattle = (monster.type === 'finalMonster');
@@ -327,15 +335,9 @@ class Board extends Component {
     }
 
     // update monster health in app state after attack
-    const newEntities = this.props.appState.entities;
+    const entities = this.props.appState.entities;
     const [mx, my] = monsterCoords;
-    const entities = update(
-      newEntities,
-      {
-        [my]: { [mx]: { $merge: {
-          health: { $set: newMonster.health },
-        } } } },
-      );
+    entities[my][mx] = newMonster;
 
     // if final monster also update his other 3 blocks
     if (finalBattle) {
@@ -409,7 +411,7 @@ class Board extends Component {
 
     // set combat to false in case hero walks away
     // will be reset to true if a new round starts
-    this.props.actions.updateCombat('', '');
+    // this.props.actions.updateCombat('', '');
 
     // update changes to monster in app state
     const entities = this.props.appState.entities;
@@ -593,10 +595,11 @@ class Board extends Component {
   }
 
   monsterMovement(entities, entity, coords, prevChange) {
-    if (this.props.appState.combat === entity.name && this.props.appState.gridFilled) {
+    if (this.props.appState.combatName === entity.name && this.props.appState.gridFilled) {
       return;
     }
-    if (this.props.appState.running && this.props.appState.combat !== entity.name) {
+    if (this.props.appState.running && this.props.appState.combatName !== entity.name) {
+      console.log(`${this.props.appState.combatName} is in combat`);
       // define constants
       const newEntity = { ...entity };
       const [x, y] = coords;
