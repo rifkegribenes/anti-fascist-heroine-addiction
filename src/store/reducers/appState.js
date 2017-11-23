@@ -40,7 +40,7 @@ const INITIAL_STATE = {
   currentEntity: {},
   clipSize: 640,
   gridFilled: false,
-  sound: true,
+  sound: false,
   torch: true,
   loaded: false,
   running: false,

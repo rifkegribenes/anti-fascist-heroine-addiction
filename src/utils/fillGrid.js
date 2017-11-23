@@ -147,8 +147,7 @@ const fillGrid = (gameMap, level, hero) => {
   const doors = [];
   newMap.map((r, rIdx) => r.map((c, cIdx) => {
     if (c.type === 'door') {
-      // neighbor cells function only returns floor type; save the room IDs
-      const neighborCells = utils.getNeighbors([cIdx, rIdx]);
+      const neighborCells = utils.getNeighbors([cIdx, rIdx]).filter(cell => cell.type === 'floor');
       if (neighborCells.length > 1) {
         doors.push({
           coords: [cIdx, rIdx],
