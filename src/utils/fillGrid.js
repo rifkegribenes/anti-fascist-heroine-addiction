@@ -129,7 +129,7 @@ const fillGrid = (gameMap, level, hero) => {
       const x = Math.floor(Math.random() * utils.gridWidth);
       const y = Math.floor(Math.random() * utils.gridHeight);
       if (newMap[y][x].type === 'floor') {
-        const neighborCells = utils.getNeighbors(newMap, [x, y]);
+        const neighborCells = utils.getNeighbors([x, y]);
         const neighborDoors = neighborCells.filter(cell => newMap[cell[1]][cell[0]].type === 'door');
         if (!neighborDoors.length) {
           // assign a room ID to each entity placed in the grod
@@ -148,7 +148,7 @@ const fillGrid = (gameMap, level, hero) => {
   newMap.map((r, rIdx) => r.map((c, cIdx) => {
     if (c.type === 'door') {
       // neighbor cells function only returns floor type; save the room IDs
-      const neighborCells = utils.getNeighbors(newMap, [cIdx, rIdx]);
+      const neighborCells = utils.getNeighbors([cIdx, rIdx]);
       if (neighborCells.length > 1) {
         doors.push({
           coords: [cIdx, rIdx],

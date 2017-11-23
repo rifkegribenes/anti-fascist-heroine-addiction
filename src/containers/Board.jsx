@@ -692,7 +692,9 @@ class Board extends Component {
   }
 
   gameLoop(timestamp, grid2, newPosition) {
+    console.log('gameloop');
     if (this.props.appState.running) {
+      console.log('gl running');
       // const progress = timestamp - lastRender;
       this.update(grid2, newPosition);
       this.draw();
