@@ -100,8 +100,7 @@ class Board extends Component {
 
   updateDimensions() {
     this.props.actions.updateDimensions(window.innerWidth, window.innerHeight);
-    utils.renderViewport(this.props.appState.heroPosition,
-      this.props.appState.entities, this.props.appState.cellSize);
+    this.draw();
   }
 
   handleKeydown(e) {
@@ -596,8 +595,7 @@ class Board extends Component {
       heroPosition, trumpPosition, newMap, level + 1, doors);
     document.getElementById('subhead').classList.add('powerUp');
     setTimeout(() => {
-      utils.renderViewport(this.props.appState.heroPosition,
-        this.props.appState.entities, this.props.appState.cellSize);
+      this.draw();
     }, 1000);
     setTimeout(() => {
       document.getElementById('board').classList.remove('staircaseSpin');
@@ -692,9 +690,9 @@ class Board extends Component {
   }
 
   gameLoop(timestamp, grid2, newPosition) {
-    console.log('gameloop');
+    // console.log('gameloop');
     if (this.props.appState.running) {
-      console.log('gl running');
+      // console.log('gl running');
       // const progress = timestamp - lastRender;
       this.update(grid2, newPosition);
       this.draw();
@@ -772,6 +770,8 @@ class Board extends Component {
     if (this.props.appState.gridFilled) {
       utils.renderViewport(this.props.appState.heroPosition,
         this.props.appState.entities, this.props.appState.cellSize);
+    } else {
+      console.log('grid not filled, not drawing');
     }
   }
 

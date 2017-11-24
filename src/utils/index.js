@@ -108,10 +108,15 @@ const getPossibleMoves = (entities, entityCoords) => {
   // (only include floor, door, & hero cells that are not
   // next to another monster cell)
   const possibleMoves = [];
+  //  for each of the 4 neighbor cells (n1 / green)
   getNeighbors(entityCoords).map((n1) => {
-      //  for each of the 4 neighbor cells (n1)
-    const n2Arr = getNeighbors(n1);
-      //  loop through ITS neighbors cells (n2), EXCLUDING n0
+    // find ITS neighbor cells (n2 / orange)
+    // console.log(`n2Arr for ${n1} (filtered out n0):`);
+    // console.log(getNeighbors(n1).filter(cell => entities[cell[1]][cell[0]].type !== 'monster'));
+    const n2Arr = getNeighbors(n1)
+    // filter out n0 / yellow by cell type
+    .filter(cell => entities[cell[1]][cell[0]].type !== 'monster');
+    //  loop through the remaining 3 (n2 / orange)
     for (let i = 0; i < n2Arr.length; i++) {
       const n2curr = n2Arr[i];
       const entityAtN2Curr = entities[n2curr[1]][n2curr[0]];
@@ -140,10 +145,15 @@ const move2Hero = (neighborCells, entities) =>
   // console.log('move2Hero');
    neighborCells.filter(cell => entities[cell[1]][cell[0]].type === 'hero')[0];
 
+// called from monsterAI
+// returns an array with xy coords of next move
 const moveTowardDoor = (neighborCells, bestDoor, entities, entityCoords, prevMoveChange) => {
   console.log('moveTowardDoor');
   const [ex, ey] = entityCoords;
   const [bDx, bDy] = bestDoor;
+  console.log(`bDx: ${bDx}, bDy: ${bDy}, ex: ${ex} ey: ${ey}`);
+  console.log('considering these neighor cells for moveTowardDoor:');
+  console.log(neighborCells);
   const closer2BestDoorMoves = neighborCells.filter(cell =>
       (Math.abs(cell[0] - bDx) + (Math.abs(cell[1] - bDy))) <
       (Math.abs(ex - bDx) + Math.abs(ey - bDy)));
@@ -156,14 +166,18 @@ const moveTowardDoor = (neighborCells, bestDoor, entities, entityCoords, prevMov
   return chooseRandomMove(neighborCells, entities, entityCoords, true, prevMoveChange);
 };
 
+// called from monsterAI
+// returns an array with xy coords of next move
 const moveTowardHero = (neighborCells, entityCoords, heroCoords, entities, prevMoveChange) => {
   console.log('moveTowardHero');
   const [ex, ey] = entityCoords;
   const [hx, hy] = heroCoords;
+  console.log('considering these neighor cells for moveTowardHero:');
+  console.log(neighborCells);
   const possibleMoves = neighborCells.filter(cell =>
     (Math.abs(cell[0] - hx) + Math.abs(cell[1] - hy)) <
     (Math.abs(ex - hx) + Math.abs(ey - hy)));
-  console.log('possibleMoves');
+  console.log('possibleMoves closer2hero:');
   console.log(possibleMoves);
 
   // if there's only one move, take it!
@@ -193,6 +207,7 @@ const getBestDoor = (doors, entityRoom, entityCoords, heroCoords) => {
     const { rooms } = door;
     return rooms[0] === entityRoom || rooms[1] === entityRoom;
   });
+  console.log('monsterRoomDoors:');
   console.log(monsterRoomDoors);
 
   // of those doors, choose the one that is closest to the hero
@@ -200,7 +215,7 @@ const getBestDoor = (doors, entityRoom, entityCoords, heroCoords) => {
     Math.abs(door.coords[0] - hx) + Math.abs(door.coords[1] - hy));
   const indexOfClosestDoor = doorDistances.indexOf(Math.min(...doorDistances));
   const closestDoor = monsterRoomDoors[indexOfClosestDoor];
-  console.log('closestDoor');
+  console.log('closestDoor:');
   console.log(closestDoor);
   if (!closestDoor) {
     return null;
@@ -210,7 +225,7 @@ const getBestDoor = (doors, entityRoom, entityCoords, heroCoords) => {
 };
 
 // called from Board.jsx > monsterMovement()
-// returns an array with xy coords of next move.
+// returns an array with xy coords of next move
 export const monsterAI = (entities, entityCoords, heroCoords, doors, heroRoom, prevMoveChange) => {
   const [ex, ey] = entityCoords;
   const entity = entities[ey][ex];
@@ -219,6 +234,7 @@ export const monsterAI = (entities, entityCoords, heroCoords, doors, heroRoom, p
   // find cells to N,S,E, & W of monster's current position
   // that are valid move types (floor, door, hero, not next to another monster)
   const neighborCells = getPossibleMoves(entities, entityCoords);
+  console.log('possibleMoves valid neighbor cells:');
   console.log(neighborCells);
 
   // is the entity right next to the hero? if so, that's the next move
@@ -253,7 +269,8 @@ export const monsterAI = (entities, entityCoords, heroCoords, doors, heroRoom, p
 };
 
 // render to canvas
-const drawCell = (cellSize, ctx, cell, x, y) => {
+const drawCell = (cellSize, ctx, cell, x, y, vX, vY) => {
+  // console.log(`drawCell: vX: ${vX}, vY: ${vY}, x: ${x}, y: ${y}`);
   const img = new Image();
   const radius = Math.floor((cellSize) * 0.2) || 2;
   const size = cellSize * 2;
@@ -272,9 +289,11 @@ const drawCell = (cellSize, ctx, cell, x, y) => {
       break;
     case 'floor':
     case 'door':
-      ctx.font = '10px Arial';
+      ctx.font = '8px Arial Narrow';
       ctx.fillStyle = 'black';
-      ctx.fillText(`${Math.floor(cell.room)}`, x, y + 10);
+      ctx.fillText(`${Math.floor(cell.room)}`, x, y);
+      ctx.fillText(`[${(x / cellSize) + vX},`, x, y + 8);
+      ctx.fillText(`${(y / cellSize) + vY}]`, x, y + 16);
       // ctx.fillStyle = `hsl(0, 0%, ${80 - ((cell.level - 1) * 15)}%)`;
       // ctx.fillRect(x, y, cellSize, cellSize);
       break;
@@ -366,20 +385,26 @@ const drawCell = (cellSize, ctx, cell, x, y) => {
 
 export const clamp = (val, min, max) => Math.min(Math.max(val, min), max);
 
+// called from Board.jsx > draw()
 export const renderViewport = (heroPosition, entities, cellSize) => {
   const [hX, hY] = heroPosition;
+  // console.log(`hX: ${hX}, hY: ${hY}`);
   const newEntities = entities.map(row => row.map((cell) => {
     const newCell = { ...cell };
     return newCell;
   }));
   const canvas = document.getElementById('board');
   const ctx = canvas.getContext('2d');
-  ctx.setTransform(1, 0, 0, 1, 0, 0); // reset the transform matrix
+  // reset the transform matrix
+  ctx.setTransform(1, 0, 0, 1, 0, 0);
+  // clear viewport
   ctx.clearRect(0, 0, vWidth * cellSize, vHeight * cellSize);
-  // clear  viewport
   // clamp viewport position to grid bounds, center around hero
-  const vX = clamp(((hX - (vWidth / 2))), 0, ((gridWidth - vWidth)));
-  const vY = clamp(((hY - (vHeight / 2))), 0, ((gridHeight - vHeight)));
+  const vX = clamp(((hX - (vWidth / 2))), 0, ((gridWidth - vWidth))); // 30
+  const vY = clamp(((hY - (vHeight / 2))), 0, ((gridHeight - vHeight))); // 20
+  // console.log(`vWidth: ${vWidth}, vHeight: ${vHeight}`);
+  // console.log(`gridWidth: ${gridWidth}, gridHeight: ${gridHeight}`);
+  // console.log(`vX: ${vX}, vY: ${vY}`);
   // filter out rows above or below viewport
   newEntities.filter((row, rIdx) => rIdx >= vY && rIdx < (vY + vHeight)).map((r, i) =>
       // filter out cells to left or right of viewport
@@ -392,8 +417,8 @@ export const renderViewport = (heroPosition, entities, cellSize) => {
         if (!newCell.hue) { newCell.hue = 0; }
         // TODO:
         // add logic here to only draw cells if they are DIFFERENT from
-        // last tick (need to pass last state into this function to compare)
-        drawCell(cellSize, ctx, newCell, x, y);
+        // last tick (need to pass prev state into this function to compare)
+        drawCell(cellSize, ctx, newCell, x, y, vX, vY);
         return null;
       }));
 };
