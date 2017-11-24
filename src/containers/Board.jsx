@@ -194,8 +194,8 @@ class Board extends Component {
 
       // DOOR => MONSTER NOT IN DOORWAY
       // replace vacated cell with door, handle combat
-      if (oldRoom === 'door' && (destination.type === 'monster' || destination.type !== 'finalMonster')) {
-        console.log('Hero => MONSTER');
+      if (oldRoom === 'door' && (destination.type === 'monster' || destination.type === 'finalMonster')) {
+        console.log(`Hero => MONSTER at ${newPosition}`);
         document.getElementById('entity').classList.remove('spin');
         this.handleCombat(destination, newPosition, this.props.appState.heroPosition, 'hero', true);
         return;
@@ -722,7 +722,7 @@ class Board extends Component {
     this.props.actions.updateEntities(currentEntities, newPosition);
 
     // calculate monster movement only if doors has populated from fillGrid
-    if (doors) {
+    if (doors.length) {
       currentEntities.map((row, rIdx) => {
         row.map((cell, cIdx) => {
         // don't move monsters who are currently in combat

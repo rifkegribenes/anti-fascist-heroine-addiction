@@ -147,7 +147,7 @@ const fillGrid = (gameMap, level, hero) => {
   const doors = [];
   newMap.map((r, rIdx) => r.map((c, cIdx) => {
     if (c.type === 'door') {
-      const neighborCells = utils.getNeighbors([cIdx, rIdx]).filter(cell => cell.type === 'floor');
+      const neighborCells = utils.getNeighbors([cIdx, rIdx]).filter(cell => newMap[cell[1]][cell[0]].type === 'floor');
       if (neighborCells.length > 1) {
         doors.push({
           coords: [cIdx, rIdx],
@@ -162,7 +162,6 @@ const fillGrid = (gameMap, level, hero) => {
     }
     return null;
   }));
-
 
   return { newMap, heroPosition, trumpPosition, doors };
 };

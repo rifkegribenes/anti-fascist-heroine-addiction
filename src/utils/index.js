@@ -114,7 +114,6 @@ const getPossibleMoves = (entities, entityCoords) => {
       //  loop through ITS neighbors cells (n2), EXCLUDING n0
     for (let i = 0; i < n2Arr.length; i++) {
       const n2curr = n2Arr[i];
-      console.log(`n2curr: ${n2curr}`);
       const entityAtN2Curr = entities[n2curr[1]][n2curr[0]];
       if (entityAtN2Curr.type === 'monster' || entityAtN2Curr.type === 'finalMonster') {
         // console.log(`neighbor cell ${n2curr} of ${n1} is a monster`);
@@ -128,8 +127,8 @@ const getPossibleMoves = (entities, entityCoords) => {
     return null;
   });
 
-  console.log('possibleMoves from getPossibleMoves');
-  console.log(possibleMoves);
+  // console.log('possibleMoves from getPossibleMoves');
+  // console.log(possibleMoves);
 
   return possibleMoves.filter(cell =>
     entities[cell[1]][cell[0]].type === 'floor' ||
@@ -184,8 +183,6 @@ const moveTowardHero = (neighborCells, entityCoords, heroCoords, entities, prevM
 };
 
 const getBestDoor = (doors, entityRoom, entityCoords, heroCoords) => {
-  console.log(doors);
-  console.log(`entityRoom: ${entityRoom}`);
   // console.log('getBestDoor');
   // best door must be on border of entity's room
   // AND bring entity closer to hero
@@ -212,6 +209,7 @@ const getBestDoor = (doors, entityRoom, entityCoords, heroCoords) => {
   return closestDoor.coords;
 };
 
+// called from Board.jsx > monsterMovement()
 // returns an array with xy coords of next move.
 export const monsterAI = (entities, entityCoords, heroCoords, doors, heroRoom, prevMoveChange) => {
   const [ex, ey] = entityCoords;

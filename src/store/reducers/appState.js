@@ -212,6 +212,7 @@ function appState(state = INITIAL_STATE, action) {
       );
 
     case START:
+      console.log(action.payload);
       return update(
         state,
         {
