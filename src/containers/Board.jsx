@@ -392,6 +392,7 @@ class Board extends Component {
     const sound = Math.floor(utils.random(1, 8));
     this.props.playSound(`combat${sound}`);
 
+    // calculate hero damage
     const heroDamageTaken = Math.floor(utils.random(0.7, 1.3) * monster.damage);
     utils.changeEntity(this.props.appState.entities, monster, monsterCoords);
     newHero.hp -= heroDamageTaken;
@@ -406,7 +407,9 @@ class Board extends Component {
     }, shakeDuration);
 
     // update hero health in app state after attack
+    console.log(`updating hero hp to ${newHero.hp}`);
     this.props.actions.updateHero(newHero);
+    console.log(`hero hp after app state update: ${this.props.appState.hero.hp}`);
 
     // hero death
     if (this.props.appState.hero.hp <= 0) {
@@ -416,7 +419,7 @@ class Board extends Component {
 
     // set combat to false in case hero walks away
     // will be reset to true if a new round starts
-    // this.props.actions.updateCombat('', '');
+    this.props.actions.updateCombat('', '');
 
     // update changes to monster in app state
     const entities = this.props.appState.entities;
@@ -525,8 +528,9 @@ class Board extends Component {
     this.props.actions.updateHero(newHero);
 
     // update hero level
-    newHero.level = Math.floor(hero.xp / 100) + 1;
     if (newHero.xp % 100 === 0) {
+      newHero.level = this.props.appState.hero.level + 1;
+      console.log(`current hero xp: ${newHero.xp}`);
       console.log(`updating hero to level ${newHero.level}`);
       this.heroLevelUp(newHero);
     }
