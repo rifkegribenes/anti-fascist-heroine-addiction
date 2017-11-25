@@ -16,6 +16,14 @@ export const inViewport = (entityCoords, heroCoords) => {
   }
   return false;
 };
+export const isItemInArray = (arr, item) => {
+  for (let i = 0; i < arr.length; i++) {
+    if (arr[i][0] === item[0] && arr[i][1] === item[1]) {
+      return true;
+    }
+  }
+  return false;
+};
 
 const move2Door = (neighborCells, entities) =>
   // console.log('move2Door');
@@ -139,7 +147,7 @@ const getPossibleMoves = (entities, entityCoords) => {
         // console.log(`neighbor cell ${n3curr} of ${n1} is a monster`);
         break;
       }
-      if (possibleMoves.indexOf(n1) === -1) {
+      if (!isItemInArray(possibleMoves, n1)) {
         // console.log(`none of ${n1}'s 2d neighbors are monsters, pushing to possibleMoves`);
         possibleMoves.push(n1);
       }
@@ -161,7 +169,7 @@ const move2Hero = (neighborCells, entities) =>
    neighborCells.filter(cell => entities[cell[1]][cell[0]].type === 'hero')[0];
 
 const moveAwayFromMonster = (neighborCells, monsterCells) =>
-  neighborCells.filter(cell => monsterCells.indexOf(cell) === -1)[0];
+  neighborCells.filter(cell => !isItemInArray(monsterCells, cell))[0];
 
 // called from monsterAI
 // returns an array with xy coords of next move

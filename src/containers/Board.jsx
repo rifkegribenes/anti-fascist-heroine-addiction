@@ -465,6 +465,7 @@ class Board extends Component {
   }
 
   heroLevelUp(hero) {
+    console.log(`levelup to level ${hero.level}`);
     // add and remove powerup class
     document.getElementById('hero').classList.add('powerUp');
     document.getElementById('hero-level').classList.add('powerUp');
@@ -480,6 +481,7 @@ class Board extends Component {
 
     // update hero state in redux store with updated level & xp
     this.props.actions.updateHero(hero);
+    console.log(`hero level after app state update: ${this.props.appState.hero.level}`);
   }
 
   monsterDeath(hero, monster, monsterDamageTaken, monsterCoords, door) {
@@ -502,7 +504,7 @@ class Board extends Component {
     this.props.actions.updateCombat('', '');
 
     // update grid, replace hero with floor and monster w hero
-    // unles hero's previous position was a door, in which case
+    // unless hero's previous position was a door, in which case
     // replace hero with door
     let grid1;
     const [x, y] = this.props.appState.heroPosition;
@@ -525,6 +527,7 @@ class Board extends Component {
     // update hero level
     newHero.level = Math.floor(hero.xp / 100) + 1;
     if (newHero.xp % 100 === 0) {
+      console.log(`updating hero to level ${newHero.level}`);
       this.heroLevelUp(newHero);
     }
   }
@@ -735,12 +738,13 @@ class Board extends Component {
             const newMonsterPosition = utils.monsterAI(currentEntities,
               [cIdx, rIdx], heroPosition, doors, heroRoom, cell.prevChange);
 
-            // calculate change
-            // but only if no other monster has already moved into that cell
-            if (newMonsterPosition && monsterMoves.indexOf(newMonsterPosition) === -1) {
+            // if no other monster has already moved into that cell
+            if (newMonsterPosition && !utils.isItemInArray(monsterMoves, newMonsterPosition)) {
+              // calculate change
               const change = [newMonsterPosition[0] - cIdx, newMonsterPosition[1] - rIdx];
               // move monster to new position and re-render viewport
               this.monsterMovement(currentEntities, cell, [cIdx, rIdx], change);
+              // save move to array for this turn to check future moves against
               monsterMoves.push(newMonsterPosition);
             }
           }
