@@ -103,6 +103,20 @@ export const getNeighbors = (coords) => {
   ];
 };
 
+export const getNeighbors2n = (coords) => {
+  // returns an array containing the x & y coords
+  // of each cell within 2 moves of target
+  const neighbors2n = [];
+  const neighbors = getNeighbors(coords);
+  neighbors.forEach(cell => neighbors2n.push(getNeighbors(cell)));
+  const merged = [].concat(...neighbors2n);
+
+  return merged.reduce((a, b) => {
+    if (a.indexOf(b) < 0) a.push(b);
+    return a;
+  }, []);
+};
+
 const getPossibleMoves = (entities, entityCoords) => {
   // filter out cells that are not possible moves
   // (only include floor, door, & hero cells that are not
@@ -111,21 +125,22 @@ const getPossibleMoves = (entities, entityCoords) => {
   //  for each of the 4 neighbor cells (n1 / green)
   getNeighbors(entityCoords).map((n1) => {
     // find ITS neighbor cells (n2 / orange)
-    // console.log(`n2Arr for ${n1} (filtered out n0):`);
-    // console.log(getNeighbors(n1).filter(cell => entities[cell[1]][cell[0]].type !== 'monster'));
-    const n2Arr = getNeighbors(n1)
+    // console.log(`n3Arr for ${n1} (filtered out n0):`);
+    // console.log(getNeighbors2n(n1).filter(cell =>
+    // entities[cell[1]][cell[0]].type !== 'monster'));
+    const n3Arr = getNeighbors2n(n1)
     // filter out n0 / yellow by cell type
     .filter(cell => entities[cell[1]][cell[0]].type !== 'monster');
     //  loop through the remaining 3 (n2 / orange)
-    for (let i = 0; i < n2Arr.length; i++) {
-      const n2curr = n2Arr[i];
-      const entityAtN2Curr = entities[n2curr[1]][n2curr[0]];
-      if (entityAtN2Curr.type === 'monster' || entityAtN2Curr.type === 'finalMonster') {
-        // console.log(`neighbor cell ${n2curr} of ${n1} is a monster`);
+    for (let i = 0; i < n3Arr.length; i++) {
+      const n3curr = n3Arr[i];
+      const entityAtN3Curr = entities[n3curr[1]][n3curr[0]];
+      if (entityAtN3Curr.type === 'monster' || entityAtN3Curr.type === 'finalMonster') {
+        // console.log(`neighbor cell ${n3curr} of ${n1} is a monster`);
         break;
       }
       if (possibleMoves.indexOf(n1) === -1) {
-        // console.log(`none of ${n1}'s neighbors are monsters, pushing to possibleMoves`);
+        // console.log(`none of ${n1}'s 2d neighbors are monsters, pushing to possibleMoves`);
         possibleMoves.push(n1);
       }
     }
@@ -145,40 +160,43 @@ const move2Hero = (neighborCells, entities) =>
   // console.log('move2Hero');
    neighborCells.filter(cell => entities[cell[1]][cell[0]].type === 'hero')[0];
 
+const moveAwayFromMonster = (neighborCells, monsterCells) =>
+  neighborCells.filter(cell => monsterCells.indexOf(cell) === -1)[0];
+
 // called from monsterAI
 // returns an array with xy coords of next move
 const moveTowardDoor = (neighborCells, bestDoor, entities, entityCoords, prevMoveChange) => {
-  console.log('moveTowardDoor');
+  // console.log('moveTowardDoor');
   const [ex, ey] = entityCoords;
   const [bDx, bDy] = bestDoor;
-  console.log(`bDx: ${bDx}, bDy: ${bDy}, ex: ${ex} ey: ${ey}`);
-  console.log('considering these neighor cells for moveTowardDoor:');
-  console.log(neighborCells);
+  // console.log(`bDx: ${bDx}, bDy: ${bDy}, ex: ${ex} ey: ${ey}`);
+  // console.log('considering these neighor cells for moveTowardDoor:');
+  // console.log(neighborCells);
   const closer2BestDoorMoves = neighborCells.filter(cell =>
       (Math.abs(cell[0] - bDx) + (Math.abs(cell[1] - bDy))) <
       (Math.abs(ex - bDx) + Math.abs(ey - bDy)));
   if (closer2BestDoorMoves.length) {
-    console.log('closer2BestDoorMoves:');
-    console.log(closer2BestDoorMoves);
+    // console.log('closer2BestDoorMoves:');
+    // console.log(closer2BestDoorMoves);
     return closer2BestDoorMoves[0];
   }
-  console.log('moveTowardDoor returned null, choosing random move instead');
+  // console.log('moveTowardDoor returned null, choosing random move instead');
   return chooseRandomMove(neighborCells, entities, entityCoords, true, prevMoveChange);
 };
 
 // called from monsterAI
 // returns an array with xy coords of next move
 const moveTowardHero = (neighborCells, entityCoords, heroCoords, entities, prevMoveChange) => {
-  console.log('moveTowardHero');
+  // console.log('moveTowardHero');
   const [ex, ey] = entityCoords;
   const [hx, hy] = heroCoords;
-  console.log('considering these neighor cells for moveTowardHero:');
-  console.log(neighborCells);
+  // console.log('considering these neighor cells for moveTowardHero:');
+  // console.log(neighborCells);
   const possibleMoves = neighborCells.filter(cell =>
     (Math.abs(cell[0] - hx) + Math.abs(cell[1] - hy)) <
     (Math.abs(ex - hx) + Math.abs(ey - hy)));
-  console.log('possibleMoves closer2hero:');
-  console.log(possibleMoves);
+  // console.log('possibleMoves closer2hero:');
+  // console.log(possibleMoves);
 
   // if there's only one move, take it!
   if (possibleMoves.length === 1) {
@@ -207,16 +225,16 @@ const getBestDoor = (doors, entityRoom, entityCoords, heroCoords) => {
     const { rooms } = door;
     return rooms[0] === entityRoom || rooms[1] === entityRoom;
   });
-  console.log('monsterRoomDoors:');
-  console.log(monsterRoomDoors);
+  // console.log('monsterRoomDoors:');
+  // console.log(monsterRoomDoors);
 
   // of those doors, choose the one that is closest to the hero
   const doorDistances = monsterRoomDoors.map(door =>
     Math.abs(door.coords[0] - hx) + Math.abs(door.coords[1] - hy));
   const indexOfClosestDoor = doorDistances.indexOf(Math.min(...doorDistances));
   const closestDoor = monsterRoomDoors[indexOfClosestDoor];
-  console.log('closestDoor:');
-  console.log(closestDoor);
+  // console.log('closestDoor:');
+  // console.log(closestDoor);
   if (!closestDoor) {
     return null;
   }
@@ -234,14 +252,22 @@ export const monsterAI = (entities, entityCoords, heroCoords, doors, heroRoom, p
   // find cells to N,S,E, & W of monster's current position
   // that are valid move types (floor, door, hero, not next to another monster)
   const neighborCells = getPossibleMoves(entities, entityCoords);
-  console.log('possibleMoves valid neighbor cells:');
-  console.log(neighborCells);
+  // console.log('possibleMoves valid neighbor cells:');
+  // console.log(neighborCells);
 
   // is the entity right next to the hero? if so, that's the next move
   const heroCells = neighborCells.filter(cell => entities[cell[1]][cell[0]].type === 'hero');
   if (heroCells.length) {
-    console.log(`${entities[ey][ex].name} nextToHero`);
+    // console.log(`${entities[ey][ex].name} nextToHero`);
     return move2Hero(neighborCells, entities);
+  }
+
+  // is the entity right next to another monstre? if so, move away to avoid
+  // race conditions with the AI / monsters 'eating' each other in the grid
+  const monsterCells = neighborCells.filter(cell => entities[cell[1]][cell[0]].type === 'monster' || entities[cell[1]][cell[0]].type === 'finalMonster');
+  if (monsterCells.length) {
+    console.log(`${entities[ey][ex].name} moveAwayFromMonster`);
+    return moveAwayFromMonster(neighborCells, monsterCells);
   }
 
   // is the entity in a doorway? if so, finish going through it
@@ -252,8 +278,10 @@ export const monsterAI = (entities, entityCoords, heroCoords, doors, heroRoom, p
   // are monster and hero in different rooms? if so, look for the door
   // out of the monster's current room that brings him closest to hero
   if (entity.room !== heroRoom) {
-    console.log(`${entities[ey][ex].name} is in room ${Math.floor(entity.room)} at ${entityCoords}.
-      Hero is in room ${Math.floor(heroRoom)} at ${heroCoords}. Calling getBestDoor.`);
+    // console.log(`${entities[ey][ex].name}
+    // is in room ${Math.floor(entity.room)} at ${entityCoords}.
+    //   Hero is in room ${Math.floor(heroRoom)}
+    //   at ${heroCoords}. Calling getBestDoor.`);
     const bestDoor = getBestDoor(doors, entity.room, entityCoords, heroCoords);
     if (!bestDoor) {
       return chooseRandomMove(getPossibleMoves(entities, entityCoords),
@@ -263,8 +291,8 @@ export const monsterAI = (entities, entityCoords, heroCoords, doors, heroRoom, p
   }
 
   // if hero and monster are in same room, move toward hero
-  console.log(`${entities[ey][ex].name} is in room ${Math.floor(entity.room)} at ${entityCoords}.
-      Hero is in room ${Math.floor(heroRoom)} at ${heroCoords}. Calling moveTowardHero.`);
+  // console.log(`${entities[ey][ex].name} is in room ${Math.floor(entity.room)} at ${entityCoords}.
+  //     Hero is in room ${Math.floor(heroRoom)} at ${heroCoords}. Calling moveTowardHero.`);
   return moveTowardHero(neighborCells, entityCoords, heroCoords, entities, prevMoveChange);
 };
 

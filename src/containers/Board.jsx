@@ -64,7 +64,6 @@ class Board extends Component {
     this.handleKeydown = this.handleKeydown.bind(this);
     this.userInput = this.userInput.bind(this);
     this.updateDimensions = this.updateDimensions.bind(this);
-    // this.step = this.step.bind(this);
     this.play = this.play.bind(this);
     this.pause = this.pause.bind(this);
     this.gameLoop = this.gameLoop.bind(this);
@@ -85,7 +84,7 @@ class Board extends Component {
   componentDidUpdate(prevProps) {
     if (!prevProps.appState.gridFilled) {
       if (this.props.appState.gridFilled) {
-        console.log('grid is now filled, calling play()');
+        // console.log('grid is now filled, calling play()');
         this.play();
       }
     }
@@ -148,6 +147,7 @@ class Board extends Component {
 
       // FLOOR => FLOOR
       // replace vacated cell with floor
+      // console.log(`floor => floor, currEntity type: ${this.props.appState.currentEntity.type}`);
       if (destination.type === 'floor' && destination.room !== 'door') {
         grid1 = utils.changeEntity(this.props.appState.entities, { type: 'floor', room: oldRoom }, [x, y]);
         grid2 = utils.changeEntity(grid1, newHero, newPosition);
@@ -172,7 +172,7 @@ class Board extends Component {
       if (destination.room === 'door' &&
         destination.type !== 'door' &&
         destination.type !== 'floor') {
-        console.log('Hero => MONSTER IN DOORWAY');
+        // console.log('Hero => MONSTER IN DOORWAY');
         newHero.room = 'door';
         this.props.actions.updateHero(newHero);
         document.getElementById('entity').classList.remove('spin');
@@ -194,7 +194,7 @@ class Board extends Component {
       // DOOR => MONSTER NOT IN DOORWAY
       // replace vacated cell with door, handle combat
       if (oldRoom === 'door' && (destination.type === 'monster' || destination.type === 'finalMonster')) {
-        console.log(`Hero => MONSTER at ${newPosition}`);
+        // console.log(`Hero => MONSTER at ${newPosition}`);
         document.getElementById('entity').classList.remove('spin');
         this.handleCombat(destination, newPosition, this.props.appState.heroPosition, 'hero', true);
         return;
@@ -215,22 +215,22 @@ class Board extends Component {
           // if monster, handle combat
           case 'finalMonster':
           case 'monster':
-            console.log('Hero DOOR => MONSTER');
+            // console.log('Hero DOOR => MONSTER');
             this.props.actions.updateCombat(destination.name, 'hero');
             this.handleCombat(destination, newPosition, this.props.appState.heroPosition, 'hero');
             break;
           case 'food':
-            console.log('Hero DOOR => FOOD');
+            // console.log('Hero DOOR => FOOD');
             this.props.playSound('food');
             this.healthBoost(destination);
             break;
           case 'teamHero':
-            console.log('Hero DOOR => THERO');
+            // console.log('Hero DOOR => THERO');
             this.props.playSound('addHero');
             this.addTeamHero(destination);
             break;
           case 'staircase':
-            console.log('Hero DOOR => STAIRCASE');
+            // console.log('Hero DOOR => STAIRCASE');
             this.props.playSound('staircase');
             this.handleStaircase(destination);
             break;
@@ -242,7 +242,7 @@ class Board extends Component {
       // ANYTHING BUT DOOR => MONSTER NOT IN DOORWAY
       // replace vacated cell with floor, handle combat
       if ((destination.type === 'monster' || destination.type === 'finalMonster') && destination.room !== 'door') {
-        console.log('Hero => MONSTER');
+        // console.log('Hero => MONSTER');
         document.getElementById('entity').classList.remove('spin');
         this.handleCombat(destination, newPosition, this.props.appState.heroPosition, 'hero');
         return;
@@ -250,7 +250,7 @@ class Board extends Component {
 
       // ANYTHING BUT DOOR => OTHER ENTITY NOT IN DOORWAY
       // replace vacated cell with floor, handle entity
-      if (destination.room !== 'door') {
+      if (destination.room !== 'door' && destination.type !== 'floor') {
         grid1 = utils.changeEntity(this.props.appState.entities, { type: 'floor', room: oldRoom }, [x, y]);
         grid2 = utils.changeEntity(grid1, newHero, newPosition);
         this.props.actions.updateGrid(grid2, newPosition);
@@ -279,13 +279,13 @@ class Board extends Component {
   addTeamHero(teamHero) {
     const hero = { ...this.props.appState.hero };
     const messages = [...this.props.appState.messages];
-    const currentEntity = teamHero;
+    // const currentEntity = teamHero;
     hero.attack += teamHero.damage;
     hero.team.push(teamHero);
     messages.push(`You added ${teamHero.name} to your team! She adds ${teamHero.damage} points of damage to your team attack.`);
     this.props.actions.updateHero(hero);
     this.props.actions.updateMessages(messages);
-    this.props.actions.setCurrentEntity(currentEntity);
+    // this.props.actions.setCurrentEntity(currentEntity);
     document.getElementById('hero').classList.add('powerUp');
     setTimeout(() => {
       document.getElementById('hero').classList.remove('powerUp');
@@ -295,15 +295,15 @@ class Board extends Component {
   healthBoost(food) {
     const hero = { ...this.props.appState.hero };
     const messages = [...this.props.appState.messages];
-    const currentEntity = food;
+    // const currentEntity = food;
     const healthBoost = food.healthBoost;
     hero.hp += healthBoost;
-    console.log(`new hero hp = ${hero.hp}`);
+    // console.log(`new hero hp = ${hero.hp}`);
     messages.push(`You ate ${food.name} and gained ${food.healthBoost} health points!`);
     this.props.actions.updateHero(hero);
-    console.log(`hero hp after state update: ${this.props.appState.hero.hp}`);
+    // console.log(`hero hp after state update: ${this.props.appState.hero.hp}`);
     this.props.actions.updateMessages(messages);
-    this.props.actions.setCurrentEntity(currentEntity);
+    // this.props.actions.setCurrentEntity(currentEntity);
     document.getElementById('hero').classList.add('powerUp');
     setTimeout(() => {
       document.getElementById('hero').classList.remove('powerUp');
@@ -311,12 +311,12 @@ class Board extends Component {
   }
 
   heroAttack(hero, monster, heroCoords, monsterCoords, door) {
-    console.log('hero attack');
+    // console.log('hero attack');
     this.props.actions.setCurrentEntity(monster);
     const [hx, hy] = heroCoords;
 
     // set monster to combat = true
-    console.log(`${monster.name} to combat mode`);
+    // console.log(`${monster.name} to combat mode`);
     this.props.actions.updateCombat(monster.name, 'monster');
 
     // check if final battle
@@ -643,7 +643,7 @@ class Board extends Component {
       // HERO => DOOR
       // change room type to door, replace vacated cell with floor
       if (destination.room === 'door' && (destination.type === 'door' || destination.type === 'floor')) {
-        console.log(`${entity.name} FLOOR (${Math.floor(oldRoom)})=> DOOR`);
+        // console.log(`${entity.name} FLOOR (${Math.floor(oldRoom)})=> DOOR`);
         newEntity.room = 'door';
         grid1 = utils.changeEntity(this.props.appState.entities, { type: 'floor', room: oldRoom }, coords);
       }
@@ -720,7 +720,11 @@ class Board extends Component {
     this.props.actions.updateEntities(currentEntities, newPosition);
 
     // calculate monster movement only if doors has populated from fillGrid
-    if (doors.length) {
+    if (doors && doors.length) {
+      // store each monster's target move in an array
+      // if a second monster tries to move into the same cell
+      // disable his movement for that turn
+      const monsterMoves = [];
       currentEntities.map((row, rIdx) => {
         row.map((cell, cIdx) => {
         // don't move monsters who are currently in combat
@@ -732,10 +736,12 @@ class Board extends Component {
               [cIdx, rIdx], heroPosition, doors, heroRoom, cell.prevChange);
 
             // calculate change
-            if (newMonsterPosition) {
+            // but only if no other monster has already moved into that cell
+            if (newMonsterPosition && monsterMoves.indexOf(newMonsterPosition) === -1) {
               const change = [newMonsterPosition[0] - cIdx, newMonsterPosition[1] - rIdx];
               // move monster to new position and re-render viewport
               this.monsterMovement(currentEntities, cell, [cIdx, rIdx], change);
+              monsterMoves.push(newMonsterPosition);
             }
           }
           return null;
@@ -753,7 +759,7 @@ class Board extends Component {
   }
 
   pause() {
-    console.log('paused');
+    // console.log('paused');
     // stop gameloop
     window.clearInterval(window.interval);
     cancelAnimationFrame(this.state.myReq);
@@ -771,7 +777,7 @@ class Board extends Component {
       utils.renderViewport(this.props.appState.heroPosition,
         this.props.appState.entities, this.props.appState.cellSize);
     } else {
-      console.log('grid not filled, not drawing');
+      // console.log('grid not filled, not drawing');
     }
   }
 

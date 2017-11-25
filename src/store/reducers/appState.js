@@ -37,7 +37,9 @@ const INITIAL_STATE = {
     action: '',
     actionText: '',
   },
-  currentEntity: {},
+  currentEntity: {
+    type: 'floor',
+  },
   clipSize: 640,
   gridFilled: false,
   sound: false,
@@ -130,8 +132,8 @@ function appState(state = INITIAL_STATE, action) {
       );
 
     case UPDATE_HERO:
-      console.log('check hero xp here:');
-      console.log(action.payload);
+      // console.log('check hero xp here:');
+      // console.log(action.payload);
       return update(
         state,
         {
@@ -212,7 +214,6 @@ function appState(state = INITIAL_STATE, action) {
       );
 
     case START:
-      console.log(action.payload);
       return update(
         state,
         {
