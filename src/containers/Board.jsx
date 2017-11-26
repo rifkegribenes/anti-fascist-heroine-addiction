@@ -604,13 +604,14 @@ class Board extends Component {
     }, 2000);
   }
 
+  // called from this.update()
   monsterMovement(entities, entity, coords, prevChange) {
     if (this.props.appState.combatName === entity.name && this.props.appState.gridFilled) {
       return;
     }
     if (this.props.appState.running && this.props.appState.combatName !== entity.name) {
       // define constants
-      console.log(`monsterMovement ${entity.name}`);
+      // console.log(`monsterMovement ${entity.name}`);
       const newEntity = { ...entity };
       const [x, y] = coords;
       const oldRoom = entities[y][x].room;
@@ -692,7 +693,7 @@ class Board extends Component {
   }
 
   gameLoop(timestamp, grid2, newPosition) {
-    console.log('gameloop');
+    // console.log('gameloop');
     if (this.props.appState.running) {
       // console.log('gl running');
       // const progress = timestamp - lastRender;
@@ -779,8 +780,12 @@ class Board extends Component {
 
   draw() {
     if (this.props.appState.gridFilled) {
+      // render current viewport
+      // save current viewport as 'prevVP'
       const prevVP = utils.renderViewport(this.props.appState.heroPosition,
         this.props.appState.entities, this.props.appState.cellSize, this.props.appState.prevVP);
+      // save prevVP to app state to compare against next viewport
+      // and only draw diff
       this.props.actions.setPrevVP(prevVP);
     } else {
       // console.log('grid not filled, not drawing');

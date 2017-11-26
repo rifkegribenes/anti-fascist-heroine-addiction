@@ -125,43 +125,47 @@ export const getNeighbors2n = (coords) => {
   }, []);
 };
 
+// called from monsterAI
 const getPossibleMoves = (entities, entityCoords) => {
-  // filter out cells that are not possible moves
-  // (only include floor, door, & hero cells that are not
-  // next to another monster cell)
-  const possibleMoves = [];
-  //  for each of the 4 neighbor cells (n1 / green)
-  getNeighbors(entityCoords).map((n1) => {
-    // find ITS neighbor cells (n2 / orange)
-    // console.log(`n3Arr for ${n1} (filtered out n0):`);
-    // console.log(getNeighbors2n(n1).filter(cell =>
-    // entities[cell[1]][cell[0]].type !== 'monster'));
-    const n3Arr = getNeighbors2n(n1)
-    // filter out n0 / yellow by cell type
-    .filter(cell => entities[cell[1]][cell[0]].type !== 'monster');
-    //  loop through the remaining 3 (n2 / orange)
-    for (let i = 0; i < n3Arr.length; i++) {
-      const n3curr = n3Arr[i];
-      const entityAtN3Curr = entities[n3curr[1]][n3curr[0]];
-      if (entityAtN3Curr.type === 'monster' || entityAtN3Curr.type === 'finalMonster') {
-        // console.log(`neighbor cell ${n3curr} of ${n1} is a monster`);
-        break;
+  if (entities) {
+    // filter out cells that are not possible moves
+    // (only include floor, door, & hero cells that are not
+    // next to another monster cell)
+    const possibleMoves = [];
+    //  for each of the 4 neighbor cells (n1 / green)
+    getNeighbors(entityCoords).map((n1) => {
+      // find ITS neighbor cells (n2 / orange)
+      // console.log(`n3Arr for ${n1} (filtered out n0):`);
+      // console.log(getNeighbors2n(n1).filter(cell =>
+      // entities[cell[1]][cell[0]].type !== 'monster'));
+      const n3Arr = getNeighbors2n(n1)
+      // filter out n0 / yellow by cell type
+      .filter(cell => entities[cell[1]][cell[0]].type !== 'monster');
+      //  loop through the remaining 3 (n2 / orange)
+      for (let i = 0; i < n3Arr.length; i++) {
+        const n3curr = n3Arr[i];
+        const entityAtN3Curr = entities[n3curr[1]][n3curr[0]];
+        if (entityAtN3Curr.type === 'monster' || entityAtN3Curr.type === 'finalMonster') {
+          // console.log(`neighbor cell ${n3curr} of ${n1} is a monster`);
+          break;
+        }
+        if (!isItemInArray(possibleMoves, n1)) {
+          // console.log(`none of ${n1}'s 2d neighbors are monsters, pushing to possibleMoves`);
+          possibleMoves.push(n1);
+        }
       }
-      if (!isItemInArray(possibleMoves, n1)) {
-        // console.log(`none of ${n1}'s 2d neighbors are monsters, pushing to possibleMoves`);
-        possibleMoves.push(n1);
-      }
-    }
-    return null;
-  });
+      return null;
+    });
 
-  // console.log('possibleMoves from getPossibleMoves');
-  // console.log(possibleMoves);
+    // console.log('possibleMoves from getPossibleMoves');
+    // console.log(possibleMoves);
 
-  return possibleMoves.filter(cell =>
-    entities[cell[1]][cell[0]].type === 'floor' ||
-    entities[cell[1]][cell[0]].type === 'door' ||
-    entities[cell[1]][cell[0]].type === 'hero');
+    return possibleMoves.filter(cell =>
+      entities[cell[1]][cell[0]].type === 'floor' ||
+      entities[cell[1]][cell[0]].type === 'door' ||
+      entities[cell[1]][cell[0]].type === 'hero');
+  }
+  return null;
 };
 
 const move2Hero = (neighborCells, entities) =>
@@ -435,7 +439,7 @@ export const renderViewport = (heroPosition, entities, cellSize, prevVP) => {
   // reset the transform matrix
   ctx.setTransform(1, 0, 0, 1, 0, 0);
   // clear viewport
-  ctx.clearRect(0, 0, vWidth * cellSize, vHeight * cellSize);
+  // ctx.clearRect(0, 0, vWidth * cellSize, vHeight * cellSize);
   // clamp viewport position to grid bounds, center around hero
   const vX = clamp(((hX - (vWidth / 2))), 0, ((gridWidth - vWidth))); // 30
   const vY = clamp(((hY - (vHeight / 2))), 0, ((gridHeight - vHeight))); // 20
@@ -452,14 +456,31 @@ export const renderViewport = (heroPosition, entities, cellSize, prevVP) => {
         const y = cellSize * i;
         const newCell = { ...c };
         // only draw cells if they are DIFFERENT from last viewport update
-        if (!prevVP || !Object.is(newCell, prevVP[j][i])) {
+        if (!prevVP) {
           if (!newCell.level) { newCell.level = 1; }
           if (!newCell.hue) { newCell.hue = 0; }
           drawCell(cellSize, ctx, newCell, x, y, vX, vY);
-          console.log(`cell at ${(x / cellSize) + vX},${(y / cellSize) + vY} has changed, re-drawing`);
-          return null;
+          // console.log(`cell at ${(x / cellSize) + vX},
+          // ${(y / cellSize) + vY} has changed, re-drawing`);
+          return newCell;
         }
-        console.log(`cell at ${(x / cellSize) + vX},${(y / cellSize) + vY} NOT CHANGED`);
+        const prevCell = prevVP[i][j];
+        if (newCell.type !== prevCell.type ||
+          newCell.name !== prevCell.name ||
+          newCell.opacity !== prevCell.opacity ||
+          newCell.hue !== prevCell.hue) {
+          if (!newCell.level) { newCell.level = 1; }
+          if (!newCell.hue) { newCell.hue = 0; }
+          drawCell(cellSize, ctx, newCell, x, y, vX, vY);
+          // console.log(`cell at ${(x / cellSize) + vX},${(y / cellSize) + vY} has changed:`);
+          // console.log('prevCell:');
+          // console.log(prevCell);
+          // console.log('newCell:');
+          // console.log(newCell);
+          return newCell;
+        }
+        // console.log(`cell at ${(x / cellSize) + vX},${(y / cellSize) + vY} NOT CHANGED`);
+        return newCell;
       }));
 };
 

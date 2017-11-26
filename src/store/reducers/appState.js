@@ -239,7 +239,7 @@ function appState(state = INITIAL_STATE, action) {
       return update(
         state,
         {
-          prevVP: { $set: action.payload },
+          prevVP: { $set: action.payload.prevVP },
         },
       );
 

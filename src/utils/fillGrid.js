@@ -162,8 +162,8 @@ const fillGrid = (gameMap, level, hero) => {
     }
     return null;
   }));
-  console.log(`doors array for level ${level}:`);
-  console.log(doors);
+  // console.log(`doors array for level ${level}:`);
+  // console.log(doors);
   return { newMap, heroPosition, trumpPosition, doors };
 };
 
