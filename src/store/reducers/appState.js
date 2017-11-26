@@ -42,7 +42,7 @@ const INITIAL_STATE = {
   },
   clipSize: 640,
   gridFilled: false,
-  sound: false,
+  sound: true,
   torch: true,
   loaded: false,
   running: false,

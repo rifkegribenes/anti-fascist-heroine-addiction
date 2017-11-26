@@ -53,6 +53,7 @@ class HeroPicker extends React.Component {
   moveLeft() {
     let newActive = this.state.active;
     newActive -= 1;
+    this.props.playSound('movement');
     this.setState({
       active: newActive < 0 ? this.state.items.length - 1 : newActive,
       direction: 'left',
@@ -60,6 +61,7 @@ class HeroPicker extends React.Component {
   }
 
   moveRight() {
+    this.props.playSound('movement');
     const newActive = this.state.active;
     this.setState({
       active: (newActive + 1) % this.state.items.length,

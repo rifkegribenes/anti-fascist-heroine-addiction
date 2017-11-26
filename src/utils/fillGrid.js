@@ -60,16 +60,17 @@ const fillGrid = (gameMap, level, hero) => {
   newMap[hY][hX] = newHero;
 
 // hard code trump in upper left four floor tiles on level 3
+// TODO: make this randomly choose one of the four corner rooms
 
   let trumpPosition = [];
-  if (level === 3) {
+  // if (level === 3) {
     const finalMonster = {
-      // health: 30,
-      health: 500,
-      level: 5,
-      // level: 1,
-      damage: 60,
-      // damage: 10,
+      health: 30,
+      level: 1,
+      damage: 10,
+      // health: 500,
+      // level: 5,
+      // damage: 60,
       type: 'finalMonster',
       name: 'Donald Trump',
       bio: '',
@@ -119,7 +120,7 @@ const fillGrid = (gameMap, level, hero) => {
     newMap[topLeft[1] + 1][topLeft[0]] = fmInv;
     newMap[topLeft[1] + 1][topLeft[0] + 1] = fmInv;
     newMap[topLeft[1]][topLeft[0] + 1] = fmInv;
-  }
+  // }
 
   // randomly place other entities on floor cells throughout grid,
   // avoiding floor cells with doors as immediate neighbors because

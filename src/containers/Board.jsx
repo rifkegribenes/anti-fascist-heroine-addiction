@@ -448,7 +448,7 @@ class Board extends Component {
     // display message
     const messages = [...this.props.appState.messages];
     setTimeout(() => {
-      messages.push(`You died! ${monster.youDiedMsg}.`);
+      messages.push(`${utils.badNews[Math.floor(utils.random(0, 13))]} You died! ${monster.youDiedMsg}.`);
       this.props.actions.updateMessages(messages);
       this.props.playSound('evilLaugh');
       this.props.actions.showMsg({
@@ -532,8 +532,7 @@ class Board extends Component {
 
   gameWin(monster, monsterDamageTaken) {
     // stop gameloop
-    window.clearInterval(window.interval);
-    cancelAnimationFrame(this.state.myReq);
+    this.pause();
     // define action for 'you won' screen
     const action = () => {
       this.props.actions.hideMsg();
@@ -542,11 +541,10 @@ class Board extends Component {
     };
     const messages = [...this.props.appState.messages];
     messages.push(`${utils.goodNews[Math.floor(utils.random(0, 13))]}! Your attack of [${monsterDamageTaken}] defeated ${monster.name}.`); // fix this msg later
-    setTimeout(() => messages.push('You won! blah blah blah.'), 1000); // fix this msg later
     this.props.playSound('gameWin');
     setTimeout(() => {
-      document.getElementById('msgTitle').classList.remove('powerUp');
-      document.getElementById('msgTitle').classList.remove('blink');
+      // document.getElementById('msgTitle').classList.remove('powerUp');
+      // document.getElementById('msgTitle').classList.remove('blink');
       this.props.actions.showMsg({
         title: 'You won!',
         imgUrl: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/rainbow.png',
@@ -558,7 +556,7 @@ class Board extends Component {
         actionText: 'Play Again',
       });
       this.props.history.push('/gameover');
-    }, 1000);
+    }, 1005);
   }
 
   handleCombat(monster, monsterCoords, heroCoords, init, door) {

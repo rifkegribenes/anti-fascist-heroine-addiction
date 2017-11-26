@@ -58,7 +58,7 @@ const foodTypes = [
   {
     name: 'some Fries',
     title: 'Fries',
-    iconUrl: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/frues_32.png',
+    iconUrl: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/fries_32.png',
     cardUrl: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/fries_200.png',
     healthBoost: 30,
     level: 2,
@@ -116,6 +116,14 @@ const foodTypes = [
     title: 'Donut',
     iconUrl: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/donut_32.png',
     cardUrl: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/donut_200.png',
+    healthBoost: 60,
+    level: 3,
+  },
+  {
+    name: 'the invisible sufganiyah power-up!!!',
+    title: 'Invisible Sufganiyah',
+    iconUrl: '',
+    cardUrl: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/sufganiyah_200.png',
     healthBoost: 80,
     level: 3,
   },
