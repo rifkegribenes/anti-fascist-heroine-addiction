@@ -423,7 +423,7 @@ const drawCell = (cellSize, ctx, cell, x, y) => {
 export const clamp = (val, min, max) => Math.min(Math.max(val, min), max);
 
 // called from Board.jsx > draw()
-export const renderViewport = (heroPosition, entities, cellSize) => {
+export const renderViewport = (heroPosition, entities, cellSize, prevVP) => {
   const [hX, hY] = heroPosition;
   // console.log(`hX: ${hX}, hY: ${hY}`);
   const newEntities = entities.map(row => row.map((cell) => {
@@ -442,21 +442,24 @@ export const renderViewport = (heroPosition, entities, cellSize) => {
   // console.log(`vWidth: ${vWidth}, vHeight: ${vHeight}`);
   // console.log(`gridWidth: ${gridWidth}, gridHeight: ${gridHeight}`);
   // console.log(`vX: ${vX}, vY: ${vY}`);
-  // filter out rows above or below viewport
-  newEntities.filter((row, rIdx) => rIdx >= vY && rIdx < (vY + vHeight)).map((r, i) =>
+  // filter out rows above or below viewport,
+  // return current viewport to save to app state
+  return newEntities.filter((row, rIdx) => rIdx >= vY && rIdx < (vY + vHeight)).map((r, i) =>
       // filter out cells to left or right of viewport
        r.filter((r2, i2) => i2 >= vX && i2 < (vX + vWidth))
       .map((c, j) => {
         const x = cellSize * j;
         const y = cellSize * i;
         const newCell = { ...c };
-        if (!newCell.level) { newCell.level = 1; }
-        if (!newCell.hue) { newCell.hue = 0; }
-        // TODO:
-        // add logic here to only draw cells if they are DIFFERENT from
-        // last tick (need to pass prev state into this function to compare)
-        drawCell(cellSize, ctx, newCell, x, y, vX, vY);
-        return null;
+        // only draw cells if they are DIFFERENT from last viewport update
+        if (!prevVP || !Object.is(newCell, prevVP[j][i])) {
+          if (!newCell.level) { newCell.level = 1; }
+          if (!newCell.hue) { newCell.hue = 0; }
+          drawCell(cellSize, ctx, newCell, x, y, vX, vY);
+          console.log(`cell at ${(x / cellSize) + vX},${(y / cellSize) + vY} has changed, re-drawing`);
+          return null;
+        }
+        console.log(`cell at ${(x / cellSize) + vX},${(y / cellSize) + vY} NOT CHANGED`);
       }));
 };
 

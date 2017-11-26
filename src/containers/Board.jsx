@@ -779,8 +779,9 @@ class Board extends Component {
 
   draw() {
     if (this.props.appState.gridFilled) {
-      utils.renderViewport(this.props.appState.heroPosition,
-        this.props.appState.entities, this.props.appState.cellSize);
+      const prevVP = utils.renderViewport(this.props.appState.heroPosition,
+        this.props.appState.entities, this.props.appState.cellSize, this.props.appState.prevVP);
+      this.props.actions.setPrevVP(prevVP);
     } else {
       // console.log('grid not filled, not drawing');
     }
