@@ -18,6 +18,10 @@ export const HIDE_MSG = 'HIDE_MSG';
 export const TOGGLE_TORCH = 'TOGGLE_TORCH';
 export const TOGGLE_SOUND = 'TOGGLE_SOUND';
 export const SET_LOADED = 'SET_LOADED';
+export const PLAY = 'PLAY';
+export const PAUSE = 'PAUSE';
+export const UPDATE_ENTITY = 'UPDATE_ENTITY';
+export const UPDATE_COMBAT = 'UPDATE_COMBAT';
 
 export function setLevel(level) {
   return ({
@@ -36,6 +40,18 @@ export function setHero(hero) {
   return ({
     type: SET_HERO,
     payload: hero,
+  });
+}
+
+export function play() {
+  return ({
+    type: PLAY,
+  });
+}
+
+export function pause() {
+  return ({
+    type: PAUSE,
   });
 }
 
@@ -144,13 +160,15 @@ export function toggleTorch(torch) {
   });
 }
 
-export function start(entities, heroPosition, trumpPosition) {
+export function start(entities, heroPosition, trumpPosition, doors) {
+  console.log('actions/index.js > start');
   return ({
     type: START,
     payload: {
       entities,
       heroPosition,
       trumpPosition,
+      doors,
     },
   });
 }
@@ -164,7 +182,18 @@ export function updateEntities(entities) {
   });
 }
 
-export function handleStaircase(currentEntity, heroPosition, trumpPosition, entities, gameLevel) {
+export function updateEntity(entity, coords) {
+  return ({
+    type: UPDATE_ENTITY,
+    payload: {
+      entity,
+      coords,
+    },
+  });
+}
+
+export function handleStaircase(currentEntity, heroPosition, trumpPosition,
+  entities, gameLevel, doors) {
   return ({
     type: HANDLE_STAIRCASE,
     payload: {
@@ -173,6 +202,7 @@ export function handleStaircase(currentEntity, heroPosition, trumpPosition, enti
       trumpPosition,
       entities,
       gameLevel,
+      doors,
     },
   });
 }
@@ -188,5 +218,16 @@ export function updateMessages(messages) {
   return ({
     type: UPDATE_MESSAGES,
     payload: messages,
+  });
+}
+
+export function updateCombat(name, init) {
+  // console.log('updateCombat');
+  return ({
+    type: UPDATE_COMBAT,
+    payload: {
+      name,
+      init,
+    },
   });
 }

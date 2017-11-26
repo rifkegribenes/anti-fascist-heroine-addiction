@@ -1,7 +1,7 @@
 const sounds = {
   ui: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/sounds/sfx_sounds_button11.mp3',
   uiSelect: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/sounds/sfx_menu_select1.mp3',
-  chooseHero: '',
+  // chooseHero: '',
   startGame: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/sounds/270333__littlerobotsoundfactory__jingle-win-00.mp3',
   food: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/sounds/sfx_sounds_powerup1.mp3',
   addHero: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/sounds/sfx_sounds_powerup2.mp3',
@@ -17,9 +17,9 @@ const sounds = {
   heroDeath: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/sounds/Shut_Down1.mp3',
   heroLevelUp: '',
   staircase: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/sounds/sfx_movement_portal1.mp3',
-  gameLevelUp: '',
-  bossFight: '',
-  evilLaugh: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/sounds/322459__lalazzylee1__game-boss-or-character-laughter1.mp3',
+  // gameLevelUp: '',
+  // bossFight: '',
+  // evilLaugh: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/sounds/322459__lalazzylee1__game-boss-or-character-laughter1.mp3',
   gameWin: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/sounds/270330__littlerobotsoundfactory__jingle-achievement-01.mp3',
   gameOver: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/sounds/sfx_sound_shutdown2.mp3',
 };

@@ -7,6 +7,7 @@ import Splash from './containers/Splash';
 import Board from './containers/Board';
 import About from './containers/About';
 import HeroPicker from './containers/HeroPicker';
+import BigMsg from './containers/BigMsg';
 import * as Actions from './store/actions';
 import * as aL from './utils/asset_loader';
 import sounds from './utils/sounds';
@@ -28,7 +29,18 @@ class App extends React.Component {
       const sound = document.createElement('audio');
       sound.setAttribute('autoplay', 'autoplay');
       sound.setAttribute('src', sounds[item]);
-      sound.play();
+      const playPromise = sound.play();
+      // In browsers that don't support html5 audio,
+      // playPromise won’t be defined.
+      if (playPromise !== undefined) {
+        playPromise.then(() => {
+          // Automatic playback started!
+        }).catch((err) => {
+          console.log(err);
+        });
+      } else {
+        console.log('this browser does not support html5 audio');
+      }
     }
   }
 
@@ -59,6 +71,12 @@ class App extends React.Component {
               exact
               path="/play"
               render={routeProps => <Board {...routeProps} playSound={this.playSound} />
+              }
+            />
+            <Route
+              exact
+              path="/gameover"
+              render={routeProps => <BigMsg {...routeProps} playSound={this.playSound} />
               }
             />
           </Switch>

@@ -4,7 +4,6 @@ import teamHeroes from './teamHeroes';
 import monsterTypes from './monsterTypes';
 
 const fillGrid = (gameMap, level, hero) => {
-  // const finalMonsters = [];
   const tempHero = { ...hero };
 
   const monsters = [];
@@ -13,6 +12,7 @@ const fillGrid = (gameMap, level, hero) => {
   for (let i = 0; i < 4; i++) {
     const monster = Object.assign({}, qM[i]);
     monster.type = 'monster';
+    monster.prevChange = [0, 0];
     monster.health = Math.floor(((level * 0.75) ** 2) * 90)
     + utils.randomInt(10 * level, 20 * level);
     monsters.push(monster);
@@ -56,6 +56,7 @@ const fillGrid = (gameMap, level, hero) => {
   }));
   const newHero = hero;
   newHero.type = 'hero';
+  newHero.room = 0;
   newMap[hY][hX] = newHero;
 
 // hard code trump in upper left four floor tiles on level 3
@@ -73,17 +74,19 @@ const fillGrid = (gameMap, level, hero) => {
       name: 'Donald Trump',
       bio: '',
       youDiedMsg: '',
-      iconUrl: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/donald-trump_64.png',
-      cardUrl: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/donald-trump_200.png',
+      iconUrl: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/donald-trump_64.gif',
+      cardUrl: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/donald-trump_200.gif',
       opacity: 1,
     };
 
     // find most upper-left floor tile
     let topLeft = [];
+    let topLeftRoom = null;
     for (let i = 0; i < newMap.length; i++) {
       for (let j = 0; j < newMap[i].length; j++) {
         if (newMap[i][j].type === 'floor') {
           topLeft = [j, i]; // x,y
+          topLeftRoom = newMap[i][j].room;
           break;
         }
       } if (topLeft.length > 0) {
@@ -101,6 +104,8 @@ const fillGrid = (gameMap, level, hero) => {
       [topLeft[1], topLeft[0] + 1],
     ];
 
+    // assign room ID to trump
+    finalMonster.room = topLeftRoom;
 
     // Fill four-tile block in top-left positionwith fM object,
     // but only draw it once
@@ -116,17 +121,50 @@ const fillGrid = (gameMap, level, hero) => {
     newMap[topLeft[1]][topLeft[0] + 1] = fmInv;
   }
 
-  // randomly place other entities on floor tiles throughout grid
+  // randomly place other entities on floor cells throughout grid,
+  // avoiding floor cells with doors as immediate neighbors because
+  // monsters can't move through food or teamHeroes
   [foods, monsters, teamHeroArray, staircases].forEach((entities) => {
     while (entities.length) {
       const x = Math.floor(Math.random() * utils.gridWidth);
       const y = Math.floor(Math.random() * utils.gridHeight);
       if (newMap[y][x].type === 'floor') {
-        newMap[y][x] = entities.pop();
+        const neighborCells = utils.getNeighbors([x, y]);
+        const neighborDoors = neighborCells.filter(cell => newMap[cell[1]][cell[0]].type === 'door');
+        if (!neighborDoors.length) {
+          // assign a room ID to each entity placed in the grod
+          const room = newMap[y][x].room;
+          newMap[y][x] = entities.pop();
+          newMap[y][x].room = room;
+        }
       }
     }
   });
-  return { newMap, heroPosition, trumpPosition };
+
+  // generate an array of doors for monsterAI
+  // each door is an object with two keys:
+  // 1) an array of xy coords, and 2) an array of IDs of adjoining rooms
+  const doors = [];
+  newMap.map((r, rIdx) => r.map((c, cIdx) => {
+    if (c.type === 'door') {
+      const neighborCells = utils.getNeighbors([cIdx, rIdx]).filter(cell => newMap[cell[1]][cell[0]].type === 'floor');
+      if (neighborCells.length > 1) {
+        doors.push({
+          coords: [cIdx, rIdx],
+          rooms: [
+            newMap[neighborCells[0][1]][neighborCells[0][0]].room,
+            newMap[neighborCells[1][1]][neighborCells[1][0]].room,
+          ],
+        });
+      } else if (neighborCells.length === 1) {
+        console.log('only one neighbor cell ???');
+      }
+    }
+    return null;
+  }));
+  console.log(`doors array for level ${level}:`);
+  console.log(doors);
+  return { newMap, heroPosition, trumpPosition, doors };
 };
 
 export default fillGrid;
