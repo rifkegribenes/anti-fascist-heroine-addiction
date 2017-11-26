@@ -192,7 +192,8 @@ export function updateEntity(entity, coords) {
   });
 }
 
-export function handleStaircase(currentEntity, heroPosition, trumpPosition, entities, gameLevel) {
+export function handleStaircase(currentEntity, heroPosition, trumpPosition,
+  entities, gameLevel, doors) {
   return ({
     type: HANDLE_STAIRCASE,
     payload: {
@@ -201,6 +202,7 @@ export function handleStaircase(currentEntity, heroPosition, trumpPosition, enti
       trumpPosition,
       entities,
       gameLevel,
+      doors,
     },
   });
 }

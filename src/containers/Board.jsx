@@ -407,9 +407,7 @@ class Board extends Component {
     }, shakeDuration);
 
     // update hero health in app state after attack
-    console.log(`updating hero hp to ${newHero.hp}`);
     this.props.actions.updateHero(newHero);
-    console.log(`hero hp after app state update: ${this.props.appState.hero.hp}`);
 
     // hero death
     if (this.props.appState.hero.hp <= 0) {
@@ -468,7 +466,6 @@ class Board extends Component {
   }
 
   heroLevelUp(hero) {
-    console.log(`levelup to level ${hero.level}`);
     // add and remove powerup class
     document.getElementById('hero').classList.add('powerUp');
     document.getElementById('hero-level').classList.add('powerUp');
@@ -484,7 +481,6 @@ class Board extends Component {
 
     // update hero state in redux store with updated level & xp
     this.props.actions.updateHero(hero);
-    console.log(`hero level after app state update: ${this.props.appState.hero.level}`);
   }
 
   monsterDeath(hero, monster, monsterDamageTaken, monsterCoords, door) {
@@ -530,8 +526,6 @@ class Board extends Component {
     // update hero level
     if (newHero.xp % 100 === 0) {
       newHero.level = this.props.appState.hero.level + 1;
-      console.log(`current hero xp: ${newHero.xp}`);
-      console.log(`updating hero to level ${newHero.level}`);
       this.heroLevelUp(newHero);
     }
   }
@@ -616,6 +610,7 @@ class Board extends Component {
     }
     if (this.props.appState.running && this.props.appState.combatName !== entity.name) {
       // define constants
+      console.log(`monsterMovement ${entity.name}`);
       const newEntity = { ...entity };
       const [x, y] = coords;
       const oldRoom = entities[y][x].room;
@@ -697,7 +692,7 @@ class Board extends Component {
   }
 
   gameLoop(timestamp, grid2, newPosition) {
-    // console.log('gameloop');
+    console.log('gameloop');
     if (this.props.appState.running) {
       // console.log('gl running');
       // const progress = timestamp - lastRender;
@@ -711,6 +706,8 @@ class Board extends Component {
         });
         this.setState({ myReq });
       }, 1000);
+    } else {
+      console.log('not running');
     }
   }
 

@@ -305,7 +305,8 @@ export const monsterAI = (entities, entityCoords, heroCoords, doors, heroRoom, p
 };
 
 // render to canvas
-const drawCell = (cellSize, ctx, cell, x, y, vX, vY) => {
+// if need coords printed: (cellSize, ctx, cell, x, y, vX, vY)
+const drawCell = (cellSize, ctx, cell, x, y) => {
   // console.log(`drawCell: vX: ${vX}, vY: ${vY}, x: ${x}, y: ${y}`);
   const img = new Image();
   const radius = Math.floor((cellSize) * 0.2) || 2;
@@ -325,11 +326,11 @@ const drawCell = (cellSize, ctx, cell, x, y, vX, vY) => {
       break;
     case 'floor':
     case 'door':
-      ctx.font = '8px Arial Narrow';
-      ctx.fillStyle = 'black';
-      ctx.fillText(`${Math.floor(cell.room)}`, x, y);
-      ctx.fillText(`[${(x / cellSize) + vX},`, x, y + 8);
-      ctx.fillText(`${(y / cellSize) + vY}]`, x, y + 16);
+      // ctx.font = '8px Arial Narrow';
+      // ctx.fillStyle = 'black';
+      // ctx.fillText(`${Math.floor(cell.room)}`, x, y);
+      // ctx.fillText(`[${(x / cellSize) + vX},`, x, y + 8);
+      // ctx.fillText(`${(y / cellSize) + vY}]`, x, y + 16);
       // ctx.fillStyle = `hsl(0, 0%, ${80 - ((cell.level - 1) * 15)}%)`;
       // ctx.fillRect(x, y, cellSize, cellSize);
       break;
