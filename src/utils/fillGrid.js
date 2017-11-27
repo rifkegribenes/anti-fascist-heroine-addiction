@@ -65,12 +65,12 @@ const fillGrid = (gameMap, level, hero) => {
   let trumpPosition = [];
   if (level === 3) {
     const finalMonster = {
-      health: 30,
-      level: 1,
-      damage: 10,
-      // health: 500,
-      // level: 5,
-      // damage: 60,
+      // health: 30,
+      // level: 1,
+      // damage: 10,
+      health: 500,
+      level: 5,
+      damage: 60,
       type: 'finalMonster',
       name: 'Donald Trump',
       bio: '',
