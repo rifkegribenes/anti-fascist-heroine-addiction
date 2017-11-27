@@ -22,6 +22,7 @@ export const PLAY = 'PLAY';
 export const PAUSE = 'PAUSE';
 export const UPDATE_ENTITY = 'UPDATE_ENTITY';
 export const UPDATE_COMBAT = 'UPDATE_COMBAT';
+export const SET_PREV_VP = 'SET_PREV_VP';
 
 export function setLevel(level) {
   return ({
@@ -126,6 +127,15 @@ export function updateGrid(entities, heroPosition) {
     payload: {
       entities,
       heroPosition,
+    },
+  });
+}
+
+export function setPrevVP(prevVP) {
+  return ({
+    type: SET_PREV_VP,
+    payload: {
+      prevVP,
     },
   });
 }

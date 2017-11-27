@@ -448,7 +448,7 @@ class Board extends Component {
     // display message
     const messages = [...this.props.appState.messages];
     setTimeout(() => {
-      messages.push(`You died! ${monster.youDiedMsg}.`);
+      messages.push(`${utils.badNews[Math.floor(utils.random(0, 13))]} You died! ${monster.youDiedMsg}.`);
       this.props.actions.updateMessages(messages);
       this.props.playSound('evilLaugh');
       this.props.actions.showMsg({
@@ -532,8 +532,7 @@ class Board extends Component {
 
   gameWin(monster, monsterDamageTaken) {
     // stop gameloop
-    window.clearInterval(window.interval);
-    cancelAnimationFrame(this.state.myReq);
+    this.pause();
     // define action for 'you won' screen
     const action = () => {
       this.props.actions.hideMsg();
@@ -542,11 +541,10 @@ class Board extends Component {
     };
     const messages = [...this.props.appState.messages];
     messages.push(`${utils.goodNews[Math.floor(utils.random(0, 13))]}! Your attack of [${monsterDamageTaken}] defeated ${monster.name}.`); // fix this msg later
-    setTimeout(() => messages.push('You won! blah blah blah.'), 1000); // fix this msg later
     this.props.playSound('gameWin');
     setTimeout(() => {
-      document.getElementById('msgTitle').classList.remove('powerUp');
-      document.getElementById('msgTitle').classList.remove('blink');
+      // document.getElementById('msgTitle').classList.remove('powerUp');
+      // document.getElementById('msgTitle').classList.remove('blink');
       this.props.actions.showMsg({
         title: 'You won!',
         imgUrl: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/rainbow.png',
@@ -558,7 +556,7 @@ class Board extends Component {
         actionText: 'Play Again',
       });
       this.props.history.push('/gameover');
-    }, 1000);
+    }, 1005);
   }
 
   handleCombat(monster, monsterCoords, heroCoords, init, door) {
@@ -604,13 +602,14 @@ class Board extends Component {
     }, 2000);
   }
 
+  // called from this.update()
   monsterMovement(entities, entity, coords, prevChange) {
     if (this.props.appState.combatName === entity.name && this.props.appState.gridFilled) {
       return;
     }
     if (this.props.appState.running && this.props.appState.combatName !== entity.name) {
       // define constants
-      console.log(`monsterMovement ${entity.name}`);
+      // console.log(`monsterMovement ${entity.name}`);
       const newEntity = { ...entity };
       const [x, y] = coords;
       const oldRoom = entities[y][x].room;
@@ -692,7 +691,7 @@ class Board extends Component {
   }
 
   gameLoop(timestamp, grid2, newPosition) {
-    console.log('gameloop');
+    // console.log('gameloop');
     if (this.props.appState.running) {
       // console.log('gl running');
       // const progress = timestamp - lastRender;
@@ -779,8 +778,13 @@ class Board extends Component {
 
   draw() {
     if (this.props.appState.gridFilled) {
-      utils.renderViewport(this.props.appState.heroPosition,
-        this.props.appState.entities, this.props.appState.cellSize);
+      // render current viewport
+      // save current viewport as 'prevVP'
+      const prevVP = utils.renderViewport(this.props.appState.heroPosition,
+        this.props.appState.entities, this.props.appState.cellSize, this.props.appState.prevVP);
+      // save prevVP to app state to compare against next viewport
+      // and only draw diff
+      this.props.actions.setPrevVP(prevVP);
     } else {
       // console.log('grid not filled, not drawing');
     }

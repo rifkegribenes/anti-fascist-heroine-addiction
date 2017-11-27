@@ -17,14 +17,14 @@ const Splash = props => (
         <button
           className="big-msg__btn"
           onClick={() => {
-            props.playSound('ui');
+            props.playSound('movement');
             props.history.push('/about');
           }}
         >Credits</button>
         <button
           className="big-msg__btn"
           onClick={() => {
-            props.playSound('ui');
+            props.playSound('movement');
             props.history.push('/hero-picker');
           }}
         >Start Game</button>
@@ -63,7 +63,7 @@ const Splash = props => (
           <img className="splash__icon--c" src="https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/silk_32_c.png" alt="silk" />
           <img className="splash__icon--c" src="https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/la-borinquena_32_c.png" alt="la borinqueña" />
         </div>
-          Gather a team of superheroes to help you fight monsters. You&nbsp;
+          Gather a team of superheroes to help you fight monsters. You
           can&rsquo;t do it alone! Each member of your team adds attack
           strength. Walk into a superhero to add her to your team.
         <h4 className="splash__bold">Monsters</h4>

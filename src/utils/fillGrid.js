@@ -60,16 +60,17 @@ const fillGrid = (gameMap, level, hero) => {
   newMap[hY][hX] = newHero;
 
 // hard code trump in upper left four floor tiles on level 3
+// TODO: make this randomly choose one of the four corner rooms
 
   let trumpPosition = [];
   if (level === 3) {
     const finalMonster = {
       // health: 30,
+      // level: 1,
+      // damage: 10,
       health: 500,
       level: 5,
-      // level: 1,
       damage: 60,
-      // damage: 10,
       type: 'finalMonster',
       name: 'Donald Trump',
       bio: '',
@@ -79,46 +80,109 @@ const fillGrid = (gameMap, level, hero) => {
       opacity: 1,
     };
 
-    // find most upper-left floor tile
-    let topLeft = [];
-    let topLeftRoom = null;
-    for (let i = 0; i < newMap.length; i++) {
-      for (let j = 0; j < newMap[i].length; j++) {
-        if (newMap[i][j].type === 'floor') {
-          topLeft = [j, i]; // x,y
-          topLeftRoom = newMap[i][j].room;
-          break;
-        }
-      } if (topLeft.length > 0) {
-        break;
-      }
-    }
+    // generate random corner for trump
+    const corner = utils.randomInt(0, 4);
+    let anchorCell = [];
+    let finalMonsterRoom = null;
 
     // Save an array of the coordinates of the four blocks
     // that the final monster will fill
+    switch (corner) {
+      case 0: // top left
+        for (let i = 0; i < newMap.length; i++) { // top
+          for (let j = 0; j < newMap[i].length; j++) { // left
+            if (newMap[i][j].type === 'floor') {
+              anchorCell = [j, i]; // x,y
+              finalMonsterRoom = newMap[i][j].room;
+              break;
+            }
+          } if (anchorCell.length > 0) {
+            trumpPosition = [
+              [anchorCell[1], anchorCell[0]], // y,x TOP LEFT, anchor
+              [anchorCell[1] + 1, anchorCell[0]],
+              [anchorCell[1] + 1, anchorCell[0] + 1],
+              [anchorCell[1], anchorCell[0] + 1],
+            ];
+            break;
+          }
+        }
+        break;
+      case 1: // bottom left
+        for (let i = newMap.length - 1; i > 0; i--) { // bottom
+          for (let j = 0; j < newMap[i].length; j++) { // left
+            if (newMap[i][j].type === 'floor') {
+              anchorCell = [j, i]; // x,y
+              finalMonsterRoom = newMap[i][j].room;
+              break;
+            }
+          } if (anchorCell.length > 0) {
+            trumpPosition = [
+              [anchorCell[1] - 1, anchorCell[0]], // TOP LEFT
+              [anchorCell[1] - 1, anchorCell[0] + 1],
+              [anchorCell[1], anchorCell[0] + 1],
+              [anchorCell[1], anchorCell[0]], // y,x anchor, bottom left
+            ];
+            break;
+          }
+        }
+        break;
+      case 2: // top right
+        for (let i = 0; i < newMap.length; i++) { // top
+          for (let j = newMap[i].length - 1; j > 0; j--) { // right
+            if (newMap[i][j].type === 'floor') {
+              anchorCell = [j, i]; // x,y
+              finalMonsterRoom = newMap[i][j].room;
+              break;
+            }
+          } if (anchorCell.length > 0) {
+            trumpPosition = [
+              [anchorCell[1], anchorCell[0] - 1], // TOP LEFT
+              [anchorCell[1] + 1, anchorCell[0]],
+              [anchorCell[1] + 1, anchorCell[0] - 1],
+              [anchorCell[1], anchorCell[0]], // y,x anchor, top right
+            ];
+            break;
+          }
+        }
+        break;
+      case 3: // bottom right
+        for (let i = newMap.length - 1; i > 0; i--) { // bottom
+          for (let j = newMap[i].length - 1; j > 0; j--) { // right
+            if (newMap[i][j].type === 'floor') {
+              anchorCell = [j, i]; // x,y
+              finalMonsterRoom = newMap[i][j].room;
+              break;
+            }
+          } if (anchorCell.length > 0) {
+            trumpPosition = [
+              [anchorCell[1] - 1, anchorCell[0] - 1], // TOP LEFT
+              [anchorCell[1] - 1, anchorCell[0]],
+              [anchorCell[1], anchorCell[0] - 1],
+              [anchorCell[1], anchorCell[0]], // y,x anchor, bottom right
+            ];
+            break;
+          }
+        }
+        break;
+      default:
+        break;
+    }
 
-    trumpPosition = [
-      [topLeft[1], topLeft[0]],
-      [topLeft[1] + 1, topLeft[0]],
-      [topLeft[1] + 1, topLeft[0] + 1],
-      [topLeft[1], topLeft[0] + 1],
-    ];
+      // assign room ID to trump
+    finalMonster.room = finalMonsterRoom;
 
-    // assign room ID to trump
-    finalMonster.room = topLeftRoom;
+      // Fill four-tile block in top-left positionwith fM object,
+      // but only draw it once
+    newMap[trumpPosition[0][0]][trumpPosition[0][1]] = finalMonster;
 
-    // Fill four-tile block in top-left positionwith fM object,
-    // but only draw it once
-    newMap[topLeft[1]][topLeft[0]] = finalMonster;
-
-    // fill the other three tiles in the block with the smame object
-    // but don't draw it to the canvas
+      // fill the other three tiles in the block with the smame object
+      // but don't draw it to the canvas
     const fmInv = { ...finalMonster };
 
     fmInv.opacity = 0;
-    newMap[topLeft[1] + 1][topLeft[0]] = fmInv;
-    newMap[topLeft[1] + 1][topLeft[0] + 1] = fmInv;
-    newMap[topLeft[1]][topLeft[0] + 1] = fmInv;
+    newMap[trumpPosition[1][0]][trumpPosition[1][1]] = fmInv;
+    newMap[trumpPosition[2][0]][trumpPosition[2][1]] = fmInv;
+    newMap[trumpPosition[3][0]][trumpPosition[3][1]] = fmInv;
   }
 
   // randomly place other entities on floor cells throughout grid,
@@ -162,8 +226,8 @@ const fillGrid = (gameMap, level, hero) => {
     }
     return null;
   }));
-  console.log(`doors array for level ${level}:`);
-  console.log(doors);
+  // console.log(`doors array for level ${level}:`);
+  // console.log(doors);
   return { newMap, heroPosition, trumpPosition, doors };
 };
 

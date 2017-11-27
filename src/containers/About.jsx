@@ -147,14 +147,14 @@ const About = props => (
           <button
             className="big-msg__btn"
             onClick={() => {
-              props.playSound('ui');
+              props.playSound('movement');
               props.history.push('/');
             }}
           >How to play</button>
           <button
             className="big-msg__btn"
             onClick={() => {
-              props.playSound('ui');
+              props.playSound('movement');
               props.history.push('/hero-picker');
             }}
           >Start Game</button>
