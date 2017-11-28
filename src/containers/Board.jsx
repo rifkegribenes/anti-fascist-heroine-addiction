@@ -221,7 +221,12 @@ class Board extends Component {
             break;
           case 'food':
             // console.log('Hero DOOR => FOOD');
-            this.props.playSound('food');
+            console.log(destination);
+            if (destination.title === 'Invisible Sufganiyah') {
+              this.props.playSound('cheer');
+            } else {
+              this.props.playSound('food');
+            }
             this.healthBoost(destination);
             break;
           case 'teamHero':
@@ -628,10 +633,11 @@ class Board extends Component {
     const level = this.props.appState.gameLevel;
     messages.push(`You found the staircase down to level ${this.props.appState.gameLevel + 1}!`);
     this.props.actions.updateMessages(messages);
-    const { newMap, heroPosition, trumpPosition, doors } = fillGrid(generateMap(level + 1),
+    const { newMap, heroPosition, trumpPosition, doors,
+      finalMonsterRoom } = fillGrid(generateMap(level + 1),
       level + 1, this.props.appState.hero);
     this.props.actions.handleStaircase(currentEntity,
-      heroPosition, trumpPosition, newMap, level + 1, doors);
+      heroPosition, trumpPosition, newMap, level + 1, doors, finalMonsterRoom);
     document.getElementById('subhead').classList.add('powerUp');
     setTimeout(() => {
       this.draw();

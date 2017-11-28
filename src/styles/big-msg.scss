@@ -29,7 +29,7 @@
     flex-direction: row;
     flex-wrap: wrap;
     z-index: 3;
-    margin-top: 20px;
+    margin: 20px;
   }
 
   &__title {
@@ -92,10 +92,9 @@
   }
 
   &__body1 {
-    margin-top: 40px;
+    margin: 3vh 0;
     z-index: 3;
     font-weight: 700;
-    margin-bottom: 10px;
   }
 
   &__body2 {
@@ -125,7 +124,6 @@
     border-radius: 40px;
     border: 1px solid Lime;
     width: 220px;
-    margin-top: 40px;
     text-align: center;
     z-index: 3;
 

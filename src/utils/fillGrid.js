@@ -5,6 +5,7 @@ import monsterTypes from './monsterTypes';
 
 const fillGrid = (gameMap, level, hero) => {
   const tempHero = { ...hero };
+  let finalMonsterRoom = null;
 
   const monsters = [];
   const qM = monsterTypes
@@ -71,14 +72,14 @@ const fillGrid = (gameMap, level, hero) => {
         type: 'candle',
         name: 'Magical hanukkah candle',
         iconUrl: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/candle_32.png',
-        cardUrl: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/candle_200.png',
+        cardUrl: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/candle_200.gif',
         opacity: 1,
       },
       {
         type: 'key',
         name: 'Magical key',
         iconUrl: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/key_32.png',
-        cardUrl: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/key_200.png',
+        cardUrl: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/key_200.gif',
         opacity: 1,
       },
     ];
@@ -102,7 +103,6 @@ const fillGrid = (gameMap, level, hero) => {
     // generate random corner for trump
     const corner = utils.randomInt(0, 4);
     let anchorCell = [];
-    let finalMonsterRoom = null;
 
     // Save an array of the coordinates of the four blocks
     // that the final monster will fill
@@ -245,7 +245,7 @@ const fillGrid = (gameMap, level, hero) => {
   }));
   // console.log(`doors array for level ${level}:`);
   // console.log(doors);
-  return { newMap, heroPosition, trumpPosition, doors };
+  return { newMap, heroPosition, trumpPosition, doors, finalMonsterRoom };
 };
 
 export default fillGrid;

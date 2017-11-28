@@ -8,6 +8,7 @@ const INITIAL_STATE = {
   gameLevel: 1,
   heroPosition: [],
   trumpPosition: [],
+  finalMonsterRoom: null,
   doors: [],
   hero: {
     hp: 100,
@@ -353,6 +354,7 @@ function appState(state = INITIAL_STATE, action) {
           entities: { $set: action.payload.entities },
           gameLevel: { $set: action.payload.gameLevel },
           doors: { $set: action.payload.doors },
+          finalMonsterRoom: { $set: action.payload.finalMonsterRoom || null },
         },
         );
 

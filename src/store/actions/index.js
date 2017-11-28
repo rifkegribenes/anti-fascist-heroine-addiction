@@ -217,7 +217,7 @@ export function updateEntity(entity, coords) {
 }
 
 export function handleStaircase(currentEntity, heroPosition, trumpPosition,
-  entities, gameLevel, doors) {
+  entities, gameLevel, doors, finalMonsterRoom) {
   return ({
     type: HANDLE_STAIRCASE,
     payload: {
@@ -227,6 +227,7 @@ export function handleStaircase(currentEntity, heroPosition, trumpPosition,
       entities,
       gameLevel,
       doors,
+      finalMonsterRoom,
     },
   });
 }

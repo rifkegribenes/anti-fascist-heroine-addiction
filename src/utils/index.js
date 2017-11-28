@@ -338,7 +338,7 @@ const drawCell = (cellSize, ctx, cell, x, y, candle, key) => {
       ctx.fillRect(x, y, cellSize, cellSize);
       img.src = cell.iconUrl;
       if (cell.title === 'Invisible Sufganiyah') {
-        console.log(`drawing sufganiyah at ${x * cellSize}, ${y * cellSize}`);
+        // console.log(`drawing sufganiyah at ${x * cellSize}, ${y * cellSize}`);
         if (candle === true) {
           img.onload = () => {
             ctx.save();
