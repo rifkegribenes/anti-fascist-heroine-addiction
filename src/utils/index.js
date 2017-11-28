@@ -337,7 +337,16 @@ const drawCell = (cellSize, ctx, cell, x, y, candle, key) => {
       ctx.fillStyle = 'hsla(0, 0%, 80%, 1)';
       ctx.fillRect(x, y, cellSize, cellSize);
       img.src = cell.iconUrl;
-      if (cell.title !== 'Invisible Sufganiyah' || candle === true) {
+      if (cell.title === 'Invisible Sufganiyah') {
+        console.log(`drawing sufganiyah at ${x * cellSize}, ${y * cellSize}`);
+        if (candle === true) {
+          img.onload = () => {
+            ctx.save();
+            ctx.drawImage(img, x, y, cellSize, cellSize);
+            ctx.restore();
+          };
+        }
+      } else {
         img.onload = () => {
           ctx.save();
           ctx.drawImage(img, x, y, cellSize, cellSize);
@@ -441,7 +450,7 @@ export const renderViewport = (heroPosition, entities, cellSize,
           newCell.hue !== prevCell.hue) {
           if (!newCell.level) { newCell.level = 1; }
           if (!newCell.hue) { newCell.hue = 0; }
-          drawCell(cellSize, ctx, newCell, x, y, vX, vY, candle, key);
+          drawCell(cellSize, ctx, newCell, x, y, candle, key);
           // console.log(`cell at ${(x / cellSize) + vX},${(y / cellSize) + vY} has changed:`);
           // console.log('prevCell:');
           // console.log(prevCell);

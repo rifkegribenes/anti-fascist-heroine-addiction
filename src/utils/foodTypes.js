@@ -125,7 +125,7 @@ const foodTypes = [
     title: 'Invisible Sufganiyah',
     iconUrl: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/sufganiyah_32.png',
     cardUrl: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/sufganiyah_200.png',
-    healthBoost: 80,
+    healthBoost: 100,
     level: 3,
   },
 ];
