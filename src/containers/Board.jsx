@@ -59,6 +59,7 @@ class Board extends Component {
 
     this.state = {
       myReq: null,
+      modal: false,
     };
 
     this.handleKeydown = this.handleKeydown.bind(this);
@@ -82,11 +83,18 @@ class Board extends Component {
   }
 
   componentDidUpdate(prevProps) {
+    // listen for completion of map generation
+    // before rendering viewport and starting gameloop
     if (!prevProps.appState.gridFilled) {
       if (this.props.appState.gridFilled) {
         // console.log('grid is now filled, calling play()');
         this.play();
       }
+    }
+    // listen for window size change and render full viewport
+    // instead of only changed cells
+    if (prevProps.appState.clipSize !== this.props.appState.clipSize) {
+      this.draw(true);
     }
   }
 
@@ -100,6 +108,22 @@ class Board extends Component {
   updateDimensions() {
     this.props.actions.updateDimensions(window.innerWidth, window.innerHeight);
     this.draw();
+  }
+
+  openModal() {
+    const newState = { ...this.state };
+    newState.modal = true;
+    this.setState({
+      newState,
+    });
+  }
+
+  closeModal() {
+    const newState = { ...this.state };
+    newState.modal = false;
+    this.setState({
+      newState,
+    });
   }
 
   handleKeydown(e) {
@@ -822,18 +846,25 @@ class Board extends Component {
     this.props.actions.start(newMap, heroPosition, trumpPosition, doors);
   }
 
-  draw() {
+  draw(resize) {
     if (this.props.appState.gridFilled) {
+      let prevVP;
       // render current viewport
       // save current viewport as 'prevVP'
-      const prevVP = utils.renderViewport(this.props.appState.heroPosition,
+      if (resize) {
+        prevVP = utils.renderViewport(this.props.appState.heroPosition,
         this.props.appState.entities, this.props.appState.cellSize,
-        this.props.appState.prevVP, this.props.appState.candle, this.props.appState.key);
+        null, this.props.appState.candle, this.props.appState.key);
+      } else {
+        prevVP = utils.renderViewport(this.props.appState.heroPosition,
+          this.props.appState.entities, this.props.appState.cellSize,
+          this.props.appState.prevVP, this.props.appState.candle, this.props.appState.key);
+      }
       // save prevVP to app state to compare against next viewport
       // and only draw diff
       this.props.actions.setPrevVP(prevVP);
     } else {
-      // console.log('grid not filled, not drawing');
+      console.log('grid not filled, not drawing');
     }
   }
 
@@ -868,23 +899,22 @@ class Board extends Component {
                   className="aria-button info__icon"
                   onClick={
                     () => {
-                      this.props.playSound('uiSelect');
+                      this.props.playSound('movement');
                       if (this.props.appState.running) {
+                        this.openModal();
                         this.props.actions.pause();
-                        return;
                       }
-                      this.props.actions.play();
                     }}
                   aria-label="pause"
                   title="pause"
                 >
-                  &#9208;
+                  <i className="icon icon-pause ctrl-icon" />
                 </button>
                 <button
                   className="aria-button info__icon"
                   onClick={
                     () => {
-                      this.props.playSound('uiSelect');
+                      this.props.playSound('movement');
                       window.clearInterval(window.interval);
                       this.props.actions.restart();
                       this.props.history.push('/');
@@ -898,7 +928,7 @@ class Board extends Component {
                   className="aria-button info__icon"
                   onClick={
                     () => {
-                      this.props.playSound('uiSelect');
+                      this.props.playSound('movement');
                       this.props.actions.toggleSound(this.props.appState.sound);
                     }}
                   aria-label="toggle sound"
@@ -910,7 +940,7 @@ class Board extends Component {
                   className="aria-button info__icon"
                   onClick={
                     () => {
-                      this.props.playSound('uiSelect');
+                      this.props.playSound('movement');
                       this.props.actions.toggleTorch(this.props.appState.torch);
                     }}
                   aria-label="toggle torch"

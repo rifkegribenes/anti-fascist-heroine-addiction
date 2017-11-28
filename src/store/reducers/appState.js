@@ -335,7 +335,6 @@ function appState(state = INITIAL_STATE, action) {
                 (action.payload.height - 70), 640);
         }
       }
-
       return update(
         state,
         {
