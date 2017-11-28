@@ -29,10 +29,13 @@ const fillGrid = (gameMap, level, hero) => {
   const foods = [];
   const qF = foodTypes
  .filter(food => food.level === level);
-  for (let i = 0; i < 4; i++) {
+  for (let i = 0; i < qF.length; i++) {
     const food = Object.assign({}, qF[i]);
     food.type = 'food';
     foods.push(food);
+  }
+  if (level === 3) {
+    console.log(foods);
   }
 
   const teamHeroArray = [];
@@ -171,8 +174,8 @@ const fillGrid = (gameMap, level, hero) => {
       // assign room ID to trump
     finalMonster.room = finalMonsterRoom;
 
-      // Fill four-tile block in top-left positionwith fM object,
-      // but only draw it once
+      // Fill four-tile block in corner position with fM object,
+      // but only draw it in top left corner of block
     newMap[trumpPosition[0][0]][trumpPosition[0][1]] = finalMonster;
 
       // fill the other three tiles in the block with the smame object
@@ -220,8 +223,6 @@ const fillGrid = (gameMap, level, hero) => {
             newMap[neighborCells[1][1]][neighborCells[1][0]].room,
           ],
         });
-      } else if (neighborCells.length === 1) {
-        console.log('only one neighbor cell ???');
       }
     }
     return null;

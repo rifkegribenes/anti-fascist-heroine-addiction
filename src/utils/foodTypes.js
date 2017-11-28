@@ -122,7 +122,7 @@ const foodTypes = [
   {
     name: 'the invisible sufganiyah power-up!!!',
     title: 'Invisible Sufganiyah',
-    iconUrl: '',
+    iconUrl: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/sufganiyah_32.png',
     cardUrl: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/sufganiyah_200.png',
     healthBoost: 80,
     level: 3,

@@ -111,56 +111,17 @@ export const getNeighbors = (coords) => {
   ];
 };
 
-export const getNeighbors2n = (coords) => {
-  // returns an array containing the x & y coords
-  // of each cell within 2 moves of target
-  const neighbors2n = [];
-  const neighbors = getNeighbors(coords);
-  neighbors.forEach(cell => neighbors2n.push(getNeighbors(cell)));
-  const merged = [].concat(...neighbors2n);
-
-  return merged.reduce((a, b) => {
-    if (a.indexOf(b) < 0) a.push(b);
-    return a;
-  }, []);
-};
-
 // called from monsterAI
 const getPossibleMoves = (entities, entityCoords) => {
   if (entities) {
-    // filter out cells that are not possible moves
-    // (only include floor, door, & hero cells that are not
-    // next to another monster cell)
-    const possibleMoves = [];
-    //  for each of the 4 neighbor cells (n1 / green)
-    getNeighbors(entityCoords).map((n1) => {
-      // find ITS neighbor cells (n2 / orange)
-      // console.log(`n3Arr for ${n1} (filtered out n0):`);
-      // console.log(getNeighbors2n(n1).filter(cell =>
-      // entities[cell[1]][cell[0]].type !== 'monster'));
-      const n3Arr = getNeighbors2n(n1)
-      // filter out n0 / yellow by cell type
-      .filter(cell => entities[cell[1]][cell[0]].type !== 'monster');
-      //  loop through the remaining 3 (n2 / orange)
-      for (let i = 0; i < n3Arr.length; i++) {
-        const n3curr = n3Arr[i];
-        const entityAtN3Curr = entities[n3curr[1]][n3curr[0]];
-        if (entityAtN3Curr.type === 'monster' || entityAtN3Curr.type === 'finalMonster') {
-          // console.log(`neighbor cell ${n3curr} of ${n1} is a monster`);
-          break;
-        }
-        if (!isItemInArray(possibleMoves, n1)) {
-          // console.log(`none of ${n1}'s 2d neighbors are monsters, pushing to possibleMoves`);
-          possibleMoves.push(n1);
-        }
-      }
-      return null;
-    });
+    // get 4 neighbor cells of current entity coordinates
+    const neighbors = getNeighbors(entityCoords);
 
     // console.log('possibleMoves from getPossibleMoves');
     // console.log(possibleMoves);
 
-    return possibleMoves.filter(cell =>
+    // filter out all but floor, door, & hero cells
+    return neighbors.filter(cell =>
       entities[cell[1]][cell[0]].type === 'floor' ||
       entities[cell[1]][cell[0]].type === 'door' ||
       entities[cell[1]][cell[0]].type === 'hero');
