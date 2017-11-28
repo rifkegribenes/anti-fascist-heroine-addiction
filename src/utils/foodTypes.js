@@ -17,8 +17,9 @@
 // Ice cream 3 50
 // Cupcake 3 50
 // Hamburger 3 50
-// Donut 3 80
-// Total health possible: 230 (510 total)
+// Donut 3 50
+// Invis Sufganiyah 3 80
+// Total health possible: 230-310 (510-590 total)
 // // total damage range (@1-2 hits each): 185-370 (425-730 total not incl final monster)
 
 
@@ -116,7 +117,7 @@ const foodTypes = [
     title: 'Donut',
     iconUrl: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/donut_32.png',
     cardUrl: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/donut_200.png',
-    healthBoost: 60,
+    healthBoost: 50,
     level: 3,
   },
   {

@@ -23,6 +23,8 @@ export const PAUSE = 'PAUSE';
 export const UPDATE_ENTITY = 'UPDATE_ENTITY';
 export const UPDATE_COMBAT = 'UPDATE_COMBAT';
 export const SET_PREV_VP = 'SET_PREV_VP';
+export const SET_CANDLE = 'SET_CANDLE';
+export const SET_KEY = 'SET_KEY';
 
 export function setLevel(level) {
   return ({
@@ -153,6 +155,18 @@ export function updateDimensions(width, height) {
 export function restart() {
   return ({
     type: RESTART,
+  });
+}
+
+export function setCandle() {
+  return ({
+    type: SET_CANDLE,
+  });
+}
+
+export function setKey() {
+  return ({
+    type: SET_KEY,
   });
 }
 

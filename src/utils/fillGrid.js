@@ -34,9 +34,6 @@ const fillGrid = (gameMap, level, hero) => {
     food.type = 'food';
     foods.push(food);
   }
-  if (level === 3) {
-    console.log(foods);
-  }
 
   const teamHeroArray = [];
   const qH = teamHeroes
@@ -66,7 +63,27 @@ const fillGrid = (gameMap, level, hero) => {
 // TODO: make this randomly choose one of the four corner rooms
 
   let trumpPosition = [];
+  let magicItems = [];
   if (level === 3) {
+    // special entities for level 3: key, candle, trump
+    magicItems = [
+      {
+        type: 'candle',
+        name: 'Magical hanukkah candle',
+        iconUrl: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/candle_32.png',
+        cardUrl: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/candle_200.png',
+        opacity: 1,
+      },
+      {
+        type: 'key',
+        name: 'Magical key',
+        iconUrl: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/key_32.png',
+        cardUrl: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/key_200.png',
+        opacity: 1,
+      },
+    ];
+
+
     const finalMonster = {
       // health: 30,
       // level: 1,
@@ -76,8 +93,7 @@ const fillGrid = (gameMap, level, hero) => {
       damage: 60,
       type: 'finalMonster',
       name: 'Donald Trump',
-      bio: '',
-      youDiedMsg: '',
+      bio: 'Does this guy even need a bio??',
       iconUrl: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/donald-trump_64.gif',
       cardUrl: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/donald-trump_200.gif',
       opacity: 1,
@@ -191,7 +207,7 @@ const fillGrid = (gameMap, level, hero) => {
   // randomly place other entities on floor cells throughout grid,
   // avoiding floor cells with doors as immediate neighbors because
   // monsters can't move through food or teamHeroes
-  [foods, monsters, teamHeroArray, staircases].forEach((entities) => {
+  [foods, monsters, teamHeroArray, staircases, magicItems].forEach((entities) => {
     while (entities.length) {
       const x = Math.floor(Math.random() * utils.gridWidth);
       const y = Math.floor(Math.random() * utils.gridHeight);

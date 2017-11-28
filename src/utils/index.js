@@ -270,8 +270,9 @@ export const monsterAI = (entities, entityCoords, heroCoords, doors, heroRoom, p
 };
 
 // render to canvas
+// called from renderViewport
 // if need coords printed: (cellSize, ctx, cell, x, y, vX, vY)
-const drawCell = (cellSize, ctx, cell, x, y) => {
+const drawCell = (cellSize, ctx, cell, x, y, candle, key) => {
   // console.log(`drawCell: vX: ${vX}, vY: ${vY}, x: ${x}, y: ${y}`);
   const img = new Image();
   const radius = Math.floor((cellSize) * 0.2) || 2;
@@ -291,15 +292,20 @@ const drawCell = (cellSize, ctx, cell, x, y) => {
       break;
     case 'floor':
     case 'door':
+      if (key) {
+        // console.log('key');
+      }
       // ctx.font = '8px Arial Narrow';
       // ctx.fillStyle = 'black';
       // ctx.fillText(`${Math.floor(cell.room)}`, x, y);
       // ctx.fillText(`[${(x / cellSize) + vX},`, x, y + 8);
       // ctx.fillText(`${(y / cellSize) + vY}]`, x, y + 16);
-      // ctx.fillStyle = `hsl(0, 0%, ${80 - ((cell.level - 1) * 15)}%)`;
-      // ctx.fillRect(x, y, cellSize, cellSize);
+      ctx.fillStyle = `hsl(0, 0%, ${80 - ((cell.level - 1) * 15)}%)`;
+      ctx.fillRect(x, y, cellSize, cellSize);
       break;
     case 'hero':
+    case 'candle':
+    case 'key':
       img.src = cell.iconUrl;
       img.onload = () => {
         ctx.save();
@@ -331,11 +337,13 @@ const drawCell = (cellSize, ctx, cell, x, y) => {
       ctx.fillStyle = 'hsla(0, 0%, 80%, 1)';
       ctx.fillRect(x, y, cellSize, cellSize);
       img.src = cell.iconUrl;
-      img.onload = () => {
-        ctx.save();
-        ctx.drawImage(img, x, y, cellSize, cellSize);
-        ctx.restore();
-      };
+      if (cell.title !== 'Invisible Sufganiyah' || candle === true) {
+        img.onload = () => {
+          ctx.save();
+          ctx.drawImage(img, x, y, cellSize, cellSize);
+          ctx.restore();
+        };
+      }
       if (!cell.iconUrl) {
         ctx.fillStyle = 'hsla(120, 100%, 50%, 1)';
         ctx.fillRect(x, y, cellSize, cellSize);
@@ -388,7 +396,8 @@ const drawCell = (cellSize, ctx, cell, x, y) => {
 export const clamp = (val, min, max) => Math.min(Math.max(val, min), max);
 
 // called from Board.jsx > draw()
-export const renderViewport = (heroPosition, entities, cellSize, prevVP) => {
+export const renderViewport = (heroPosition, entities, cellSize,
+  prevVP, candle, key) => {
   const [hX, hY] = heroPosition;
   // console.log(`hX: ${hX}, hY: ${hY}`);
   const newEntities = entities.map(row => row.map((cell) => {
@@ -420,7 +429,7 @@ export const renderViewport = (heroPosition, entities, cellSize, prevVP) => {
         if (!prevVP) {
           if (!newCell.level) { newCell.level = 1; }
           if (!newCell.hue) { newCell.hue = 0; }
-          drawCell(cellSize, ctx, newCell, x, y, vX, vY);
+          drawCell(cellSize, ctx, newCell, x, y, vX, vY, candle, key);
           // console.log(`cell at ${(x / cellSize) + vX},
           // ${(y / cellSize) + vY} has changed, re-drawing`);
           return newCell;
@@ -432,7 +441,7 @@ export const renderViewport = (heroPosition, entities, cellSize, prevVP) => {
           newCell.hue !== prevCell.hue) {
           if (!newCell.level) { newCell.level = 1; }
           if (!newCell.hue) { newCell.hue = 0; }
-          drawCell(cellSize, ctx, newCell, x, y, vX, vY);
+          drawCell(cellSize, ctx, newCell, x, y, vX, vY, candle, key);
           // console.log(`cell at ${(x / cellSize) + vX},${(y / cellSize) + vY} has changed:`);
           // console.log('prevCell:');
           // console.log(prevCell);

@@ -234,6 +234,16 @@ class Board extends Component {
             this.props.playSound('staircase');
             this.handleStaircase(destination);
             break;
+          case 'candle':
+            // console.log('Hero DOOR => CANDLE');
+            this.props.playSound('magicItem');
+            this.handleCandle();
+            break;
+          case 'key':
+            // console.log('Hero DOOR => KEY');
+            this.props.playSound('magicItem');
+            this.handleKey();
+            break;
           default:
         }
         return;
@@ -270,6 +280,14 @@ class Board extends Component {
             this.props.playSound('staircase');
             this.handleStaircase(destination);
             break;
+          case 'candle':
+            this.props.playSound('magicItem');
+            this.handleCandle();
+            break;
+          case 'key':
+            this.props.playSound('magicItem');
+            this.handleKey();
+            break;
           default:
         }
       }
@@ -304,6 +322,28 @@ class Board extends Component {
     // console.log(`hero hp after state update: ${this.props.appState.hero.hp}`);
     this.props.actions.updateMessages(messages);
     // this.props.actions.setCurrentEntity(currentEntity);
+    document.getElementById('hero').classList.add('powerUp');
+    setTimeout(() => {
+      document.getElementById('hero').classList.remove('powerUp');
+    }, 1000);
+  }
+
+  handleCandle() {
+    const messages = [...this.props.appState.messages];
+    messages.push('You found the magical Hanukkah candle!!!! Now the hidden Sufganiyah health boost is revealed -- you just have to find it.');
+    this.props.actions.updateMessages(messages);
+    this.props.actions.setCandle();
+    document.getElementById('hero').classList.add('powerUp');
+    setTimeout(() => {
+      document.getElementById('hero').classList.remove('powerUp');
+    }, 1000);
+  }
+
+  handleKey() {
+    const messages = [...this.props.appState.messages];
+    messages.push('You found the magical Key!!!! Now you can unlock the door to Trump\'s chambers and fight the final battle.');
+    this.props.actions.updateMessages(messages);
+    this.props.actions.setKey();
     document.getElementById('hero').classList.add('powerUp');
     setTimeout(() => {
       document.getElementById('hero').classList.remove('powerUp');
@@ -781,7 +821,8 @@ class Board extends Component {
       // render current viewport
       // save current viewport as 'prevVP'
       const prevVP = utils.renderViewport(this.props.appState.heroPosition,
-        this.props.appState.entities, this.props.appState.cellSize, this.props.appState.prevVP);
+        this.props.appState.entities, this.props.appState.cellSize,
+        this.props.appState.prevVP, this.props.appState.candle, this.props.appState.key);
       // save prevVP to app state to compare against next viewport
       // and only draw diff
       this.props.actions.setPrevVP(prevVP);
