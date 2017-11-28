@@ -86,6 +86,11 @@ class HeroPicker extends React.Component {
           direction: 'left',
         });
         break;
+      case 13: // enter
+        this.props.playSound('startGame');
+        this.props.actions.setHero(this.state.items[this.state.active]);
+        this.props.history.push('/play');
+        break;
       default:
     }
   }
