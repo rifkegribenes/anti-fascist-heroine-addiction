@@ -241,12 +241,7 @@ class Board extends Component {
             break;
           case 'food':
             // console.log('Hero DOOR => FOOD');
-            console.log(destination);
-            if (destination.title === 'Invisible Sufganiyah') {
-              this.props.playSound('cheer');
-            } else {
-              this.props.playSound('food');
-            }
+            this.props.playSound('food');
             this.healthBoost(destination);
             break;
           case 'teamHero':
