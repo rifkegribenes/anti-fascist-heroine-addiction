@@ -111,18 +111,14 @@ class Board extends Component {
   }
 
   openModal() {
-    const newState = { ...this.state };
-    newState.modal = true;
     this.setState({
-      newState,
+      modal: true,
     });
   }
 
   closeModal() {
-    const newState = { ...this.state };
-    newState.modal = false;
     this.setState({
-      newState,
+      modal: false,
     });
   }
 
@@ -851,11 +847,15 @@ class Board extends Component {
       let prevVP;
       // render current viewport
       // save current viewport as 'prevVP'
+
+      // if window has been resized since last render,
+      // prevVP = null (full re-render)
       if (resize) {
         prevVP = utils.renderViewport(this.props.appState.heroPosition,
         this.props.appState.entities, this.props.appState.cellSize,
         null, this.props.appState.candle, this.props.appState.key);
       } else {
+        // otherwise, use prevVP to decide which cells to render in this round
         prevVP = utils.renderViewport(this.props.appState.heroPosition,
           this.props.appState.entities, this.props.appState.cellSize,
           this.props.appState.prevVP, this.props.appState.candle, this.props.appState.key);
@@ -884,6 +884,28 @@ class Board extends Component {
     }
     return (
       <div>
+        { this.state.modal &&
+          <div className="modal">
+            <button
+              className="modal__close aria-button"
+              onClick={() => {
+                this.props.playSound('movement');
+                this.closeModal();
+              }}
+            >&times;</button>
+            <div className="modal__header">Game paused</div>
+            <div className="modal__btn-wrap">
+              <button
+                className="big-msg__btn"
+                onClick={() => {
+                  this.props.playSound('movement');
+                  this.closeModal();
+                  this.play();
+                }}
+              >Resume</button>
+            </div>
+          </div>
+        }
         <div className="container">
           <div className="col col--narrow">
             <InfoLeft

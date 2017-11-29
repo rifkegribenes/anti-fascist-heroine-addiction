@@ -90,6 +90,10 @@
 
 $color_gray_text: #7a7a7a;
 $color_gray_lighter: lighten($color_gray_text,35%);
+$z-index-modal: 4;
+$z-index-front: 3;
+$z-index-mid: 2;
+$z-index-back: 1;
 
 @keyframes stspin {
   0%   { opacity:1; }
