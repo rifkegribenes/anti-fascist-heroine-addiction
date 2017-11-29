@@ -279,6 +279,7 @@ const drawCell = (cellSize, ctx, cell, x, y, candle, key) => {
   const size = cellSize * 2;
   ctx.clearRect(x, y, cellSize, cellSize);
   switch (cell.type) {
+    case 'padlock':
     case 'wall':
       ctx.lineJoin = 'round';
       ctx.lineWidth = radius;
@@ -289,6 +290,14 @@ const drawCell = (cellSize, ctx, cell, x, y, candle, key) => {
       ctx.fillRect(x + (radius / 2), y + (radius / 2), cellSize - radius, cellSize - radius);
         // ctx.fillStyle = `hsla(${hue}, 100%, 50%, ${opacity})`;
         // ctx.fillRect(x, y, cellSize, cellSize);
+      if (cell.type === 'padlock') {
+        img.src = cell.iconUrl;
+        img.onload = () => {
+          ctx.save();
+          ctx.drawImage(img, x, y, cellSize, cellSize);
+          ctx.restore();
+        };
+      }
       break;
     case 'floor':
     case 'door':
