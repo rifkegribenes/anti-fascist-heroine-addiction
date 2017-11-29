@@ -193,6 +193,30 @@ class Board extends Component {
         destination.type !== 'door' &&
         destination.type !== 'floor') {
         // console.log('Hero => MONSTER IN DOORWAY');
+        // special case: padlocked door to trump's room on level 3
+        if (destination.type === 'padlock') {
+          console.log(`key: ${this.props.appState.key}`);
+          const messages = [...this.props.appState.messages];
+          this.props.actions.updateMessages(messages);
+          if (!this.props.appState.key) {
+            this.props.actions.setCurrentEntity(destination);
+            messages.push("The door to Trump's chambers is locked! Find the key to unlock it before trying to enter.");
+            this.props.playSound('combat1');
+            return;
+          }
+          // change this to special graphic for unlocked padlock?
+          this.props.actions.setCurrentEntity(destination);
+          messages.push('You opened the door!');
+          this.props.actions.updateMessages(messages);
+          this.props.playSound('magicItem');
+          newHero.room = 'door';
+          grid1 = utils.changeEntity(this.props.appState.entities, { type: 'floor', room: oldRoom }, [x, y]);
+          grid2 = utils.changeEntity(grid1, newHero, newPosition);
+          this.props.actions.updateGrid(grid2, newPosition);
+          this.draw();
+          this.props.actions.updateHero(newHero);
+          return;
+        }
         newHero.room = 'door';
         this.props.actions.updateHero(newHero);
         document.getElementById('entity').classList.remove('spin');

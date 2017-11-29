@@ -72,6 +72,7 @@ const fillGrid = (gameMap, level, hero) => {
     cardUrl: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/padlock_200.gif',
     opacity: utils.random(0.4, 0.8),
     level: 3,
+    room: 'door',
   };
   if (level === 3) {
     // special entities for level 3: key, candle, trump
@@ -257,7 +258,7 @@ const fillGrid = (gameMap, level, hero) => {
   if (level === 3) {
     const finalMonsterDoorCoords = doors.filter(door =>
       door.rooms.includes(finalMonsterRoom))[0].coords;
-    console.log(`trump's door: ${finalMonsterDoorCoords}`);
+    // console.log(`trump's door: ${finalMonsterDoorCoords}`);
 
     // place the padlock on the door of trump's room
     const [xx, yy] = finalMonsterDoorCoords;
