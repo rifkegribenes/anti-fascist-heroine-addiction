@@ -290,3 +290,10 @@ $z-index-back: 1;
 .icon-volume_off:before {
   content: "\e904";
 }
+
+.icon-play {
+  font-family: sans-serif;
+}
+.icon-play:before {
+  content: "&#9654;";
+}

@@ -116,6 +116,10 @@ canvas {
     filter: alpha(opacity=50);
     opacity: .5;
     font-size: 2em;
+
+    &:hover {
+      font-size: 2em !important;
+    }
   }
   &__btn-wrap {
     display: flex;

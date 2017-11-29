@@ -908,6 +908,7 @@ class Board extends Component {
             <button
               className="modal__close aria-button"
               onClick={() => {
+                console.log('close modal');
                 this.props.playSound('movement');
                 this.closeModal();
               }}
@@ -944,12 +945,18 @@ class Board extends Component {
                       if (this.props.appState.running) {
                         this.openModal();
                         this.props.actions.pause();
+                      } else {
+                        console.log('resume');
+                        this.play();
                       }
                     }}
                   aria-label="pause"
-                  title="pause"
+                  title={this.props.appState.running ? 'pause' : 'resume'}
                 >
-                  <i className="icon icon-pause ctrl-icon" />
+                  <span className={this.props.appState.running ?
+                    'icon icon-pause ctrl-icon' : 'icon ctrl-icon'}
+                  >{!this.props.appState.running && <span>&#9654;</span>}
+                  </span>
                 </button>
                 <button
                   className="aria-button info__icon"
