@@ -59,6 +59,7 @@ class Board extends Component {
 
     this.state = {
       myReq: null,
+      modal: false,
     };
 
     this.handleKeydown = this.handleKeydown.bind(this);
@@ -82,11 +83,18 @@ class Board extends Component {
   }
 
   componentDidUpdate(prevProps) {
+    // listen for completion of map generation
+    // before rendering viewport and starting gameloop
     if (!prevProps.appState.gridFilled) {
       if (this.props.appState.gridFilled) {
         // console.log('grid is now filled, calling play()');
         this.play();
       }
+    }
+    // listen for window size change and render full viewport
+    // instead of only changed cells
+    if (prevProps.appState.clipSize !== this.props.appState.clipSize) {
+      this.draw(true);
     }
   }
 
@@ -100,6 +108,18 @@ class Board extends Component {
   updateDimensions() {
     this.props.actions.updateDimensions(window.innerWidth, window.innerHeight);
     this.draw();
+  }
+
+  openModal() {
+    this.setState({
+      modal: true,
+    });
+  }
+
+  closeModal() {
+    this.setState({
+      modal: false,
+    });
   }
 
   handleKeydown(e) {
@@ -234,6 +254,16 @@ class Board extends Component {
             this.props.playSound('staircase');
             this.handleStaircase(destination);
             break;
+          case 'candle':
+            // console.log('Hero DOOR => CANDLE');
+            this.props.playSound('magicItem');
+            this.handleCandle();
+            break;
+          case 'key':
+            // console.log('Hero DOOR => KEY');
+            this.props.playSound('magicItem');
+            this.handleKey();
+            break;
           default:
         }
         return;
@@ -270,6 +300,14 @@ class Board extends Component {
             this.props.playSound('staircase');
             this.handleStaircase(destination);
             break;
+          case 'candle':
+            this.props.playSound('magicItem');
+            this.handleCandle();
+            break;
+          case 'key':
+            this.props.playSound('magicItem');
+            this.handleKey();
+            break;
           default:
         }
       }
@@ -304,6 +342,28 @@ class Board extends Component {
     // console.log(`hero hp after state update: ${this.props.appState.hero.hp}`);
     this.props.actions.updateMessages(messages);
     // this.props.actions.setCurrentEntity(currentEntity);
+    document.getElementById('hero').classList.add('powerUp');
+    setTimeout(() => {
+      document.getElementById('hero').classList.remove('powerUp');
+    }, 1000);
+  }
+
+  handleCandle() {
+    const messages = [...this.props.appState.messages];
+    messages.push('You found the magical Hanukkah candle!!!! Now the hidden Sufganiyah health boost is revealed -- you just have to find it.');
+    this.props.actions.updateMessages(messages);
+    this.props.actions.setCandle();
+    document.getElementById('hero').classList.add('powerUp');
+    setTimeout(() => {
+      document.getElementById('hero').classList.remove('powerUp');
+    }, 1000);
+  }
+
+  handleKey() {
+    const messages = [...this.props.appState.messages];
+    messages.push('You found the magical Key!!!! Now you can unlock the door to Trump\'s chambers and fight the final battle.');
+    this.props.actions.updateMessages(messages);
+    this.props.actions.setKey();
     document.getElementById('hero').classList.add('powerUp');
     setTimeout(() => {
       document.getElementById('hero').classList.remove('powerUp');
@@ -588,10 +648,11 @@ class Board extends Component {
     const level = this.props.appState.gameLevel;
     messages.push(`You found the staircase down to level ${this.props.appState.gameLevel + 1}!`);
     this.props.actions.updateMessages(messages);
-    const { newMap, heroPosition, trumpPosition, doors } = fillGrid(generateMap(level + 1),
+    const { newMap, heroPosition, trumpPosition, doors,
+      finalMonsterRoom } = fillGrid(generateMap(level + 1),
       level + 1, this.props.appState.hero);
     this.props.actions.handleStaircase(currentEntity,
-      heroPosition, trumpPosition, newMap, level + 1, doors);
+      heroPosition, trumpPosition, newMap, level + 1, doors, finalMonsterRoom);
     document.getElementById('subhead').classList.add('powerUp');
     setTimeout(() => {
       this.draw();
@@ -776,17 +837,29 @@ class Board extends Component {
     this.props.actions.start(newMap, heroPosition, trumpPosition, doors);
   }
 
-  draw() {
+  draw(resize) {
     if (this.props.appState.gridFilled) {
+      let prevVP;
       // render current viewport
       // save current viewport as 'prevVP'
-      const prevVP = utils.renderViewport(this.props.appState.heroPosition,
-        this.props.appState.entities, this.props.appState.cellSize, this.props.appState.prevVP);
+
+      // if window has been resized since last render,
+      // prevVP = null (full re-render)
+      if (resize) {
+        prevVP = utils.renderViewport(this.props.appState.heroPosition,
+        this.props.appState.entities, this.props.appState.cellSize,
+        null, this.props.appState.candle, this.props.appState.key);
+      } else {
+        // otherwise, use prevVP to decide which cells to render in this round
+        prevVP = utils.renderViewport(this.props.appState.heroPosition,
+          this.props.appState.entities, this.props.appState.cellSize,
+          this.props.appState.prevVP, this.props.appState.candle, this.props.appState.key);
+      }
       // save prevVP to app state to compare against next viewport
       // and only draw diff
       this.props.actions.setPrevVP(prevVP);
     } else {
-      // console.log('grid not filled, not drawing');
+      console.log('grid not filled, not drawing');
     }
   }
 
@@ -806,6 +879,28 @@ class Board extends Component {
     }
     return (
       <div>
+        { this.state.modal &&
+          <div className="modal">
+            <button
+              className="modal__close aria-button"
+              onClick={() => {
+                this.props.playSound('movement');
+                this.closeModal();
+              }}
+            >&times;</button>
+            <div className="modal__header">Game paused</div>
+            <div className="modal__btn-wrap">
+              <button
+                className="big-msg__btn"
+                onClick={() => {
+                  this.props.playSound('movement');
+                  this.closeModal();
+                  this.play();
+                }}
+              >Resume</button>
+            </div>
+          </div>
+        }
         <div className="container">
           <div className="col col--narrow">
             <InfoLeft
@@ -821,23 +916,22 @@ class Board extends Component {
                   className="aria-button info__icon"
                   onClick={
                     () => {
-                      this.props.playSound('uiSelect');
+                      this.props.playSound('movement');
                       if (this.props.appState.running) {
+                        this.openModal();
                         this.props.actions.pause();
-                        return;
                       }
-                      this.props.actions.play();
                     }}
                   aria-label="pause"
                   title="pause"
                 >
-                  &#9208;
+                  <i className="icon icon-pause ctrl-icon" />
                 </button>
                 <button
                   className="aria-button info__icon"
                   onClick={
                     () => {
-                      this.props.playSound('uiSelect');
+                      this.props.playSound('movement');
                       window.clearInterval(window.interval);
                       this.props.actions.restart();
                       this.props.history.push('/');
@@ -851,7 +945,7 @@ class Board extends Component {
                   className="aria-button info__icon"
                   onClick={
                     () => {
-                      this.props.playSound('uiSelect');
+                      this.props.playSound('movement');
                       this.props.actions.toggleSound(this.props.appState.sound);
                     }}
                   aria-label="toggle sound"
@@ -863,7 +957,7 @@ class Board extends Component {
                   className="aria-button info__icon"
                   onClick={
                     () => {
-                      this.props.playSound('uiSelect');
+                      this.props.playSound('movement');
                       this.props.actions.toggleTorch(this.props.appState.torch);
                     }}
                   aria-label="toggle torch"

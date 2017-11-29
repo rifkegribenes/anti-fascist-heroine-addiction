@@ -5,7 +5,6 @@
   bottom: 0;
   left: 0;
   right: 0;
-  z-index: 2;
   background: black;
   padding: 20px;
   display: flex;
@@ -28,13 +27,13 @@
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
-    z-index: 3;
-    margin-top: 20px;
+    z-index: $z-index-front;
+    margin: 20px;
   }
 
   &__title {
     display: inline-block;
-    z-index: 3;
+    z-index: $z-index-front;
     text-transform: uppercase;
     font-family: 'G7 Silkworm TTF';
     width: 100%;
@@ -92,21 +91,21 @@
   }
 
   &__body1 {
-    margin-top: 40px;
-    z-index: 3;
+    margin: 3vh 0;
+    z-index: $z-index-front;
     font-weight: 700;
-    margin-bottom: 10px;
   }
 
   &__body2 {
-    z-index: 3;
+    z-index: $z-index-front;
+    margin-bottom: 20px;
   }
 
   &__news {
     font-size: 2em;
     font-weight: 700;
     margin: 20px 0 10px;
-    z-index: 3;
+    z-index: $z-index-front;
   }
 
   &__btn {
@@ -125,9 +124,8 @@
     border-radius: 40px;
     border: 1px solid Lime;
     width: 220px;
-    margin-top: 40px;
     text-align: center;
-    z-index: 3;
+    z-index: $z-index-front;
 
     &:hover, &:focus, &:active {
       box-shadow: 0 0 20px Lime;

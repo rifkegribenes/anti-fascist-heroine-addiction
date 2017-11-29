@@ -111,56 +111,17 @@ export const getNeighbors = (coords) => {
   ];
 };
 
-export const getNeighbors2n = (coords) => {
-  // returns an array containing the x & y coords
-  // of each cell within 2 moves of target
-  const neighbors2n = [];
-  const neighbors = getNeighbors(coords);
-  neighbors.forEach(cell => neighbors2n.push(getNeighbors(cell)));
-  const merged = [].concat(...neighbors2n);
-
-  return merged.reduce((a, b) => {
-    if (a.indexOf(b) < 0) a.push(b);
-    return a;
-  }, []);
-};
-
 // called from monsterAI
 const getPossibleMoves = (entities, entityCoords) => {
   if (entities) {
-    // filter out cells that are not possible moves
-    // (only include floor, door, & hero cells that are not
-    // next to another monster cell)
-    const possibleMoves = [];
-    //  for each of the 4 neighbor cells (n1 / green)
-    getNeighbors(entityCoords).map((n1) => {
-      // find ITS neighbor cells (n2 / orange)
-      // console.log(`n3Arr for ${n1} (filtered out n0):`);
-      // console.log(getNeighbors2n(n1).filter(cell =>
-      // entities[cell[1]][cell[0]].type !== 'monster'));
-      const n3Arr = getNeighbors2n(n1)
-      // filter out n0 / yellow by cell type
-      .filter(cell => entities[cell[1]][cell[0]].type !== 'monster');
-      //  loop through the remaining 3 (n2 / orange)
-      for (let i = 0; i < n3Arr.length; i++) {
-        const n3curr = n3Arr[i];
-        const entityAtN3Curr = entities[n3curr[1]][n3curr[0]];
-        if (entityAtN3Curr.type === 'monster' || entityAtN3Curr.type === 'finalMonster') {
-          // console.log(`neighbor cell ${n3curr} of ${n1} is a monster`);
-          break;
-        }
-        if (!isItemInArray(possibleMoves, n1)) {
-          // console.log(`none of ${n1}'s 2d neighbors are monsters, pushing to possibleMoves`);
-          possibleMoves.push(n1);
-        }
-      }
-      return null;
-    });
+    // get 4 neighbor cells of current entity coordinates
+    const neighbors = getNeighbors(entityCoords);
 
     // console.log('possibleMoves from getPossibleMoves');
     // console.log(possibleMoves);
 
-    return possibleMoves.filter(cell =>
+    // filter out all but floor, door, & hero cells
+    return neighbors.filter(cell =>
       entities[cell[1]][cell[0]].type === 'floor' ||
       entities[cell[1]][cell[0]].type === 'door' ||
       entities[cell[1]][cell[0]].type === 'hero');
@@ -309,8 +270,9 @@ export const monsterAI = (entities, entityCoords, heroCoords, doors, heroRoom, p
 };
 
 // render to canvas
+// called from renderViewport
 // if need coords printed: (cellSize, ctx, cell, x, y, vX, vY)
-const drawCell = (cellSize, ctx, cell, x, y) => {
+const drawCell = (cellSize, ctx, cell, x, y, candle, key) => {
   // console.log(`drawCell: vX: ${vX}, vY: ${vY}, x: ${x}, y: ${y}`);
   const img = new Image();
   const radius = Math.floor((cellSize) * 0.2) || 2;
@@ -330,15 +292,20 @@ const drawCell = (cellSize, ctx, cell, x, y) => {
       break;
     case 'floor':
     case 'door':
+      if (key) {
+        // console.log('key');
+      }
       // ctx.font = '8px Arial Narrow';
       // ctx.fillStyle = 'black';
       // ctx.fillText(`${Math.floor(cell.room)}`, x, y);
       // ctx.fillText(`[${(x / cellSize) + vX},`, x, y + 8);
       // ctx.fillText(`${(y / cellSize) + vY}]`, x, y + 16);
-      // ctx.fillStyle = `hsl(0, 0%, ${80 - ((cell.level - 1) * 15)}%)`;
-      // ctx.fillRect(x, y, cellSize, cellSize);
+      ctx.fillStyle = `hsl(0, 0%, ${80 - ((cell.level - 1) * 15)}%)`;
+      ctx.fillRect(x, y, cellSize, cellSize);
       break;
     case 'hero':
+    case 'candle':
+    case 'key':
       img.src = cell.iconUrl;
       img.onload = () => {
         ctx.save();
@@ -370,11 +337,22 @@ const drawCell = (cellSize, ctx, cell, x, y) => {
       ctx.fillStyle = 'hsla(0, 0%, 80%, 1)';
       ctx.fillRect(x, y, cellSize, cellSize);
       img.src = cell.iconUrl;
-      img.onload = () => {
-        ctx.save();
-        ctx.drawImage(img, x, y, cellSize, cellSize);
-        ctx.restore();
-      };
+      if (cell.title === 'Invisible Sufganiyah') {
+        // console.log(`drawing sufganiyah at ${x * cellSize}, ${y * cellSize}`);
+        if (candle === true) {
+          img.onload = () => {
+            ctx.save();
+            ctx.drawImage(img, x, y, cellSize, cellSize);
+            ctx.restore();
+          };
+        }
+      } else {
+        img.onload = () => {
+          ctx.save();
+          ctx.drawImage(img, x, y, cellSize, cellSize);
+          ctx.restore();
+        };
+      }
       if (!cell.iconUrl) {
         ctx.fillStyle = 'hsla(120, 100%, 50%, 1)';
         ctx.fillRect(x, y, cellSize, cellSize);
@@ -427,7 +405,8 @@ const drawCell = (cellSize, ctx, cell, x, y) => {
 export const clamp = (val, min, max) => Math.min(Math.max(val, min), max);
 
 // called from Board.jsx > draw()
-export const renderViewport = (heroPosition, entities, cellSize, prevVP) => {
+export const renderViewport = (heroPosition, entities, cellSize,
+  prevVP, candle, key) => {
   const [hX, hY] = heroPosition;
   // console.log(`hX: ${hX}, hY: ${hY}`);
   const newEntities = entities.map(row => row.map((cell) => {
@@ -459,7 +438,7 @@ export const renderViewport = (heroPosition, entities, cellSize, prevVP) => {
         if (!prevVP) {
           if (!newCell.level) { newCell.level = 1; }
           if (!newCell.hue) { newCell.hue = 0; }
-          drawCell(cellSize, ctx, newCell, x, y, vX, vY);
+          drawCell(cellSize, ctx, newCell, x, y, vX, vY, candle, key);
           // console.log(`cell at ${(x / cellSize) + vX},
           // ${(y / cellSize) + vY} has changed, re-drawing`);
           return newCell;
@@ -471,7 +450,7 @@ export const renderViewport = (heroPosition, entities, cellSize, prevVP) => {
           newCell.hue !== prevCell.hue) {
           if (!newCell.level) { newCell.level = 1; }
           if (!newCell.hue) { newCell.hue = 0; }
-          drawCell(cellSize, ctx, newCell, x, y, vX, vY);
+          drawCell(cellSize, ctx, newCell, x, y, candle, key);
           // console.log(`cell at ${(x / cellSize) + vX},${(y / cellSize) + vY} has changed:`);
           // console.log('prevCell:');
           // console.log(prevCell);

@@ -100,7 +100,7 @@
     cursor: pointer;
     line-height: 30px;
     margin-top: 85px;
-    z-index: 1060;
+    z-index: $z-index-front;
     top: 73px;
     -webkit-appearance: none;
     appearance: none;
@@ -213,7 +213,7 @@ $level2-left: -407px;
     left: $level-2-left;
     margin-top: 25px;
     opacity: 0;
-    z-index: 1030;
+    z-index: $z-index-back;
 
     @include for-tablet-landscape-up {
       opacity: .75;
@@ -227,7 +227,7 @@ $level2-left: -407px;
     left: $level-1-left;
     margin-top: 10px;
     opacity: 0;
-    z-index: 1040;
+    z-index: $z-index-mid;
 
     @media (min-width: 690px) {
       opacity: .9;
@@ -239,7 +239,7 @@ $level2-left: -407px;
     width: 290px;
     left: -142px;
     opacity: 1;
-    z-index: 1050;
+    z-index: $z-index-front;
 
     @media (min-width: 690px) {
       width: $level0-width;
@@ -253,7 +253,7 @@ $level2-left: -407px;
     margin-top: 10px;
     left: $level1-left;
     opacity: 0;
-    z-index: 1040;
+    z-index: $z-index-mid;
 
     @media (min-width: 690px) {
       opacity: .9;
@@ -266,7 +266,7 @@ $level2-left: -407px;
     margin-top: 25px;
     left: $level2-left;
     opacity: 0;
-    z-index: 1030;
+    z-index: $z-index-back;
 
     @include for-tablet-landscape-up {
       opacity: .75;
