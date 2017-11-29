@@ -1,7 +1,4 @@
 const sounds = {
-  ui: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/sounds/sfx_sounds_button11.mp3',
-  uiSelect: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/sounds/sfx_menu_select1.mp3',
-  // chooseHero: '',
   startGame: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/sounds/270333__littlerobotsoundfactory__jingle-win-00.mp3',
   food: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/sounds/sfx_sounds_powerup1.mp3',
   addHero: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/sounds/sfx_sounds_powerup2.mp3',
@@ -15,11 +12,10 @@ const sounds = {
   combat8: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/sounds/sfx_sounds_impact11.mp3',
   movement: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/sounds/pop_drip.mp3',
   heroDeath: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/sounds/Shut_Down1.mp3',
-  heroLevelUp: '',
+  magicItem: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/sounds/sfx_sounds_powerup4.mp3',
   staircase: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/sounds/sfx_movement_portal1.mp3',
-  // gameLevelUp: '',
-  // bossFight: '',
-  // evilLaugh: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/sounds/322459__lalazzylee1__game-boss-or-character-laughter1.mp3',
+  evilLaugh: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/sounds/322459__lalazzylee1__game-boss-or-character-laughter1.mp3',
+  cheer: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/sounds/5_Sec_Crowd_Cheer-Mike_Koenig-1562033255.mp3',
   gameWin: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/sounds/270330__littlerobotsoundfactory__jingle-achievement-01.mp3',
   gameOver: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/sounds/sfx_sound_shutdown2.mp3',
 };

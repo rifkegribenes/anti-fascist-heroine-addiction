@@ -22,7 +22,6 @@ class Item extends React.Component {
         onClick={() => {
           this.props.playSound('startGame');
           this.props.actions.setHero(this.props.id);
-          this.props.actions.closeModal();
           this.props.history.push('/play');
         }
         }

@@ -67,21 +67,29 @@ canvas {
 ///// modal styles ////
 
 .modal {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    border: none;
-    padding: 0;
-    background-color: transparent;
-    z-index: 6;
-    width: 100%;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border: none;
+  padding: 0;
+  background-color: transparent;
+  z-index: $z-index-modal;
+  width: 100%;
+  max-width: 600px;
+  min-height: 300px;
+  background: black;
+  border: 1px solid lime;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 
-    @include for-tablet-portrait-up {
-      margin: 0 0 0 0;
-    }
+  @include for-tablet-portrait-up {
+    margin: 0 0 0 0;
+  }
 
-    &__close {
+  &__close {
     -webkit-appearance: none;
     appearance: none;
     padding: 0;
@@ -108,7 +116,21 @@ canvas {
     filter: alpha(opacity=50);
     opacity: .5;
     font-size: 2em;
-
+  }
+  &__btn-wrap {
+    display: flex;
+    justify-content: center;
+    padding: 20px;
+  }
+  &__header {
+    text-transform: uppercase;
+    font-family: 'G7 Silkworm TTF';
+    width: 100%;
+    text-align: center;
+    @include rainbow;
+    letter-spacing: 2.5px;
+    font-size: 1em;
+    padding: 15px;
   }
 }
 

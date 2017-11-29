@@ -9,11 +9,11 @@
 
 @font-face {
   font-family: 'icomoon';
-  src:  url('fonts/icomoon.eot?svfxp2');
-  src:  url('fonts/icomoon.eot?svfxp2#iefix') format('embedded-opentype'),
-    url('fonts/icomoon.ttf?svfxp2') format('truetype'),
-    url('fonts/icomoon.woff?svfxp2') format('woff'),
-    url('fonts/icomoon.svg?svfxp2#icomoon') format('svg');
+  src:  url('fonts/icomoon.eot?cx2xjq');
+  src:  url('fonts/icomoon.eot?cx2xjq#iefix') format('embedded-opentype'),
+    url('fonts/icomoon.ttf?cx2xjq') format('truetype'),
+    url('fonts/icomoon.woff?cx2xjq') format('woff'),
+    url('fonts/icomoon.svg?cx2xjq#icomoon') format('svg');
   font-weight: normal;
   font-style: normal;
 }
@@ -90,6 +90,10 @@
 
 $color_gray_text: #7a7a7a;
 $color_gray_lighter: lighten($color_gray_text,35%);
+$z-index-modal: 4;
+$z-index-front: 3;
+$z-index-mid: 2;
+$z-index-back: 1;
 
 @keyframes stspin {
   0%   { opacity:1; }
@@ -273,7 +277,9 @@ $color_gray_lighter: lighten($color_gray_text,35%);
 }
 .icon-github:before {
   content: "\e901";
-  margin-top: 5%;
+}
+.icon-pause:before {
+  content: "\e905";
 }
 .icon-sync:before {
   content: "\e902";
