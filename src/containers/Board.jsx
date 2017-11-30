@@ -891,7 +891,6 @@ class Board extends Component {
       if (hero.level > gameLevel) {
         levelCompleted = true;
       }
-      console.log(`level completed: ${levelCompleted}`);
 
       // if window has been resized since last render,
       // prevVP = null (full re-render)
@@ -923,6 +922,9 @@ class Board extends Component {
     if (this.props.appState.torch) {
       canvasStyle = {
         clipPath: `circle(${clipRadius}px at center)`,
+        webkitClipPath: `circle(${clipRadius}px at center)`,
+        mozClipPath: `circle(${clipRadius}px at center)`,
+
       };
     }
     return (
