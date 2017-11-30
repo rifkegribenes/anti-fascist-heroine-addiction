@@ -252,7 +252,6 @@ class Board extends Component {
         grid1 = utils.changeEntity(this.props.appState.entities, { type: 'door', room: 'door' }, [x, y]);
         grid2 = utils.changeEntity(grid1, newHero, newPosition);
         this.props.actions.updateGrid(grid2, newPosition);
-        this.props.actions.setCurrentEntity(destination);
         document.getElementById('entity').classList.remove('spin');
         this.draw();
         switch (destination.type) {
@@ -260,33 +259,43 @@ class Board extends Component {
           case 'finalMonster':
           case 'monster':
             // console.log('Hero DOOR => MONSTER');
+            this.props.actions.setCurrentEntity(destination);
             this.props.actions.updateCombat(destination.name, 'hero');
             this.handleCombat(destination, newPosition, this.props.appState.heroPosition, 'hero');
             break;
           case 'food':
             // console.log('Hero DOOR => FOOD');
+            this.props.actions.setCurrentEntity(destination);
             this.props.playSound('food');
             this.healthBoost(destination);
             break;
           case 'teamHero':
             // console.log('Hero DOOR => THERO');
+            this.props.actions.setCurrentEntity(destination);
             this.props.playSound('addHero');
             this.addTeamHero(destination);
             break;
           case 'staircase':
             // console.log('Hero DOOR => STAIRCASE');
-            this.props.playSound('staircase');
-            this.handleStaircase(destination);
+            if (this.props.appState.hero.level > this.props.appState.gameLevel) {
+              this.props.actions.setCurrentEntity(destination);
+              this.props.playSound('staircase');
+              this.handleStaircase(destination);
+            }
             break;
           case 'candle':
             // console.log('Hero DOOR => CANDLE');
+            this.props.actions.setCurrentEntity(destination);
             this.props.playSound('magicItem');
             this.handleCandle();
             break;
           case 'key':
             // console.log('Hero DOOR => KEY');
-            this.props.playSound('magicItem');
-            this.handleKey();
+            if (this.props.appState.hero.level > this.props.appState.gameLevel) {
+              this.props.actions.setCurrentEntity(destination);
+              this.props.playSound('magicItem');
+              this.handleKey();
+            }
             break;
           default:
         }
@@ -308,29 +317,37 @@ class Board extends Component {
         grid1 = utils.changeEntity(this.props.appState.entities, { type: 'floor', room: oldRoom }, [x, y]);
         grid2 = utils.changeEntity(grid1, newHero, newPosition);
         this.props.actions.updateGrid(grid2, newPosition);
-        this.props.actions.setCurrentEntity(destination);
         document.getElementById('entity').classList.remove('spin');
         this.draw();
         switch (destination.type) {
           case 'food':
+            this.props.actions.setCurrentEntity(destination);
             this.props.playSound('food');
             this.healthBoost(destination);
             break;
           case 'teamHero':
+            this.props.actions.setCurrentEntity(destination);
             this.props.playSound('addHero');
             this.addTeamHero(destination);
             break;
           case 'staircase':
-            this.props.playSound('staircase');
-            this.handleStaircase(destination);
+            if (this.props.appState.hero.level > this.props.appState.gameLevel) {
+              this.props.actions.setCurrentEntity(destination);
+              this.props.playSound('staircase');
+              this.handleStaircase(destination);
+            }
             break;
           case 'candle':
+            this.props.actions.setCurrentEntity(destination);
             this.props.playSound('magicItem');
             this.handleCandle();
             break;
           case 'key':
-            this.props.playSound('magicItem');
-            this.handleKey();
+            if (this.props.appState.hero.level > this.props.appState.gameLevel) {
+              this.props.actions.setCurrentEntity(destination);
+              this.props.playSound('magicItem');
+              this.handleKey();
+            }
             break;
           default:
         }
@@ -862,22 +879,29 @@ class Board extends Component {
   }
 
   draw(resize) {
+    const { heroPosition, entities, cellSize, candle, key, hero, gameLevel } = this.props.appState;
     if (this.props.appState.gridFilled) {
       let prevVP;
       // render current viewport
       // save current viewport as 'prevVP'
 
+      // calculate whether level has been completed
+      // to decide whether to render staircase or key
+      let levelCompleted = false;
+      if (hero.level > gameLevel) {
+        levelCompleted = true;
+      }
+      console.log(`level completed: ${levelCompleted}`);
+
       // if window has been resized since last render,
       // prevVP = null (full re-render)
       if (resize) {
-        prevVP = utils.renderViewport(this.props.appState.heroPosition,
-        this.props.appState.entities, this.props.appState.cellSize,
-        null, this.props.appState.candle, this.props.appState.key);
+        prevVP = utils.renderViewport(heroPosition, entities, cellSize,
+        null, candle, key, levelCompleted);
       } else {
         // otherwise, use prevVP to decide which cells to render in this round
-        prevVP = utils.renderViewport(this.props.appState.heroPosition,
-          this.props.appState.entities, this.props.appState.cellSize,
-          this.props.appState.prevVP, this.props.appState.candle, this.props.appState.key);
+        prevVP = utils.renderViewport(heroPosition, entities, cellSize,
+          this.props.appState.prevVP, candle, key, levelCompleted);
       }
       // save prevVP to app state to compare against next viewport
       // and only draw diff

@@ -52,6 +52,8 @@ const INITIAL_STATE = {
   prevVP: null,
   candle: false,
   key: false,
+  levelComplete: false,
+  difficulty: 0,
 };
 
 function appState(state = INITIAL_STATE, action) {

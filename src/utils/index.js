@@ -272,7 +272,7 @@ export const monsterAI = (entities, entityCoords, heroCoords, doors, heroRoom, p
 // render to canvas
 // called from renderViewport
 // if need coords printed: (cellSize, ctx, cell, x, y, vX, vY)
-const drawCell = (cellSize, ctx, cell, x, y, candle, key) => {
+const drawCell = (cellSize, ctx, cell, x, y, candle, key, levelCompleted) => {
   // console.log(`drawCell: vX: ${vX}, vY: ${vY}, x: ${x}, y: ${y}`);
   const img = new Image();
   const radius = Math.floor((cellSize) * 0.2) || 2;
@@ -314,7 +314,6 @@ const drawCell = (cellSize, ctx, cell, x, y, candle, key) => {
       break;
     case 'hero':
     case 'candle':
-    case 'key':
       img.src = cell.iconUrl;
       img.onload = () => {
         ctx.save();
@@ -326,6 +325,22 @@ const drawCell = (cellSize, ctx, cell, x, y, candle, key) => {
       if (!cell.iconUrl) {
         ctx.fillStyle = 'hsla(60, 100%, 50%, 1)';
         ctx.fillRect(x, y, cellSize, cellSize);
+      }
+      break;
+    case 'key':
+      if (levelCompleted) {
+        img.src = cell.iconUrl;
+        img.onload = () => {
+          ctx.save();
+          ctx.shadowBlur = 20;
+          ctx.shadowColor = 'yellow';
+          ctx.drawImage(img, x, y, cellSize, cellSize);
+          ctx.restore();
+        };
+        if (!cell.iconUrl) {
+          ctx.fillStyle = 'hsla(60, 100%, 50%, 1)';
+          ctx.fillRect(x, y, cellSize, cellSize);
+        }
       }
       break;
     case 'monster':
@@ -397,13 +412,15 @@ const drawCell = (cellSize, ctx, cell, x, y, candle, key) => {
       }
       break;
     case 'staircase':
-      img.src = 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/staircase_32_c.png';
-      img.onload = () => {
-        ctx.save();
-        // console.log(`drawing staircase at ${x},${y}`);
-        ctx.drawImage(img, x, y, cellSize, cellSize);
-        ctx.restore();
-      };
+      if (levelCompleted) {
+        img.src = 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/staircase_32_c.png';
+        img.onload = () => {
+          ctx.save();
+          // console.log(`drawing staircase at ${x},${y}`);
+          ctx.drawImage(img, x, y, cellSize, cellSize);
+          ctx.restore();
+        };
+      }
       break;
     default:
       ctx.fillStyle = 'hsla(270, 100%, 50%, 1)';
@@ -415,7 +432,7 @@ export const clamp = (val, min, max) => Math.min(Math.max(val, min), max);
 
 // called from Board.jsx > draw()
 export const renderViewport = (heroPosition, entities, cellSize,
-  prevVP, candle, key) => {
+  prevVP, candle, key, levelCompleted) => {
   const [hX, hY] = heroPosition;
   // console.log(`hX: ${hX}, hY: ${hY}`);
   const newEntities = entities.map(row => row.map((cell) => {
@@ -447,7 +464,7 @@ export const renderViewport = (heroPosition, entities, cellSize,
         if (!prevVP) {
           if (!newCell.level) { newCell.level = 1; }
           if (!newCell.hue) { newCell.hue = 0; }
-          drawCell(cellSize, ctx, newCell, x, y, vX, vY, candle, key);
+          drawCell(cellSize, ctx, newCell, x, y, vX, vY, candle, key, levelCompleted);
           // console.log(`cell at ${(x / cellSize) + vX},
           // ${(y / cellSize) + vY} has changed, re-drawing`);
           return newCell;
@@ -459,7 +476,7 @@ export const renderViewport = (heroPosition, entities, cellSize,
           newCell.hue !== prevCell.hue) {
           if (!newCell.level) { newCell.level = 1; }
           if (!newCell.hue) { newCell.hue = 0; }
-          drawCell(cellSize, ctx, newCell, x, y, candle, key);
+          drawCell(cellSize, ctx, newCell, x, y, candle, key, levelCompleted);
           // console.log(`cell at ${(x / cellSize) + vX},${(y / cellSize) + vY} has changed:`);
           // console.log('prevCell:');
           // console.log(prevCell);
