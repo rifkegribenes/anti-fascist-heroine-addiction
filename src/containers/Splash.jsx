@@ -20,14 +20,14 @@ const Splash = props => (
             props.playSound('movement');
             props.history.push('/about');
           }}
-        >Credits</button>
+        ><span className="rainbow">Credits</span></button>
         <button
           className="big-msg__btn"
           onClick={() => {
             props.playSound('movement');
             props.history.push('/hero-picker');
           }}
-        >Start Game</button>
+        ><span className="rainbow">Start Game</span></button>
       </div>
       <div className="splash__instructions">
         <h3 className="splash__subhead">How to Play</h3>

@@ -150,14 +150,14 @@ const About = props => (
               props.playSound('movement');
               props.history.push('/');
             }}
-          >How to play</button>
+          ><span className="rainbow">How to play</span></button>
           <button
             className="big-msg__btn"
             onClick={() => {
               props.playSound('movement');
               props.history.push('/hero-picker');
             }}
-          >Start Game</button>
+          ><span className="rainbow">Start Game</span></button>
         </div>
       </div>
     </div>

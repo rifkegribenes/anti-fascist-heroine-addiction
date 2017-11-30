@@ -50,7 +50,7 @@ class BigMsg extends React.Component {
             className="big-msg__btn"
             onClick={this.props.appState.bigMsg.action}
           >
-            {this.props.appState.bigMsg.actionText}
+            <span className="rainbow">{this.props.appState.bigMsg.actionText}</span>
           </button>
         </div>
       </div>
