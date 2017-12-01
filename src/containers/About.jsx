@@ -145,6 +145,27 @@ const About = props => (
           <div className="splash__list">
             {otherCredits}
           </div>
+          <h3 className="splash__subhead">Sounds</h3>
+          Sounds from free packs provided by&nbsp;
+          <a
+            className="splash__link"
+            href="https://freesound.org/people/LittleRobotSoundFactory/"
+            rel="noopener noreferrer"
+            target="_blank"
+          >
+           LittleRobotSoundFactory</a> and the&nbsp;
+          <a
+            className="splash__link"
+            href="https://opengameart.org/content/512-sound-effects-8-bit-style"
+            rel="noopener noreferrer"
+            target="_blank"
+          >8-bit sound effects pack</a> by&nbsp;
+          <a
+            className="splash__link"
+            href="https://opengameart.org/users/subspaceaudio"
+            rel="noopener noreferrer"
+            target="_blank"
+          >Juhani Junkala (SubSpace Audio)</a>
           <div className="splash__btn-wrap">
             <button
               className="big-msg__btn"
