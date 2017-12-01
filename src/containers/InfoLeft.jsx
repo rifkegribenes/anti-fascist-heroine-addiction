@@ -38,7 +38,7 @@ const InfoLeft = (props) => {
           <div className="info__col-wrap">
             <div className="info__hearts"><span className="info__heart-wrap">Health: {props.hero.hp}</span>{healthIndH}</div>
             <h3 className="info__hero-title">{props.hero.name || 'Hero'}</h3>
-            <div className="hero__level" id="hero-level">Level {props.hero.level}</div>
+            <div className="hero__level" id="hero-level">Hero Level {props.hero.level}</div>
             <div className="hero__xp">
               <span className="hero__xp-text">XP</span>
               <span className="hero__xp-slider" id="xp-slider" />

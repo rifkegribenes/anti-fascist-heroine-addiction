@@ -89,6 +89,17 @@ canvas {
     margin: 0 0 0 0;
   }
 
+  &__overlay {
+    background: rgba(0,0,0,.7);
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: $z-index-modal;
+    transform: scale(1);
+  }
+
   &__close {
     -webkit-appearance: none;
     appearance: none;
@@ -121,9 +132,14 @@ canvas {
       font-size: 2em !important;
     }
   }
+
+  &__btn {
+    margin: 10px;
+  }
   &__btn-wrap {
     display: flex;
     justify-content: center;
+    flex-wrap: wrap;
     padding: 20px;
   }
   &__header {

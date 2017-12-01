@@ -59,7 +59,6 @@ class Board extends Component {
 
     this.state = {
       myReq: null,
-      modal: false,
     };
 
     this.handleKeydown = this.handleKeydown.bind(this);
@@ -108,18 +107,6 @@ class Board extends Component {
   updateDimensions() {
     this.props.actions.updateDimensions(window.innerWidth, window.innerHeight);
     this.draw();
-  }
-
-  openModal() {
-    this.setState({
-      modal: true,
-    });
-  }
-
-  closeModal() {
-    this.setState({
-      modal: false,
-    });
   }
 
   handleKeydown(e) {
@@ -929,26 +916,28 @@ class Board extends Component {
     }
     return (
       <div>
-        { this.state.modal &&
-          <div className="modal">
-            <button
-              className="modal__close aria-button"
-              onClick={() => {
-                console.log('close modal');
-                this.props.playSound('movement');
-                this.closeModal();
-              }}
-            >&times;</button>
-            <div className="modal__header">Game paused</div>
-            <div className="modal__btn-wrap">
+        { this.props.appState.modalType === 'pause' &&
+          <div className="modal__overlay">
+            <div className="modal">
               <button
-                className="big-msg__btn"
+                className="modal__close aria-button"
                 onClick={() => {
+                  console.log('close modal');
                   this.props.playSound('movement');
-                  this.closeModal();
-                  this.play();
+                  this.props.actions.closeModal();
                 }}
-              >Resume</button>
+              >&times;</button>
+              <div className="modal__header">Game paused</div>
+              <div className="modal__btn-wrap">
+                <button
+                  className="big-msg__btn"
+                  onClick={() => {
+                    this.props.playSound('movement');
+                    this.props.actions.closeModal();
+                    this.play();
+                  }}
+                >Resume</button>
+              </div>
             </div>
           </div>
         }
@@ -961,7 +950,7 @@ class Board extends Component {
           </div>
           <div className="col col--wide" id="colWide">
             <div className="info__controls">
-              <span className="info__subhead" id="subhead">Level:&nbsp;{this.props.appState.gameLevel}</span>
+              <span className="info__subhead" id="subhead">Game Level:&nbsp;{this.props.appState.gameLevel}</span>
               <div className="info__icons-wrap">
                 <button
                   className="aria-button info__icon"
@@ -969,7 +958,7 @@ class Board extends Component {
                     () => {
                       this.props.playSound('movement');
                       if (this.props.appState.running) {
-                        this.openModal();
+                        this.props.actions.openModal('pause');
                         this.props.actions.pause();
                       } else {
                         console.log('resume');

@@ -433,6 +433,8 @@ export const clamp = (val, min, max) => Math.min(Math.max(val, min), max);
 // called from Board.jsx > draw()
 export const renderViewport = (heroPosition, entities, cellSize,
   prevVP, candle, key, levelCompleted) => {
+  // if (levelCompleted) { console.log('level completed'); }
+  // if (key) { console.log('key'); }
   const [hX, hY] = heroPosition;
   // console.log(`hX: ${hX}, hY: ${hY}`);
   const newEntities = entities.map(row => row.map((cell) => {

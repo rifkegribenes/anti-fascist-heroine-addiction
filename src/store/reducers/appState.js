@@ -1,7 +1,7 @@
 import update from 'immutability-helper';
 import teamHeroes from '../../utils/teamHeroes';
 
-import { SET_LEVEL, SET_HERO, UPDATE_HERO, UPDATE_TRUMP, CLOSE_MODAL, OPEN_MODAL, RESTART, START, USER_INPUT, SET_CURRENT_ENTITY, UPDATE_ENTITIES, UPDATE_ENTITY, UPDATE_COMBAT, UPDATE_MESSAGES, UPDATE_DIMENSIONS, HANDLE_STAIRCASE, UPDATE_GRID, SHOW_MSG, HIDE_MSG, TOGGLE_SOUND, TOGGLE_TORCH, SET_LOADED, PLAY, PAUSE, SET_PREV_VP, SET_CANDLE, SET_KEY } from '../actions';
+import { SET_LEVEL, SET_HERO, UPDATE_HERO, UPDATE_TRUMP, CLOSE_MODAL, OPEN_MODAL, RESTART, START, USER_INPUT, SET_CURRENT_ENTITY, UPDATE_ENTITIES, UPDATE_ENTITY, UPDATE_COMBAT, UPDATE_MESSAGES, UPDATE_DIMENSIONS, HANDLE_STAIRCASE, UPDATE_GRID, SHOW_MSG, HIDE_MSG, TOGGLE_SOUND, TOGGLE_TORCH, SET_LOADED, PLAY, PAUSE, SET_PREV_VP, SET_CANDLE, SET_KEY, SET_DIFFICULTY } from '../actions';
 
 const INITIAL_STATE = {
   entities: [[]],
@@ -54,6 +54,7 @@ const INITIAL_STATE = {
   key: false,
   levelComplete: false,
   difficulty: 0,
+  modalType: null,
 };
 
 function appState(state = INITIAL_STATE, action) {
@@ -74,6 +75,31 @@ function appState(state = INITIAL_STATE, action) {
         state,
         {
           gameLevel: { $set: action.payload },
+        },
+      );
+
+    case SET_DIFFICULTY:
+      return update(
+        state,
+        {
+          difficulty: { $set: action.payload },
+        },
+      );
+
+    case OPEN_MODAL:
+      console.log(action.payload);
+      return update(
+        state,
+        {
+          modalType: { $set: action.payload },
+        },
+      );
+
+    case CLOSE_MODAL:
+      return update(
+        state,
+        {
+          modalType: { $set: null },
         },
       );
 
@@ -176,26 +202,6 @@ function appState(state = INITIAL_STATE, action) {
         {
           trumpPosition: { $set: action.payload.trumpPosition },
           entities: { $set: action.payload.entities },
-        },
-      );
-
-
-    case CLOSE_MODAL:
-      return update(
-        state,
-        {
-          modalOpen: { $set: false },
-          modalTitle: { $set: '' },
-        },
-      );
-
-    case OPEN_MODAL:
-      return update(
-        state,
-        {
-          modalOpen: { $set: true },
-          modalTitle: { $set: action.payload.title },
-          modalList: { $set: action.payload.list },
         },
       );
 

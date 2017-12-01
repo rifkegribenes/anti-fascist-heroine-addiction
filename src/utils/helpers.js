@@ -16,11 +16,17 @@ const hearts = (entity) => {
     healthNum = Math.floor((entity.health / totalHealth) * 5) + 1;
     if (entity.health === 0) { healthNum = 0; }
   }
-  const heartsArr = [];
+  let heartsArr = [];
   if (healthNum > 0) {
     for (let i = 0; i < healthNum; i++) {
       heartsArr.push('0');
     }
+  }
+  if (heartsArr.length > 5) {
+    heartsArr = [0, 0, 0, 0, 0];
+  }
+  if (!heartsArr.length) {
+    heartsArr = [0];
   }
   return heartsArr;
 };

@@ -25,11 +25,19 @@ export const UPDATE_COMBAT = 'UPDATE_COMBAT';
 export const SET_PREV_VP = 'SET_PREV_VP';
 export const SET_CANDLE = 'SET_CANDLE';
 export const SET_KEY = 'SET_KEY';
+export const SET_DIFFICULTY = 'SET_DIFFICULTY';
 
 export function setLevel(level) {
   return ({
     type: SET_LEVEL,
     payload: level,
+  });
+}
+
+export function setDifficulty(difficulty) {
+  return ({
+    type: SET_DIFFICULTY,
+    payload: difficulty,
   });
 }
 
@@ -81,13 +89,11 @@ export function closeModal() {
   });
 }
 
-export function openModal(title, list) {
+export function openModal(modalType) {
+  console.log('open modal');
   return ({
     type: OPEN_MODAL,
-    payload: {
-      title,
-      list,
-    },
+    payload: modalType,
   });
 }
 
