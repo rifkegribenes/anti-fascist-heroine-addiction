@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import shortid from 'shortid';
 import { withRouter } from 'react-router';
-// import update from 'immutability-helper';
 
 import * as Actions from '../store/actions';
 import InfoLeft from './InfoLeft';
@@ -86,8 +85,12 @@ class Board extends Component {
     // before rendering viewport and starting gameloop
     if (!prevProps.appState.gridFilled) {
       if (this.props.appState.gridFilled) {
-        // console.log('grid is now filled, calling play()');
-        this.play();
+        if (this.props.appState.difficulty > 0) {
+          console.log('grid is now filled, calling play()');
+          this.play();
+        }
+        console.log('grid filled, but difficulty level = 0');
+        this.draw();
       }
     }
     // listen for window size change and render full viewport
@@ -105,7 +108,32 @@ class Board extends Component {
   }
 
   updateDimensions() {
-    this.props.actions.updateDimensions(window.innerWidth, window.innerHeight);
+    // wide column max width = 675 inner width / 735 outer width
+    // board space is vh - 100px (header elements plus padding/margin)
+
+    // default size for big-enough screens
+    let clipSize = 640;
+    let colWide = 640;
+
+    // find width of middle column
+    if (document.getElementById('colWide')) {
+      colWide = document.getElementById('colWide').clientWidth;
+    }
+
+    // if either width or (adjusted) height is smaller than 640
+    // set clip size to actual space available
+    if (colWide < 640 || window.innerHeight < 740) {
+      if ((window.innerHeight - 100) > colWide) {
+        clipSize = colWide;
+      } else {
+        clipSize = Math.min(colWide,
+              (window.innerHeight - 100), 640);
+      }
+    }
+
+    clipSize = (Math.floor(clipSize / 20)) * 20;
+    const cellSize = Math.floor(clipSize / 20);
+    this.props.actions.updateDimensions(clipSize, cellSize);
     this.draw();
   }
 
@@ -264,7 +292,8 @@ class Board extends Component {
             break;
           case 'staircase':
             // console.log('Hero DOOR => STAIRCASE');
-            if (this.props.appState.hero.level > this.props.appState.gameLevel) {
+            if (this.props.appState.hero.level > this.props.appState.gameLevel
+             || this.props.appState.difficulty < 2) {
               this.props.actions.setCurrentEntity(destination);
               this.props.playSound('staircase');
               this.handleStaircase(destination);
@@ -278,7 +307,8 @@ class Board extends Component {
             break;
           case 'key':
             // console.log('Hero DOOR => KEY');
-            if (this.props.appState.hero.level > this.props.appState.gameLevel) {
+            if (this.props.appState.hero.level > this.props.appState.gameLevel
+               || this.props.appState.difficulty < 2) {
               this.props.actions.setCurrentEntity(destination);
               this.props.playSound('magicItem');
               this.handleKey();
@@ -318,7 +348,8 @@ class Board extends Component {
             this.addTeamHero(destination);
             break;
           case 'staircase':
-            if (this.props.appState.hero.level > this.props.appState.gameLevel) {
+            if (this.props.appState.hero.level > this.props.appState.gameLevel
+             || this.props.appState.difficulty < 2) {
               this.props.actions.setCurrentEntity(destination);
               this.props.playSound('staircase');
               this.handleStaircase(destination);
@@ -330,7 +361,8 @@ class Board extends Component {
             this.handleCandle();
             break;
           case 'key':
-            if (this.props.appState.hero.level > this.props.appState.gameLevel) {
+            if (this.props.appState.hero.level > this.props.appState.gameLevel
+             || this.props.appState.difficulty < 2) {
               this.props.actions.setCurrentEntity(destination);
               this.props.playSound('magicItem');
               this.handleKey();
@@ -846,9 +878,11 @@ class Board extends Component {
   }
 
   play() {
-    this.props.actions.play();
-    const myReq = requestAnimationFrame(this.gameLoop);
-    this.setState({ myReq });
+    if (this.props.appState.difficulty > 0) {
+      this.props.actions.play();
+      const myReq = requestAnimationFrame(this.gameLoop);
+      this.setState({ myReq });
+    }
   }
 
   pause() {
@@ -860,13 +894,15 @@ class Board extends Component {
   }
 
   startGame() {
+    console.log('start');
     const { newMap, heroPosition, trumpPosition, doors } =
       fillGrid(generateMap(1), 1, this.props.appState.hero);
     this.props.actions.start(newMap, heroPosition, trumpPosition, doors);
   }
 
   draw(resize) {
-    const { heroPosition, entities, cellSize, candle, key, hero, gameLevel } = this.props.appState;
+    const { heroPosition, entities, cellSize, candle, key, hero, gameLevel,
+      difficulty } = this.props.appState;
     if (this.props.appState.gridFilled) {
       let prevVP;
       // render current viewport
@@ -883,11 +919,11 @@ class Board extends Component {
       // prevVP = null (full re-render)
       if (resize) {
         prevVP = utils.renderViewport(heroPosition, entities, cellSize,
-        null, candle, key, levelCompleted);
+        null, candle, key, levelCompleted, difficulty);
       } else {
         // otherwise, use prevVP to decide which cells to render in this round
         prevVP = utils.renderViewport(heroPosition, entities, cellSize,
-          this.props.appState.prevVP, candle, key, levelCompleted);
+          this.props.appState.prevVP, candle, key, levelCompleted, difficulty);
       }
       // save prevVP to app state to compare against next viewport
       // and only draw diff
@@ -906,11 +942,12 @@ class Board extends Component {
         {message}
       </li>));
     let canvasStyle = {};
+    const difficulty = ['practice', 'easy', 'medium', 'hard'];
     if (this.props.appState.torch) {
       canvasStyle = {
         clipPath: `circle(${clipRadius}px at center)`,
-        webkitClipPath: `circle(${clipRadius}px at center)`,
-        mozClipPath: `circle(${clipRadius}px at center)`,
+        WebkitClipPath: `circle(${clipRadius}px at center)`,
+        MozClipPath: `circle(${clipRadius}px at center)`,
 
       };
     }
@@ -920,6 +957,7 @@ class Board extends Component {
           <div className="modal__overlay">
             <div className="modal">
               <button
+                id="first"
                 className="modal__close aria-button"
                 onClick={() => {
                   console.log('close modal');
@@ -930,13 +968,14 @@ class Board extends Component {
               <div className="modal__header">Game paused</div>
               <div className="modal__btn-wrap">
                 <button
+                  id="last"
                   className="big-msg__btn"
                   onClick={() => {
                     this.props.playSound('movement');
                     this.props.actions.closeModal();
                     this.play();
                   }}
-                >Resume</button>
+                ><span className="rainbow">Resume</span></button>
               </div>
             </div>
           </div>
@@ -952,27 +991,30 @@ class Board extends Component {
             <div className="info__controls">
               <span className="info__subhead" id="subhead">Game Level:&nbsp;{this.props.appState.gameLevel}</span>
               <div className="info__icons-wrap">
-                <button
-                  className="aria-button info__icon"
-                  onClick={
-                    () => {
-                      this.props.playSound('movement');
-                      if (this.props.appState.running) {
-                        this.props.actions.openModal('pause');
-                        this.props.actions.pause();
-                      } else {
-                        console.log('resume');
-                        this.play();
-                      }
-                    }}
-                  aria-label="pause"
-                  title={this.props.appState.running ? 'pause' : 'resume'}
-                >
-                  <span className={this.props.appState.running ?
-                    'icon icon-pause ctrl-icon' : 'icon ctrl-icon'}
-                  >{!this.props.appState.running && <span>&#9654;</span>}
-                  </span>
-                </button>
+                {this.props.appState.difficulty > 0 &&
+                  <button
+                    className="aria-button info__icon"
+                    onClick={
+                      () => {
+                        this.props.playSound('movement');
+                        if (this.props.appState.running) {
+                          this.props.actions.openModal('pause');
+                          this.props.actions.pause();
+                          document.getElementById('first').focus();
+                          utils.trapFocus();
+                        } else {
+                          console.log('resume');
+                          this.play();
+                        }
+                      }}
+                    aria-label="pause"
+                    title={this.props.appState.running ? 'pause' : 'resume'}
+                  >
+                    <span className={this.props.appState.running ?
+                      'icon icon-pause ctrl-icon' : 'icon ctrl-icon'}
+                    >{!this.props.appState.running && <span>&#9654;</span>}
+                    </span>
+                  </button> }
                 <button
                   className="aria-button info__icon"
                   onClick={
@@ -1021,6 +1063,9 @@ class Board extends Component {
                   <i className="icon icon-github ctrl-icon" />
                 </a>
               </div>
+            </div>
+            <div className="info__controls info__controls--bottom">
+              <span className="rainbow">Difficulty: {difficulty[this.props.appState.difficulty]}</span>
             </div>
             <canvas
               id="board"

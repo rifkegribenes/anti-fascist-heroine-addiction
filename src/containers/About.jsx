@@ -7,7 +7,7 @@ import teamHeroes from '../utils/teamHeroes';
 import SetDifficulty from './SetDifficulty';
 
 const heroCredits = teamHeroes.map(hero => (
-  <div className="splash__item">
+  <div className="splash__item" key={hero.name}>
     <div className="splash__avatar-wrap">
       <img src={hero.cardUrl} alt={hero.name} className="card-pic card-pic--round" />
     </div>
@@ -133,6 +133,22 @@ const About = props => (
         <div className="splash__header">
           <h2 className="splash__title">Credits</h2>
         </div>
+        <div className="splash__btn-wrap">
+          <button
+            className="big-msg__btn"
+            onClick={() => {
+              props.playSound('movement');
+              props.history.push('/');
+            }}
+          ><span className="rainbow">How to play</span></button>
+          <button
+            className="big-msg__btn"
+            onClick={() => {
+              props.playSound('movement');
+              props.actions.openModal('difficulty');
+            }}
+          ><span className="rainbow">Start Game</span></button>
+        </div>
         <div className="splash__instructions">
           <p className="splash__center">Game design, code, and all artwork not credited below by <a className="splash__link" href="https://github.com/rifkegribenes" target="blank" rel="noopener noreferrer">@rifkegribenes</a>.<br />Thanks to Max and Leo T for beta testing and to Jay Schwane for the name.</p>
           <p className="splash__center">If you find a bug or have a feature request, please submit that <a className="splash__link" href="https://github.com/rifkegribenes/dungeon-crawler/issues" target="blank" rel="noopener noreferrer">here.</a></p>
@@ -166,22 +182,6 @@ const About = props => (
             rel="noopener noreferrer"
             target="_blank"
           >Juhani Junkala (SubSpace Audio)</a>
-          <div className="splash__btn-wrap">
-            <button
-              className="big-msg__btn"
-              onClick={() => {
-                props.playSound('movement');
-                props.history.push('/');
-              }}
-            ><span className="rainbow">How to play</span></button>
-            <button
-              className="big-msg__btn"
-              onClick={() => {
-                props.playSound('movement');
-                props.actions.openModal('difficulty');
-              }}
-            ><span className="rainbow">Start Game</span></button>
-          </div>
         </div>
       </div>
     </div>

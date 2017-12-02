@@ -34,6 +34,13 @@
     justify-content: center;
     margin-top: 10px;
     min-height: fit-content;
+
+    &--bottom {
+      @media (max-height: 740px) {
+        margin-top: 0;
+        margin-bottom: 10px;
+      }
+    }
   }
 
   &__hearts {

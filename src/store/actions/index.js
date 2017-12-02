@@ -90,7 +90,6 @@ export function closeModal() {
 }
 
 export function openModal(modalType) {
-  console.log('open modal');
   return ({
     type: OPEN_MODAL,
     payload: modalType,
@@ -148,12 +147,12 @@ export function setPrevVP(prevVP) {
   });
 }
 
-export function updateDimensions(width, height) {
+export function updateDimensions(clipSize, cellSize) {
   return ({
     type: UPDATE_DIMENSIONS,
     payload: {
-      width,
-      height,
+      clipSize,
+      cellSize,
     },
   });
 }

@@ -58,11 +58,6 @@ const INITIAL_STATE = {
 };
 
 function appState(state = INITIAL_STATE, action) {
-  let clipSize = 640;
-  let colWide = 640;
-  if (document.getElementById('colWide')) {
-    colWide = document.getElementById('colWide').clientWidth;
-  }
   let x;
   let y;
   if (action.type === 'UPDATE_ENTITY') {
@@ -87,7 +82,6 @@ function appState(state = INITIAL_STATE, action) {
       );
 
     case OPEN_MODAL:
-      console.log(action.payload);
       return update(
         state,
         {
@@ -104,6 +98,7 @@ function appState(state = INITIAL_STATE, action) {
       );
 
     case SET_LOADED:
+      console.log('loaded');
       return update(
         state,
         {
@@ -242,6 +237,7 @@ function appState(state = INITIAL_STATE, action) {
       );
 
     case START:
+      console.log('appState.js: start');
       return update(
         state,
         {
@@ -332,22 +328,11 @@ function appState(state = INITIAL_STATE, action) {
       );
 
     case UPDATE_DIMENSIONS:
-    // wide column max width = 675 inner width / 735 outer width
-    // board space is vh - 50px (header)
-    // TODO: MOVE THIS LOGIC OUT OF THE REDUCER AND INTO UTILS OR BOARD.JSX
-      if (colWide < 640 || action.payload.height < 690) { // true
-        if ((action.payload.height - 70) > colWide) { // false
-          clipSize = colWide;
-        } else {
-          clipSize = Math.min(colWide,
-                (action.payload.height - 70), 640);
-        }
-      }
       return update(
         state,
         {
-          clipSize: { $set: (Math.floor(clipSize / 20)) * 20 },
-          cellSize: { $set: Math.floor(clipSize / 20) },
+          clipSize: { $set: action.payload.clipSize },
+          cellSize: { $set: action.payload.cellSize },
         },
       );
 

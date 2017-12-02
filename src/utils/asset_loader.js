@@ -2,9 +2,15 @@ import createjs from 'preload-js';
 // import Sound from 'createjs-soundjs';
 import manifest from '../sounds/asset_manifest.json';
 
-export const assetLoader = () => {
+const assetLoader = () => {
   // Reset the UI
-  document.getElementById('progress').style.width = '0px';
+  if (document.getElementById('progress')) {
+    document.getElementById('progress').style.width = '0px';
+  } else {
+    setTimeout(() => {
+      document.getElementById('progress').style.width = '0px';
+    }, 100);
+  }
 
   // Create a preloader.
   const preload = new createjs.LoadQueue();
@@ -29,7 +35,11 @@ export const assetLoader = () => {
   };
   // Overall progress handler
   const handleOverallProgress = () => {
-    document.getElementById('progress').style.width = `${(preload.progress * document.getElementById('progress-wrap').clientWidth)}px`;
+    if (document.getElementById('progress') &&
+        document.getElementById('progress-wrap')) {
+      document.getElementById('progress').style.width =
+      `${(preload.progress * document.getElementById('progress-wrap').clientWidth)}px`;
+    }
   };
   // Error handler
   const handleFileError = (event) => {
@@ -38,6 +48,7 @@ export const assetLoader = () => {
 
   const handleComplete = () => {
     console.log('loading complete');
+    return true;
   };
 
   preload.on('fileload', handleFileLoad);
@@ -59,13 +70,4 @@ export const assetLoader = () => {
   loadAll();
 };
 
-export const playSound = (item) => {
-  console.log(item);
-  console.log(`playing sound: ${item}`);
-  // const sound = document.createElement('audio');
-  // sound.setAttribute('autoplay', 'autoplay');
-  // sound.setAttribute('src', sounds[item]);
-  const preload = new createjs.LoadQueue();
-  preload.installPlugin(createjs.Sound);
-  createjs.Sound.play(item);
-};
+export default assetLoader;

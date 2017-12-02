@@ -33,10 +33,8 @@ const Splash = props => (
           <button
             className="big-msg__btn"
             onClick={() => {
-              console.log('open diff modal');
               props.playSound('movement');
               props.actions.openModal('difficulty');
-              console.log(props.appState.modalType);
             }}
           ><span className="rainbow">Start Game</span></button>
         </div>

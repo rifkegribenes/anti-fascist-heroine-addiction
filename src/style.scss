@@ -47,7 +47,6 @@ body {
     appearance: none;
     border: none;
     background: transparent;
-    outline: none;
     color: inherit;
     font-size: inherit;
     font-family: inherit;
@@ -127,14 +126,17 @@ canvas {
     filter: alpha(opacity=50);
     opacity: .5;
     font-size: 2em;
+    z-index: $z-index-modal;
 
-    &:hover {
+    &:hover, &:focus, &:active {
       font-size: 2em !important;
     }
   }
 
   &__btn {
     margin: 10px;
+    width: auto;
+    padding: 15px 30px;
   }
   &__btn-wrap {
     display: flex;

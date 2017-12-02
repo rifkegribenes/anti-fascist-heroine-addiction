@@ -9,8 +9,9 @@ import About from './containers/About';
 import HeroPicker from './containers/HeroPicker';
 import BigMsg from './containers/BigMsg';
 import * as Actions from './store/actions';
-import * as aL from './utils/asset_loader';
+import assetLoader from './utils/asset_loader';
 import sounds from './utils/sounds';
+import { loaded } from './utils';
 
 
 class App extends React.Component {
@@ -20,7 +21,14 @@ class App extends React.Component {
   }
 
   componentDidMount() {
-    aL.assetLoader();
+    assetLoader();
+  }
+
+  componentDidUpdate() {
+    if (loaded() && !this.props.appState.loaded) {
+      console.log('set loaded');
+      this.props.actions.setLoaded();
+    }
   }
 
   playSound(item) {

@@ -272,7 +272,8 @@ export const monsterAI = (entities, entityCoords, heroCoords, doors, heroRoom, p
 // render to canvas
 // called from renderViewport
 // if need coords printed: (cellSize, ctx, cell, x, y, vX, vY)
-const drawCell = (cellSize, ctx, cell, x, y, candle, key, levelCompleted) => {
+const drawCell = (cellSize, ctx, cell, x, y, candle, key, levelCompleted,
+  difficulty) => {
   // console.log(`drawCell: vX: ${vX}, vY: ${vY}, x: ${x}, y: ${y}`);
   const img = new Image();
   const radius = Math.floor((cellSize) * 0.2) || 2;
@@ -301,9 +302,6 @@ const drawCell = (cellSize, ctx, cell, x, y, candle, key, levelCompleted) => {
       break;
     case 'floor':
     case 'door':
-      if (key) {
-        // console.log('key');
-      }
       // ctx.font = '8px Arial Narrow';
       // ctx.fillStyle = 'black';
       // ctx.fillText(`${Math.floor(cell.room)}`, x, y);
@@ -328,7 +326,7 @@ const drawCell = (cellSize, ctx, cell, x, y, candle, key, levelCompleted) => {
       }
       break;
     case 'key':
-      if (levelCompleted) {
+      if (levelCompleted || difficulty < 2) {
         img.src = cell.iconUrl;
         img.onload = () => {
           ctx.save();
@@ -412,7 +410,7 @@ const drawCell = (cellSize, ctx, cell, x, y, candle, key, levelCompleted) => {
       }
       break;
     case 'staircase':
-      if (levelCompleted) {
+      if (levelCompleted || difficulty < 2) {
         img.src = 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/staircase_32_c.png';
         img.onload = () => {
           ctx.save();
@@ -432,7 +430,7 @@ export const clamp = (val, min, max) => Math.min(Math.max(val, min), max);
 
 // called from Board.jsx > draw()
 export const renderViewport = (heroPosition, entities, cellSize,
-  prevVP, candle, key, levelCompleted) => {
+  prevVP, candle, key, levelCompleted, difficulty) => {
   // if (levelCompleted) { console.log('level completed'); }
   // if (key) { console.log('key'); }
   const [hX, hY] = heroPosition;
@@ -466,7 +464,7 @@ export const renderViewport = (heroPosition, entities, cellSize,
         if (!prevVP) {
           if (!newCell.level) { newCell.level = 1; }
           if (!newCell.hue) { newCell.hue = 0; }
-          drawCell(cellSize, ctx, newCell, x, y, vX, vY, candle, key, levelCompleted);
+          drawCell(cellSize, ctx, newCell, x, y, vX, vY, candle, key, levelCompleted, difficulty);
           // console.log(`cell at ${(x / cellSize) + vX},
           // ${(y / cellSize) + vY} has changed, re-drawing`);
           return newCell;
@@ -478,7 +476,7 @@ export const renderViewport = (heroPosition, entities, cellSize,
           newCell.hue !== prevCell.hue) {
           if (!newCell.level) { newCell.level = 1; }
           if (!newCell.hue) { newCell.hue = 0; }
-          drawCell(cellSize, ctx, newCell, x, y, candle, key, levelCompleted);
+          drawCell(cellSize, ctx, newCell, x, y, candle, key, levelCompleted, difficulty);
           // console.log(`cell at ${(x / cellSize) + vX},${(y / cellSize) + vY} has changed:`);
           // console.log('prevCell:');
           // console.log(prevCell);
@@ -544,3 +542,81 @@ export const animate = () => {
     };
   }
 };
+
+export const hearts = (entity) => {
+  let totalHealth;
+  let healthNum;
+  if (entity.type === 'hero') {
+    const healthArray = [160, 280, 510];
+    totalHealth = healthArray[entity.level - 1];
+    healthNum = Math.floor((entity.hp / totalHealth) * 5) + 1;
+    if (entity.hp === 0) { healthNum = 0; }
+  } else if (entity.type === 'monster') {
+    const healthArray = [70, 243, 515];
+    totalHealth = healthArray[entity.level - 1];
+    healthNum = Math.floor((entity.health / totalHealth) * 5) + 1;
+    if (entity.health === 0) { healthNum = 0; }
+  } else if (entity.type === 'finalMonster') {
+    totalHealth = 500;
+    healthNum = Math.floor((entity.health / totalHealth) * 5) + 1;
+    if (entity.health === 0) { healthNum = 0; }
+  }
+  let heartsArr = [];
+  if (healthNum > 0) {
+    for (let i = 0; i < healthNum; i++) {
+      heartsArr.push('0');
+    }
+  }
+  if (heartsArr.length > 5) {
+    heartsArr = [0, 0, 0, 0, 0];
+  }
+  if (!heartsArr.length) {
+    heartsArr = [0];
+  }
+  return heartsArr;
+};
+
+export const trapFocus = () => {
+  const firstAnchor = document.getElementById('first');
+  const lastAnchor = document.getElementById('last');
+
+  const keydownHandler = (f) => {
+    const evt = f || window.event;
+    const keyCode = evt.which || evt.keyCode;
+    if (keyCode === 9 && !evt.shiftKey) { // TAB
+      if (evt.preventDefault) evt.preventDefault();
+      else evt.returnValue = false;
+      firstAnchor.focus();
+    }
+  };
+
+  const keydownHandlerFirst = (f) => {
+    const evt = f || window.event;
+    const keyCode = evt.which || evt.keyCode;
+    if (keyCode === 9 && evt.shiftKey) { // TAB+SHIFT
+      if (evt.preventDefault) evt.preventDefault();
+      else evt.returnValue = false;
+      lastAnchor.focus();
+    }
+  };
+
+  if (lastAnchor.addEventListener) lastAnchor.addEventListener('keydown', keydownHandler, false);
+  else if (lastAnchor.attachEvent) lastAnchor.attachEvent('onkeydown', keydownHandler);
+  if (firstAnchor.addEventListener) firstAnchor.addEventListener('keydown', keydownHandlerFirst, false);
+  else if (firstAnchor.attachEvent) firstAnchor.attachEvent('onkeydown', keydownHandlerFirst);
+};
+
+export const loaded = () => {
+  console.log('calculating loaded');
+  if (document.getElementById('progress') &&
+        document.getElementById('progress-wrap')) {
+    if (document.getElementById('progress').clientWidth ===
+      document.getElementById('progress-wrap').clientWidth) {
+      console.log('loaded');
+      return true;
+    } console.log('not loaded');
+    return false;
+  } console.log('not loaded');
+  return false;
+};
+

@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import shortid from 'shortid';
 
-import hearts from '../utils/helpers';
+import { hearts } from '../utils';
 import * as Actions from '../store/actions';
 
 const teamList = (arr) => {
