@@ -18,6 +18,7 @@ class Item extends React.Component {
     const className = `item level${this.props.level}`;
     return (
       <button
+        id={this.props.index}
         className={`${className} aria-button`}
         onClick={() => {
           this.props.playSound('startGame');

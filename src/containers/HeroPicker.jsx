@@ -21,6 +21,11 @@ class HeroPicker extends React.Component {
 
   componentDidMount() {
     window.addEventListener('keydown', this.handleKeydown);
+    document.getElementById('0').focus();
+  }
+
+  componentDidUpdate() {
+    document.getElementById(this.state.active).focus();
   }
 
   componentWillUnmount() {
@@ -41,6 +46,7 @@ class HeroPicker extends React.Component {
       items.push(
         <Item
           key={index}
+          index={index}
           id={this.state.items[index]}
           level={level}
           playSound={this.props.playSound}
