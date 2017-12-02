@@ -11,7 +11,7 @@ import BigMsg from './containers/BigMsg';
 import * as Actions from './store/actions';
 import assetLoader from './utils/asset_loader';
 import sounds from './utils/sounds';
-import { loaded } from './utils';
+import { loaded, checkForTouchScreens } from './utils';
 
 
 class App extends React.Component {
@@ -21,6 +21,7 @@ class App extends React.Component {
   }
 
   componentDidMount() {
+    checkForTouchScreens();
     assetLoader();
   }
 

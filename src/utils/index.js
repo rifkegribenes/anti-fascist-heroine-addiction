@@ -620,3 +620,10 @@ export const loaded = () => {
   return false;
 };
 
+export const checkForTouchScreens = () => {
+  window.addEventListener('touchstart', function onFirstTouch() {
+    document.body.classList.add('touchscreen');
+    window.removeEventListener('touchstart', onFirstTouch, false);
+  }, false);
+};
+

@@ -4,11 +4,18 @@ import { bindActionCreators } from 'redux';
 
 import * as Actions from '../store/actions';
 import SetDifficulty from './SetDifficulty';
+import Sorry from './Sorry';
 
 const Splash = props => (
   <div>
     {props.appState.modalType === 'difficulty' &&
       <SetDifficulty
+        playSound={props.playSound}
+        history={props.history}
+      />
+    }
+    {props.appState.modalType === 'sorry' &&
+      <Sorry
         playSound={props.playSound}
         history={props.history}
       />
@@ -34,7 +41,11 @@ const Splash = props => (
             className="big-msg__btn"
             onClick={() => {
               props.playSound('movement');
-              props.actions.openModal('difficulty');
+              if (document.body.classList.contains('touchscreen') || window.innerWidth < 1000) {
+                props.actions.openModal('sorry');
+              } else {
+                props.actions.openModal('difficulty');
+              }
             }}
           ><span className="rainbow">Start Game</span></button>
         </div>

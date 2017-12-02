@@ -5,6 +5,7 @@ import { bindActionCreators } from 'redux';
 import * as Actions from '../store/actions';
 import teamHeroes from '../utils/teamHeroes';
 import SetDifficulty from './SetDifficulty';
+import Sorry from './Sorry';
 
 const heroCredits = teamHeroes.map(hero => (
   <div className="splash__item" key={hero.name}>
@@ -128,6 +129,12 @@ const About = props => (
         history={props.history}
       />
     }
+    {props.appState.modalType === 'sorry' &&
+      <Sorry
+        playSound={props.playSound}
+        history={props.history}
+      />
+    }
     <div className="splash">
       <div className="splash__container">
         <div className="splash__header">
@@ -145,9 +152,14 @@ const About = props => (
             className="big-msg__btn"
             onClick={() => {
               props.playSound('movement');
-              props.actions.openModal('difficulty');
+              if (document.body.classList.contains('touchscreen') || window.innerWidth < 1000) {
+                props.actions.openModal('sorry');
+              } else {
+                props.actions.openModal('difficulty');
+              }
             }}
-          ><span className="rainbow">Start Game</span></button>
+          >
+            <span className="rainbow">Start Game</span></button>
         </div>
         <div className="splash__instructions">
           <p className="splash__center">Game design, code, and all artwork not credited below by <a className="splash__link" href="https://github.com/rifkegribenes" target="blank" rel="noopener noreferrer">@rifkegribenes</a>.<br />Thanks to Max and Leo T for beta testing and to Jay Schwane for the name.</p>
