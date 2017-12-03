@@ -1078,18 +1078,6 @@ class Board extends Component {
                 >
                   <i className={this.props.appState.sound ? 'icon icon-volume_off ctrl-icon' : 'icon icon-volume_up ctrl-icon'} />
                 </button>
-                <button
-                  className="aria-button info__icon"
-                  onClick={
-                    () => {
-                      this.props.playSound('movement');
-                      this.props.actions.toggleTorch(this.props.appState.torch);
-                    }}
-                  aria-label="toggle torch"
-                  title="toggle torch"
-                >
-                  <i className="icon icon-flashlight ctrl-icon" />
-                </button>
                 <a
                   className="aria-button info__icon"
                   href="https://github.com/rifkegribenes/dungeon-crawler"
