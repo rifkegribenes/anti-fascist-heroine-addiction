@@ -237,7 +237,6 @@ function appState(state = INITIAL_STATE, action) {
       );
 
     case START:
-      console.log('appState.js: start');
       return update(
         state,
         {

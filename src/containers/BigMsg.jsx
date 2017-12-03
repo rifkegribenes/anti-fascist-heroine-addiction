@@ -53,7 +53,7 @@ class BigMsg extends React.Component {
             <span className="rainbow">{this.props.appState.bigMsg.actionText}</span>
           </button>
           <div className="modal__btn-wrap modal__btn-wrap--col">
-          Punch these chucklef@cks in real life!
+          Defeat these chucklef@cks in real life!
             <a
               className="big-msg__btn big-msg__btn--wide"
               href="https://www.vote.org/"

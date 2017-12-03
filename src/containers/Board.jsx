@@ -88,8 +88,11 @@ class Board extends Component {
         if (this.props.appState.difficulty > 0) {
           console.log('grid is now filled, calling play()');
           this.play();
+        } else {
+          console.log('grid filled, but difficulty level = 0');
+          this.draw();
+          return;
         }
-        console.log('grid filled, but difficulty level = 0');
         this.draw();
       }
     }
@@ -296,8 +299,8 @@ class Board extends Component {
              || this.props.appState.difficulty < 2) {
               this.props.actions.setCurrentEntity(destination);
               this.props.playSound('staircase');
-              this.handleStaircase(destination);
             }
+            this.handleStaircase(destination);
             break;
           case 'candle':
             // console.log('Hero DOOR => CANDLE');
@@ -352,8 +355,8 @@ class Board extends Component {
              || this.props.appState.difficulty < 2) {
               this.props.actions.setCurrentEntity(destination);
               this.props.playSound('staircase');
-              this.handleStaircase(destination);
             }
+            this.handleStaircase(destination);
             break;
           case 'candle':
             this.props.actions.setCurrentEntity(destination);
@@ -393,7 +396,6 @@ class Board extends Component {
   healthBoost(food) {
     const hero = { ...this.props.appState.hero };
     const messages = [...this.props.appState.messages];
-    // const currentEntity = food;
     const healthBoost = food.healthBoost;
     hero.hp += healthBoost;
     // console.log(`new hero hp = ${hero.hp}`);
@@ -401,7 +403,6 @@ class Board extends Component {
     this.props.actions.updateHero(hero);
     // console.log(`hero hp after state update: ${this.props.appState.hero.hp}`);
     this.props.actions.updateMessages(messages);
-    // this.props.actions.setCurrentEntity(currentEntity);
     document.getElementById('hero').classList.add('powerUp');
     setTimeout(() => {
       document.getElementById('hero').classList.remove('powerUp');
@@ -579,13 +580,14 @@ class Board extends Component {
         body1: `You were defeated by ${monster.name}`,
         body2: monster.bio,
         action,
-        actionText: 'Play Again',
+        actionText: 'Try Again',
       });
       this.props.history.push('/gameover');
     }, 1000);
   }
 
   heroLevelUp(hero) {
+    const { difficulty, gameLevel } = this.props.appState;
     // add and remove powerup class
     document.getElementById('hero').classList.add('powerUp');
     document.getElementById('hero-level').classList.add('powerUp');
@@ -597,7 +599,15 @@ class Board extends Component {
     // display level up message
     const messages = [...this.props.appState.messages];
     messages.push(`Level UP!! Your team is now prepared to take on level ${hero.level} monsters.`);
+    if (difficulty > 1) {
+      messages.push(`Time to look for the staircase down to level ${gameLevel + 1}`);
+    }
     this.props.actions.updateMessages(messages);
+
+    // if staircases were hidden before (difficulty levels 2 & 3), add them now
+    if (difficulty > 1 && gameLevel < 3) {
+       this.addStaircase();
+    }
 
     // update hero state in redux store with updated level & xp
     this.props.actions.updateHero(hero);
@@ -710,7 +720,7 @@ class Board extends Component {
     this.props.actions.updateMessages(messages);
     const { newMap, heroPosition, trumpPosition, doors,
       finalMonsterRoom } = fillGrid(generateMap(level + 1),
-      level + 1, this.props.appState.hero);
+      level + 1, this.props.appState.hero, this.props.appState.difficulty);
     this.props.actions.handleStaircase(currentEntity,
       heroPosition, trumpPosition, newMap, level + 1, doors, finalMonsterRoom);
     document.getElementById('subhead').classList.add('powerUp');
@@ -721,6 +731,26 @@ class Board extends Component {
       document.getElementById('board').classList.remove('staircaseSpin');
       document.getElementById('subhead').classList.remove('powerUp');
     }, 2000);
+  }
+
+  addStaircase() {
+    const entities = this.props.appState.entities;
+    const staircases = [
+      {
+        type: 'staircase',
+        name: 'staircase',
+        cardUrl: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/staircase_200.png',
+        message: `Staircase down to level ${this.props.appState.gameLevel + 1}`,
+      },
+    ];
+    while (staircases.length) {
+      const x = Math.floor(Math.random() * utils.gridWidth);
+      const y = Math.floor(Math.random() * utils.gridHeight);
+      if (entities[y][x].type === 'floor') {
+        entities[y][x] = staircases.pop();
+      }
+    }
+    this.props.actions.updateEntities(entities);
   }
 
   // called from this.update()
@@ -812,6 +842,13 @@ class Board extends Component {
   }
 
   gameLoop(timestamp, grid2, newPosition) {
+    let speed = 1000;
+    const { difficulty, gameLevel } = this.props.appState;
+    if (difficulty === 2) {
+      speed = 1000 / gameLevel;
+    } else if (difficulty === 3) {
+      speed = 300;
+    }
     // console.log('gameloop');
     if (this.props.appState.running) {
       // console.log('gl running');
@@ -825,7 +862,7 @@ class Board extends Component {
             this.props.appState.entities, this.props.appState.heroPosition);
         });
         this.setState({ myReq });
-      }, 1000);
+      }, speed);
     } else {
       console.log('not running');
     }
@@ -896,7 +933,7 @@ class Board extends Component {
   startGame() {
     console.log('start');
     const { newMap, heroPosition, trumpPosition, doors } =
-      fillGrid(generateMap(1), 1, this.props.appState.hero);
+      fillGrid(generateMap(1), 1, this.props.appState.hero, this.props.appState.difficulty);
     this.props.actions.start(newMap, heroPosition, trumpPosition, doors);
   }
 
@@ -1000,7 +1037,6 @@ class Board extends Component {
                         if (this.props.appState.running) {
                           this.props.actions.openModal('pause');
                           this.props.actions.pause();
-                          document.getElementById('first').focus();
                           utils.trapFocus();
                         } else {
                           console.log('resume');

@@ -3,7 +3,7 @@ import foodTypes from './foodTypes';
 import teamHeroes from './teamHeroes';
 import monsterTypes from './monsterTypes';
 
-const fillGrid = (gameMap, level, hero) => {
+const fillGrid = (gameMap, level, hero, difficulty) => {
   const tempHero = { ...hero };
   let finalMonsterRoom = null;
 
@@ -20,7 +20,8 @@ const fillGrid = (gameMap, level, hero) => {
   }
 
   const staircases = [];
-  if (level < 3) {
+  if (level < 3 && difficulty < 2) {
+    console.log('adding staircases');
     staircases.push({
       type: 'staircase',
       cardUrl: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/staircase_200.png',
@@ -216,16 +217,18 @@ const fillGrid = (gameMap, level, hero) => {
   // randomly place other entities on floor cells throughout grid,
   // avoiding floor cells with doors as immediate neighbors because
   // monsters can't move through food or teamHeroes
-  // also don't place anything in trump's locked room
+  // also don't place anything in trump's locked room or in room 0
+  //  (to keep monsters from spawning right next to hero on
+  //  levels where they go fast)
   [foods, monsters, teamHeroArray, staircases, magicItems].forEach((entities) => {
     while (entities.length) {
       const x = Math.floor(Math.random() * utils.gridWidth);
       const y = Math.floor(Math.random() * utils.gridHeight);
-      if (newMap[y][x].type === 'floor' && newMap[y][x].room !== finalMonsterRoom) {
+      if (newMap[y][x].type === 'floor' && newMap[y][x].room !== finalMonsterRoom && newMap[y][x].room !== 0) {
         const neighborCells = utils.getNeighbors([x, y]);
         const neighborDoors = neighborCells.filter(cell => newMap[cell[1]][cell[0]].type === 'door');
         if (!neighborDoors.length) {
-          // assign a room ID to each entity placed in the grod
+          // assign a room ID to each entity placed in the grid
           const room = newMap[y][x].room;
           newMap[y][x] = entities.pop();
           newMap[y][x].room = room;

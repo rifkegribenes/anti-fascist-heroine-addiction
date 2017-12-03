@@ -579,6 +579,9 @@ export const hearts = (entity) => {
 export const trapFocus = () => {
   const firstAnchor = document.getElementById('first');
   const lastAnchor = document.getElementById('last');
+  if (firstAnchor) {
+    firstAnchor.focus();
+  }
 
   const keydownHandler = (f) => {
     const evt = f || window.event;
@@ -607,7 +610,7 @@ export const trapFocus = () => {
 };
 
 export const loaded = () => {
-  console.log('calculating loaded');
+  // console.log('calculating loaded');
   if (document.getElementById('progress') &&
         document.getElementById('progress-wrap')) {
     if (document.getElementById('progress').clientWidth ===
@@ -616,7 +619,7 @@ export const loaded = () => {
       return true;
     } console.log('not loaded');
     return false;
-  } console.log('not loaded');
+  } // console.log('not loaded');
   return false;
 };
 
