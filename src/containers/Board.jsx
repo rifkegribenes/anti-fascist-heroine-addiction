@@ -110,13 +110,14 @@ class Board extends Component {
     cancelAnimationFrame(this.state.myReq);
   }
 
-  updateDimensions() {
+  updateDimensions(viewportSize) {
     // wide column max width = 675 inner width / 735 outer width
     // board space is vh - 100px (header elements plus padding/margin)
 
-    // default size for big-enough screens
-    let clipSize = 640;
-    let colWide = 640;
+    let colWide = 640; // max col width & max clip size for big-enough screens
+    const vSize = viewportSize || this.props.appState.vSize; // default 20
+    console.log(`vSize = ${vSize}`);
+    let maxClipSize = this.props.appState.clipSize; // default 640
 
     // find width of middle column
     if (document.getElementById('colWide')) {
@@ -124,18 +125,28 @@ class Board extends Component {
     }
 
     // if either width or (adjusted) height is smaller than 640
-    // set clip size to actual space available
+    // set max clip size to actual space available
     if (colWide < 640 || window.innerHeight < 740) {
       if ((window.innerHeight - 100) > colWide) {
-        clipSize = colWide;
+        maxClipSize = colWide;
       } else {
-        clipSize = Math.min(colWide,
+        maxClipSize = Math.min(colWide,
               (window.innerHeight - 100), 640);
       }
     }
 
-    clipSize = (Math.floor(clipSize / 20)) * 20;
-    const cellSize = Math.floor(clipSize / 20);
+    // make sure clipSize and cellSize are integers, avoid rounding errors
+    maxClipSize = (Math.floor(maxClipSize / 20)) * 20;
+    const cellSize = Math.floor(maxClipSize / 20);
+    console.log(`cellSize = ${cellSize}`);
+
+    let clipSize = maxClipSize;
+    // if viewport size is reduced due to difficulty level,
+    // reduce clipSize accordingly
+    if (vSize < 20) {
+      clipSize = vSize * cellSize;
+    }
+    console.log(`clipSize = ${clipSize}`);
     this.props.actions.updateDimensions(clipSize, cellSize);
     this.draw();
   }
@@ -409,6 +420,17 @@ class Board extends Component {
     }, 1000);
   }
 
+  handleTorch() {
+    this.props.actions.addTorch();
+    const { difficulty, gameLevel, torches } = this.props.appState;
+    let vSize = utils.viewportSize(difficulty, gameLevel, torches);
+    if (vSize > 20) {
+      vSize = 20;
+    }
+    this.props.actions.setViewportSize(vSize);
+    this.draw();
+  }
+
   handleCandle() {
     const messages = [...this.props.appState.messages];
     messages.push('You found the magical Hanukkah candle!!!! Now the hidden Sufganiyah health boost is revealed -- you just have to find it.');
@@ -606,7 +628,7 @@ class Board extends Component {
 
     // if staircases were hidden before (difficulty levels 2 & 3), add them now
     if (difficulty > 1 && gameLevel < 3) {
-       this.addStaircase();
+      this.addStaircase();
     }
 
     // update hero state in redux store with updated level & xp

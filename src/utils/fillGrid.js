@@ -21,7 +21,6 @@ const fillGrid = (gameMap, level, hero, difficulty) => {
 
   const staircases = [];
   if (level < 3 && difficulty < 2) {
-    console.log('adding staircases');
     staircases.push({
       type: 'staircase',
       cardUrl: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/staircase_200.png',
@@ -269,9 +268,12 @@ const fillGrid = (gameMap, level, hero, difficulty) => {
     newMap[finalMonsterDoorCoords[1]][finalMonsterDoorCoords[0]] = padlock;
   }
 
+  const vSize = utils.viewportSize(difficulty, level, 0);
+  console.log(`vSize = ${vSize}`);
+
   // console.log(`doors array for level ${level}:`);
   // console.log(doors);
-  return { newMap, heroPosition, trumpPosition, doors, finalMonsterRoom };
+  return { newMap, heroPosition, trumpPosition, doors, finalMonsterRoom, vSize };
 };
 
 export default fillGrid;
