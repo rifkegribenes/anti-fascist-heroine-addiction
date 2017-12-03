@@ -1,8 +1,23 @@
 // global constants
 export const gridHeight = 60;
 export const gridWidth = 80;
-export const vHeight = 20;
-export const vWidth = 20;
+export const vSize = 20;
+
+// set viewport size
+export const viewportSize = (difficulty, gameLevel, torches) => {
+  let size = 20;
+  if (difficulty === 3) {
+    if (gameLevel === 1) {
+      size = 16;
+    } else if (gameLevel === 2) {
+      size = 12;
+    } else if (gameLevel === 3) {
+      size = 8;
+    }
+    size += (torches * 2);
+  }
+  return size;
+};
 
 
 // helper functions
@@ -11,7 +26,7 @@ export const randomInt = (min, max) => Math.floor(random(min, max));
 export const inViewport = (entityCoords, heroCoords) => {
   const [ex, ey] = entityCoords;
   const [hx, hy] = heroCoords;
-  if (Math.abs(ex - hx) < vWidth / 2 && Math.abs(ey - hy) < vHeight / 2) {
+  if (Math.abs(ex - hx) < vSize / 2 && Math.abs(ey - hy) < vSize / 2) {
     return true;
   }
   return false;
@@ -444,18 +459,18 @@ export const renderViewport = (heroPosition, entities, cellSize,
   // reset the transform matrix
   ctx.setTransform(1, 0, 0, 1, 0, 0);
   // clear viewport
-  // ctx.clearRect(0, 0, vWidth * cellSize, vHeight * cellSize);
+  // ctx.clearRect(0, 0, vWidth * cellSize, vSize * cellSize);
   // clamp viewport position to grid bounds, center around hero
-  const vX = clamp(((hX - (vWidth / 2))), 0, ((gridWidth - vWidth))); // 30
-  const vY = clamp(((hY - (vHeight / 2))), 0, ((gridHeight - vHeight))); // 20
-  // console.log(`vWidth: ${vWidth}, vHeight: ${vHeight}`);
+  const vX = clamp(((hX - (vSize / 2))), 0, ((gridWidth - vSize))); // 30
+  const vY = clamp(((hY - (vSize / 2))), 0, ((gridHeight - vSize))); // 20
+  // console.log(`vWidth: ${vWidth}, vSize: ${vSize}`);
   // console.log(`gridWidth: ${gridWidth}, gridHeight: ${gridHeight}`);
   // console.log(`vX: ${vX}, vY: ${vY}`);
   // filter out rows above or below viewport,
   // return current viewport to save to app state
-  return newEntities.filter((row, rIdx) => rIdx >= vY && rIdx < (vY + vHeight)).map((r, i) =>
+  return newEntities.filter((row, rIdx) => rIdx >= vY && rIdx < (vY + vSize)).map((r, i) =>
       // filter out cells to left or right of viewport
-       r.filter((r2, i2) => i2 >= vX && i2 < (vX + vWidth))
+       r.filter((r2, i2) => i2 >= vX && i2 < (vX + vSize))
       .map((c, j) => {
         const x = cellSize * j;
         const y = cellSize * i;
@@ -579,6 +594,7 @@ export const hearts = (entity) => {
 export const trapFocus = () => {
   const firstAnchor = document.getElementById('first');
   const lastAnchor = document.getElementById('last');
+  firstAnchor.focus();
 
   const keydownHandler = (f) => {
     const evt = f || window.event;
@@ -607,16 +623,16 @@ export const trapFocus = () => {
 };
 
 export const loaded = () => {
-  console.log('calculating loaded');
+  // console.log('calculating loaded');
   if (document.getElementById('progress') &&
         document.getElementById('progress-wrap')) {
     if (document.getElementById('progress').clientWidth ===
       document.getElementById('progress-wrap').clientWidth) {
       console.log('loaded');
       return true;
-    } console.log('not loaded');
+    } // console.log('not loaded');
     return false;
-  } console.log('not loaded');
+  } // console.log('not loaded');
   return false;
 };
 

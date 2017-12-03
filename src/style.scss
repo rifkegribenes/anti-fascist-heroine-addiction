@@ -182,7 +182,7 @@ canvas {
 
     &--col {
       display: flex;
-      flex-direction: column;
+      z-index: $z-index-modal;
     }
   }
   &__header {

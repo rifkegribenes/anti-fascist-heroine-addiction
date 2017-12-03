@@ -98,7 +98,7 @@ const Splash = props => (
             to defeat the final monster. Walk into a monster repeatedly until
             you defeat it... or it defeats you!
           <h4 className="splash__bold">Staircases</h4>
-          <img className="splash__icon--c" src="https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/staircase_32.png" alt="staircase" /> Staircases take you down to the next level of the dungeon.
+          <img className="splash__icon--c" src="https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/staircase_32.png" alt="staircase" /> Staircases take you down to the next level of the dungeon. In &lsquo;Medium&rsquo; and &lsquo;Hard&rsquo; difficulty levels, staircases are hidden until your character has enough XP to level up.
           <h4 className="splash__bold">Winning the game</h4>
             To win, defeat the final monster on level 3.
         </div>
