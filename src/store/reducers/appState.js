@@ -1,12 +1,7 @@
 import update from 'immutability-helper';
 import teamHeroes from '../../utils/teamHeroes';
 
-import { SET_LEVEL, SET_HERO, UPDATE_HERO, UPDATE_TRUMP, CLOSE_MODAL,
- OPEN_MODAL, RESTART, START, USER_INPUT, SET_CURRENT_ENTITY, UPDATE_ENTITIES,
-  UPDATE_ENTITY, UPDATE_COMBAT, UPDATE_MESSAGES, UPDATE_DIMENSIONS,
-   HANDLE_STAIRCASE, UPDATE_GRID, SHOW_MSG, HIDE_MSG, TOGGLE_SOUND,
-    TOGGLE_TORCH, SET_LOADED, PLAY, PAUSE, SET_PREV_VP, SET_CANDLE, SET_KEY,
-     SET_DIFFICULTY, SET_CLIP_SIZE, SET_VP_SIZE, ADD_TORCH } from '../actions';
+import { SET_LEVEL, SET_HERO, UPDATE_HERO, UPDATE_TRUMP, CLOSE_MODAL, OPEN_MODAL, RESTART, START, USER_INPUT, SET_CURRENT_ENTITY, UPDATE_ENTITIES, UPDATE_ENTITY, UPDATE_COMBAT, UPDATE_MESSAGES, UPDATE_DIMENSIONS, HANDLE_STAIRCASE, UPDATE_GRID, SHOW_MSG, HIDE_MSG, TOGGLE_SOUND, TOGGLE_TORCH, SET_LOADED, PLAY, PAUSE, SET_PREV_VP, SET_CANDLE, SET_KEY, SET_DIFFICULTY } from '../actions';
 
 const INITIAL_STATE = {
   entities: [[]],
@@ -47,12 +42,9 @@ const INITIAL_STATE = {
     type: 'floor',
   },
   clipSize: 640,
-  cellSize: 32,
-  vSize: 20,
   gridFilled: false,
   sound: true,
   torch: true,
-  torches: 0,
   loaded: false,
   running: false,
   combatName: '',
@@ -86,30 +78,6 @@ function appState(state = INITIAL_STATE, action) {
         state,
         {
           difficulty: { $set: action.payload },
-        },
-      );
-
-    case SET_CLIP_SIZE:
-      return update(
-        state,
-        {
-          clipSize: { $set: action.payload },
-        },
-      );
-
-    case SET_VP_SIZE:
-      return update(
-        state,
-        {
-          vSize: { $set: action.payload },
-        },
-      );
-
-    case ADD_TORCH:
-      return update(
-        state,
-        {
-          torches: { $apply: t => t + 1 },
         },
       );
 
@@ -277,7 +245,6 @@ function appState(state = INITIAL_STATE, action) {
           gridFilled: { $set: true },
           trumpPosition: { $set: action.payload.trumpPosition },
           doors: { $set: action.payload.doors },
-          vSize: { $set: action.payload.vSize },
         },
       );
 
@@ -379,7 +346,6 @@ function appState(state = INITIAL_STATE, action) {
           gameLevel: { $set: action.payload.gameLevel },
           doors: { $set: action.payload.doors },
           finalMonsterRoom: { $set: action.payload.finalMonsterRoom || null },
-          vSize: { $set: action.payload.vSize },
         },
         );
 

@@ -3,22 +3,6 @@ export const gridHeight = 60;
 export const gridWidth = 80;
 export const vSize = 20;
 
-// set viewport size
-export const viewportSize = (difficulty, gameLevel, torches) => {
-  let size = 20;
-  if (difficulty === 3) {
-    if (gameLevel === 1) {
-      size = 16;
-    } else if (gameLevel === 2) {
-      size = 12;
-    } else if (gameLevel === 3) {
-      size = 8;
-    }
-    size += (torches * 2);
-  }
-  return size;
-};
-
 
 // helper functions
 export const random = (min, max) => (Math.random() * (max - min)) + min;
@@ -459,11 +443,11 @@ export const renderViewport = (heroPosition, entities, cellSize,
   // reset the transform matrix
   ctx.setTransform(1, 0, 0, 1, 0, 0);
   // clear viewport
-  // ctx.clearRect(0, 0, vWidth * cellSize, vSize * cellSize);
+  // ctx.clearRect(0, 0, vSize * cellSize, vSize * cellSize);
   // clamp viewport position to grid bounds, center around hero
   const vX = clamp(((hX - (vSize / 2))), 0, ((gridWidth - vSize))); // 30
   const vY = clamp(((hY - (vSize / 2))), 0, ((gridHeight - vSize))); // 20
-  // console.log(`vWidth: ${vWidth}, vSize: ${vSize}`);
+  // console.log(`vSize: ${vSize}, vSize: ${vSize}`);
   // console.log(`gridWidth: ${gridWidth}, gridHeight: ${gridHeight}`);
   // console.log(`vX: ${vX}, vY: ${vY}`);
   // filter out rows above or below viewport,

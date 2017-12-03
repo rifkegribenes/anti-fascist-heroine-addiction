@@ -268,12 +268,9 @@ const fillGrid = (gameMap, level, hero, difficulty) => {
     newMap[finalMonsterDoorCoords[1]][finalMonsterDoorCoords[0]] = padlock;
   }
 
-  const vSize = utils.viewportSize(difficulty, level, 0);
-  console.log(`vSize = ${vSize}`);
-
   // console.log(`doors array for level ${level}:`);
   // console.log(doors);
-  return { newMap, heroPosition, trumpPosition, doors, finalMonsterRoom, vSize };
+  return { newMap, heroPosition, trumpPosition, doors, finalMonsterRoom };
 };
 
 export default fillGrid;

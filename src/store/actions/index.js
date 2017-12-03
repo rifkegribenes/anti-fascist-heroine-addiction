@@ -22,38 +22,15 @@ export const PLAY = 'PLAY';
 export const PAUSE = 'PAUSE';
 export const UPDATE_ENTITY = 'UPDATE_ENTITY';
 export const UPDATE_COMBAT = 'UPDATE_COMBAT';
-export const ADD_TORCH = 'ADD_TORCH';
 export const SET_PREV_VP = 'SET_PREV_VP';
 export const SET_CANDLE = 'SET_CANDLE';
 export const SET_KEY = 'SET_KEY';
 export const SET_DIFFICULTY = 'SET_DIFFICULTY';
-export const SET_CLIP_SIZE = 'SET_CLIP_SIZE';
-export const SET_VP_SIZE = 'SET_VP_SIZE';
 
 export function setLevel(level) {
   return ({
     type: SET_LEVEL,
     payload: level,
-  });
-}
-
-export function addTorch() {
-  return ({
-    type: ADD_TORCH,
-  });
-}
-
-export function setClipSize(clipSize) {
-  return ({
-    type: SET_CLIP_SIZE,
-    payload: clipSize,
-  });
-}
-
-export function setViewportSize(vSize) {
-  return ({
-    type: SET_VP_SIZE,
-    payload: vSize,
   });
 }
 
@@ -212,7 +189,7 @@ export function toggleTorch(torch) {
   });
 }
 
-export function start(entities, heroPosition, trumpPosition, doors, clipSize) {
+export function start(entities, heroPosition, trumpPosition, doors) {
   return ({
     type: START,
     payload: {
@@ -220,7 +197,6 @@ export function start(entities, heroPosition, trumpPosition, doors, clipSize) {
       heroPosition,
       trumpPosition,
       doors,
-      clipSize,
     },
   });
 }
@@ -245,7 +221,7 @@ export function updateEntity(entity, coords) {
 }
 
 export function handleStaircase(currentEntity, heroPosition, trumpPosition,
-  entities, gameLevel, doors, finalMonsterRoom, clipSize) {
+  entities, gameLevel, doors, finalMonsterRoom) {
   return ({
     type: HANDLE_STAIRCASE,
     payload: {
@@ -256,7 +232,6 @@ export function handleStaircase(currentEntity, heroPosition, trumpPosition,
       gameLevel,
       doors,
       finalMonsterRoom,
-      clipSize,
     },
   });
 }
