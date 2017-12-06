@@ -70,7 +70,7 @@ class App extends React.Component {
       if (item === 'movement') {
         const sound = document.createElement('audio');
         sound.setAttribute('autoplay', 'autoplay');
-        sound.setAttribute('src', item);
+        sound.setAttribute('src', 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/sounds/pop_drip.mp3');
         const playPromise = sound.play();
         // In browsers that don't support html5 audio,
         // playPromise won’t be defined.

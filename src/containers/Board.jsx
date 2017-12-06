@@ -52,10 +52,8 @@ class Board extends Component {
     if (!prevProps.appState.gridFilled) {
       if (this.props.appState.gridFilled) {
         if (this.props.appState.difficulty > 0) {
-          console.log('grid is now filled, calling play()');
           this.play();
         } else {
-          console.log('grid filled, but difficulty level = 0');
           this.draw();
           return;
         }
@@ -109,32 +107,35 @@ class Board extends Component {
   }
 
   handleKeydown(e) {
-    switch (e.keyCode) {
-      case 38:
-      case 87:
-        this.props.playSound('movement');
-        e.preventDefault();
-        this.userInput([0, -1]);
-        break;
-      case 39:
-      case 68:
-        this.props.playSound('movement');
-        e.preventDefault();
-        this.userInput([1, 0]);
-        break;
-      case 40:
-      case 83:
-        this.props.playSound('movement');
-        e.preventDefault();
-        this.userInput([0, 1]);
-        break;
-      case 37:
-      case 65:
-        this.props.playSound('movement');
-        e.preventDefault();
-        this.userInput([-1, 0]);
-        break;
-      default:
+    // disable user input while game is paused
+    if (this.props.appState.running || this.props.appState.difficulty === 0) {
+      switch (e.keyCode) {
+        case 38:
+        case 87:
+          this.props.playSound('movement');
+          e.preventDefault();
+          this.userInput([0, -1]);
+          break;
+        case 39:
+        case 68:
+          this.props.playSound('movement');
+          e.preventDefault();
+          this.userInput([1, 0]);
+          break;
+        case 40:
+        case 83:
+          this.props.playSound('movement');
+          e.preventDefault();
+          this.userInput([0, 1]);
+          break;
+        case 37:
+        case 65:
+          this.props.playSound('movement');
+          e.preventDefault();
+          this.userInput([-1, 0]);
+          break;
+        default:
+      }
     }
   }
 
@@ -153,7 +154,6 @@ class Board extends Component {
 
       // FLOOR => FLOOR
       // replace vacated cell with floor
-      // console.log(`floor => floor, currEntity type: ${this.props.appState.currentEntity.type}`);
       if (destination.type === 'floor' && destination.room !== 'door') {
         grid1 = utils.changeEntity(this.props.appState.entities, { type: 'floor', room: oldRoom }, [x, y]);
         grid2 = utils.changeEntity(grid1, newHero, newPosition);
@@ -178,10 +178,8 @@ class Board extends Component {
       if (destination.room === 'door' &&
         destination.type !== 'door' &&
         destination.type !== 'floor') {
-        // console.log('Hero => MONSTER IN DOORWAY');
         // special case: padlocked door to trump's room on level 3
         if (destination.type === 'padlock') {
-          console.log(`key: ${this.props.appState.key}`);
           const messages = [...this.props.appState.messages];
           this.props.actions.updateMessages(messages);
           if (!this.props.appState.key) {
@@ -224,7 +222,6 @@ class Board extends Component {
       // DOOR => MONSTER NOT IN DOORWAY
       // replace vacated cell with door, handle combat
       if (oldRoom === 'door' && (destination.type === 'monster' || destination.type === 'finalMonster')) {
-        // console.log(`Hero => MONSTER at ${newPosition}`);
         document.getElementById('entity').classList.remove('spin');
         this.handleCombat(destination, newPosition, this.props.appState.heroPosition, 'hero', true);
         return;
@@ -244,25 +241,21 @@ class Board extends Component {
           // if monster, handle combat
           case 'finalMonster':
           case 'monster':
-            // console.log('Hero DOOR => MONSTER');
             this.props.actions.setCurrentEntity(destination);
             this.props.actions.updateCombat(destination.name, 'hero');
             this.handleCombat(destination, newPosition, this.props.appState.heroPosition, 'hero');
             break;
           case 'food':
-            // console.log('Hero DOOR => FOOD');
             this.props.actions.setCurrentEntity(destination);
             this.props.playSound('food');
             this.healthBoost(destination);
             break;
           case 'teamHero':
-            // console.log('Hero DOOR => THERO');
             this.props.actions.setCurrentEntity(destination);
             this.props.playSound('addHero');
             this.addTeamHero(destination);
             break;
           case 'staircase':
-            // console.log('Hero DOOR => STAIRCASE');
             if (this.props.appState.hero.level > this.props.appState.gameLevel
              || this.props.appState.difficulty < 2) {
               this.props.actions.setCurrentEntity(destination);
@@ -271,13 +264,11 @@ class Board extends Component {
             this.handleStaircase(destination);
             break;
           case 'candle':
-            // console.log('Hero DOOR => CANDLE');
             this.props.actions.setCurrentEntity(destination);
             this.props.playSound('magicItem');
             this.handleCandle();
             break;
           case 'key':
-            // console.log('Hero DOOR => KEY');
             if (this.props.appState.hero.level > this.props.appState.gameLevel
                || this.props.appState.difficulty < 2) {
               this.props.actions.setCurrentEntity(destination);
@@ -293,7 +284,6 @@ class Board extends Component {
       // ANYTHING BUT DOOR => MONSTER NOT IN DOORWAY
       // replace vacated cell with floor, handle combat
       if ((destination.type === 'monster' || destination.type === 'finalMonster') && destination.room !== 'door') {
-        // console.log('Hero => MONSTER');
         document.getElementById('entity').classList.remove('spin');
         this.handleCombat(destination, newPosition, this.props.appState.heroPosition, 'hero');
         return;
@@ -348,13 +338,11 @@ class Board extends Component {
   addTeamHero(teamHero) {
     const hero = { ...this.props.appState.hero };
     const messages = [...this.props.appState.messages];
-    // const currentEntity = teamHero;
     hero.attack += teamHero.damage;
     hero.team.push(teamHero);
     messages.push(`You added ${teamHero.name} to your team! She adds ${teamHero.damage} points of damage to your team attack.`);
     this.props.actions.updateHero(hero);
     this.props.actions.updateMessages(messages);
-    // this.props.actions.setCurrentEntity(currentEntity);
     document.getElementById('hero').classList.add('powerUp');
     setTimeout(() => {
       document.getElementById('hero').classList.remove('powerUp');
@@ -366,10 +354,8 @@ class Board extends Component {
     const messages = [...this.props.appState.messages];
     const healthBoost = food.healthBoost;
     hero.hp += healthBoost;
-    // console.log(`new hero hp = ${hero.hp}`);
     messages.push(`You ate ${food.name} and gained ${food.healthBoost} health points!`);
     this.props.actions.updateHero(hero);
-    // console.log(`hero hp after state update: ${this.props.appState.hero.hp}`);
     this.props.actions.updateMessages(messages);
     document.getElementById('hero').classList.add('powerUp');
     setTimeout(() => {
@@ -400,12 +386,10 @@ class Board extends Component {
   }
 
   heroAttack(hero, monster, heroCoords, monsterCoords, door) {
-    // console.log('hero attack');
     this.props.actions.setCurrentEntity(monster);
     const [hx, hy] = heroCoords;
 
     // set monster to combat = true
-    // console.log(`${monster.name} to combat mode`);
     this.props.actions.updateCombat(monster.name, 'monster');
 
     // check if final battle
@@ -729,7 +713,6 @@ class Board extends Component {
     }
     if (this.props.appState.running && this.props.appState.combatName !== entity.name) {
       // define constants
-      // console.log(`monsterMovement ${entity.name}`);
       const newEntity = { ...entity };
       const [x, y] = coords;
       const oldRoom = entities[y][x].room;
@@ -742,15 +725,12 @@ class Board extends Component {
       // HERO => FLOOR
       // just replace vacated cell with floor
       if (destination.type === 'floor' && entity.room !== 'door') {
-        // console.log(`${entity.name} FLOOR => FLOOR`);
         grid1 = utils.changeEntity(this.props.appState.entities, { type: 'floor', room: oldRoom }, coords);
       }
 
       // FLOOR => HERO IN DOORWAY
       // replace vacated cell with floor, handle doorway, handle combat
       if (destination.type === 'hero' && destination.room === 'door') {
-        // console.log(`${entity.name} FLOOR => HERO IN DOORWAY`);
-        // newEntity.room = 'door';
         newEntity.combat = true;
         this.props.actions.updateEntity(newEntity, coords);
         grid1 = utils.changeEntity(this.props.appState.entities, { type: 'floor', room: oldRoom }, coords);
@@ -764,7 +744,6 @@ class Board extends Component {
       // HERO => DOOR
       // change room type to door, replace vacated cell with floor
       if (destination.room === 'door' && (destination.type === 'door' || destination.type === 'floor')) {
-        // console.log(`${entity.name} FLOOR (${Math.floor(oldRoom)})=> DOOR`);
         newEntity.room = 'door';
         grid1 = utils.changeEntity(this.props.appState.entities, { type: 'floor', room: oldRoom }, coords);
       }
@@ -772,7 +751,6 @@ class Board extends Component {
       // FLOOR => HERO
       // handle combat, replace vacated cell with floor
       if (destination.type === 'hero' && destination.room !== 'door') {
-        // console.log(`${entity.name} FLOOR => HERO`);
         this.props.actions.updateCombat(newEntity.name, 'monster');
         this.props.actions.setCurrentEntity(newEntity);
         document.getElementById('entity').classList.remove('spin');
@@ -783,7 +761,6 @@ class Board extends Component {
       // DOOR => FLOOR
       // replace vacated cell with door
       if (entity.room === 'door' && destination.type === 'floor') {
-        // console.log(`${entity.name} DOOR => FLOOR`);
         newEntity.room = this.props.appState.entities[changeY + y][changeX + x].room;
         this.props.actions.updateEntity(newEntity, coords);
         grid1 = utils.changeEntity(this.props.appState.entities, { type: 'door', room: 'door' }, coords);
@@ -792,8 +769,6 @@ class Board extends Component {
       // DOOR => HERO
       // replace vacated cell with door, handle combat
       if (entity.room === 'door' && destination.type === 'hero') {
-        // console.log(`${entity.name} DOOR => HERO`);
-        // newEntity.room = this.props.appState.entities[y][x].room;
         newEntity.combat = true;
         this.props.actions.updateEntity(newEntity, coords);
         this.props.actions.setCurrentEntity(newEntity);
@@ -819,13 +794,9 @@ class Board extends Component {
     } else if (difficulty === 3) {
       speed = 300;
     }
-    // console.log('gameloop');
     if (this.props.appState.running) {
-      // console.log('gl running');
-      // const progress = timestamp - lastRender;
       this.update(grid2, newPosition);
       this.draw();
-      // lastRender = timestamp;
       setTimeout(() => {
         const myReq = request(() => {
           this.gameLoop(timestamp,
@@ -833,14 +804,10 @@ class Board extends Component {
         });
         this.setState({ myReq });
       }, speed);
-    } else {
-      console.log('not running');
     }
   }
 
   update(grid2, newPosition) {
-    // if (this.props.appState.gridFilled) {
-    // console.log('update');
     // update position and object values for hero and all entities
     // for time elapsed since last render
     const currentEntities = this.props.appState.entities;
@@ -894,8 +861,6 @@ class Board extends Component {
   }
 
   pause() {
-    // console.log('paused');
-    // stop gameloop
     window.clearInterval(window.interval);
     const cancel = requestFrame('cancel');
     cancel(this.state.myReq);
@@ -903,7 +868,6 @@ class Board extends Component {
   }
 
   startGame() {
-    console.log('start');
     const { newMap, heroPosition, trumpPosition, doors } =
       fillGrid(generateMap(1), 1, this.props.appState.hero, this.props.appState.difficulty);
     this.props.actions.start(newMap, heroPosition, trumpPosition, doors);
@@ -937,8 +901,6 @@ class Board extends Component {
       // save prevVP to app state to compare against next viewport
       // and only draw diff
       this.props.actions.setPrevVP(prevVP);
-    } else {
-      console.log('grid not filled, not drawing');
     }
   }
 
@@ -969,7 +931,6 @@ class Board extends Component {
                 id="first"
                 className="modal__close aria-button"
                 onClick={() => {
-                  console.log('close modal');
                   this.props.playSound('movement');
                   this.props.actions.closeModal();
                 }}
@@ -1011,7 +972,6 @@ class Board extends Component {
                           this.props.actions.pause();
                           utils.trapFocus();
                         } else {
-                          console.log('resume');
                           this.play();
                         }
                       }}

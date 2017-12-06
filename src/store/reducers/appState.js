@@ -98,7 +98,6 @@ function appState(state = INITIAL_STATE, action) {
       );
 
     case SET_LOADED:
-      console.log('loaded');
       return update(
         state,
         {
@@ -175,8 +174,6 @@ function appState(state = INITIAL_STATE, action) {
       );
 
     case UPDATE_HERO:
-      // console.log('check hero xp here:');
-      // console.log(action.payload);
       return update(
         state,
         {
@@ -316,8 +313,6 @@ function appState(state = INITIAL_STATE, action) {
       );
 
     case UPDATE_COMBAT:
-      // console.log(action.payload);
-      // console.log(`Now updating ${action.payload.name} to combat state`);
       return update(
         state,
         {
@@ -350,7 +345,6 @@ function appState(state = INITIAL_STATE, action) {
         );
 
     case RESTART:
-      console.log('restart');
       return INITIAL_STATE;
 
     default:
