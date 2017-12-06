@@ -14,16 +14,16 @@ const DefinePluginConfig = new webpack.DefinePlugin({
   'process.env.NODE_ENV': JSON.stringify('production'),
 });
 
-const UglifyJsPluginConfig = new webpack.optimize.UglifyJsPlugin({
-  beautify: false,
-  mangle: {
-    screw_ie8: true,
-  },
-  compress: {
-    screw_ie8: true,
-  },
-  comments: false,
-});
+// const UglifyJsPluginConfig = new webpack.optimize.UglifyJsPlugin({
+//   beautify: false,
+//   mangle: {
+//     screw_ie8: true,
+//   },
+//   compress: {
+//     screw_ie8: true,
+//   },
+//   comments: false,
+// });
 
 module.exports = {
   devtool: 'cheap-module-source-map',
@@ -63,6 +63,11 @@ module.exports = {
     filename: 'index.js',
     path: path.join(__dirname, '/build'),
   },
+  images: {
+    assetsPath: path.join(__dirname, '/src/img'),
+    rewritePath: 'img/',
+    ignore: ['.DS_Store', 'share_*', '*-icon-*', 'favicon*'],
+  },
   plugins: dev ?
   [
     HTMLWebpackPluginConfig,
@@ -72,5 +77,5 @@ module.exports = {
       debug: true,
     }),
   ] :
-  [HTMLWebpackPluginConfig, DefinePluginConfig, UglifyJsPluginConfig],
+  [HTMLWebpackPluginConfig, DefinePluginConfig],
 };

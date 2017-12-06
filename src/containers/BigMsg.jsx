@@ -50,8 +50,19 @@ class BigMsg extends React.Component {
             className="big-msg__btn"
             onClick={this.props.appState.bigMsg.action}
           >
-            {this.props.appState.bigMsg.actionText}
+            <span className="rainbow">{this.props.appState.bigMsg.actionText}</span>
           </button>
+          <div className="modal__btn-wrap modal__btn-wrap--col">
+          Defeat these chucklef@cks in real life!
+            <a
+              className="big-msg__btn big-msg__btn--wide"
+              href="https://www.vote.org/"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <span className="rainbow">Register to vote</span>
+            </a>
+          </div>
         </div>
       </div>
     );

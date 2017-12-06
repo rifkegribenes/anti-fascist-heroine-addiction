@@ -4,7 +4,7 @@ import shortid from 'shortid';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
-import hearts from '../utils/helpers';
+import { hearts } from '../utils';
 import * as Actions from '../store/actions';
 
 class InfoRight extends React.Component {

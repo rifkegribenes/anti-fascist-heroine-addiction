@@ -21,6 +21,11 @@ class HeroPicker extends React.Component {
 
   componentDidMount() {
     window.addEventListener('keydown', this.handleKeydown);
+    document.getElementById('0').focus();
+  }
+
+  componentDidUpdate() {
+    document.getElementById(this.state.active).focus();
   }
 
   componentWillUnmount() {
@@ -41,6 +46,7 @@ class HeroPicker extends React.Component {
       items.push(
         <Item
           key={index}
+          index={index}
           id={this.state.items[index]}
           level={level}
           playSound={this.props.playSound}
@@ -70,7 +76,6 @@ class HeroPicker extends React.Component {
   }
 
   handleKeydown(e) {
-    e.preventDefault();
     let newActive = this.state.active;
     switch (e.keyCode) {
       case 39: // right
@@ -85,11 +90,6 @@ class HeroPicker extends React.Component {
           active: newActive < 0 ? this.state.items.length - 1 : newActive,
           direction: 'left',
         });
-        break;
-      case 13: // enter
-        this.props.playSound('startGame');
-        this.props.actions.setHero(this.state.items[this.state.active]);
-        this.props.history.push('/play');
         break;
       default:
     }

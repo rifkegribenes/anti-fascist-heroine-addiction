@@ -25,11 +25,19 @@ export const UPDATE_COMBAT = 'UPDATE_COMBAT';
 export const SET_PREV_VP = 'SET_PREV_VP';
 export const SET_CANDLE = 'SET_CANDLE';
 export const SET_KEY = 'SET_KEY';
+export const SET_DIFFICULTY = 'SET_DIFFICULTY';
 
 export function setLevel(level) {
   return ({
     type: SET_LEVEL,
     payload: level,
+  });
+}
+
+export function setDifficulty(difficulty) {
+  return ({
+    type: SET_DIFFICULTY,
+    payload: difficulty,
   });
 }
 
@@ -81,13 +89,10 @@ export function closeModal() {
   });
 }
 
-export function openModal(title, list) {
+export function openModal(modalType) {
   return ({
     type: OPEN_MODAL,
-    payload: {
-      title,
-      list,
-    },
+    payload: modalType,
   });
 }
 
@@ -142,12 +147,12 @@ export function setPrevVP(prevVP) {
   });
 }
 
-export function updateDimensions(width, height) {
+export function updateDimensions(clipSize, cellSize) {
   return ({
     type: UPDATE_DIMENSIONS,
     payload: {
-      width,
-      height,
+      clipSize,
+      cellSize,
     },
   });
 }
@@ -185,7 +190,6 @@ export function toggleTorch(torch) {
 }
 
 export function start(entities, heroPosition, trumpPosition, doors) {
-  console.log('actions/index.js > start');
   return ({
     type: START,
     payload: {

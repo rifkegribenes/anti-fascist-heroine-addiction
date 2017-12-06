@@ -3,7 +3,7 @@ import foodTypes from './foodTypes';
 import teamHeroes from './teamHeroes';
 import monsterTypes from './monsterTypes';
 
-const fillGrid = (gameMap, level, hero) => {
+const fillGrid = (gameMap, level, hero, difficulty) => {
   const tempHero = { ...hero };
   let finalMonsterRoom = null;
 
@@ -20,7 +20,7 @@ const fillGrid = (gameMap, level, hero) => {
   }
 
   const staircases = [];
-  if (level < 3) {
+  if (level < 3 && difficulty < 2) {
     staircases.push({
       type: 'staircase',
       cardUrl: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/staircase_200.png',
@@ -65,6 +65,15 @@ const fillGrid = (gameMap, level, hero) => {
 
   let trumpPosition = [];
   let magicItems = [];
+  const padlock = {
+    type: 'padlock',
+    name: 'Magical padlock',
+    iconUrl: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/padlock_32.png',
+    cardUrl: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/padlock_200.gif',
+    opacity: utils.random(0.4, 0.8),
+    level: 3,
+    room: 'door',
+  };
   if (level === 3) {
     // special entities for level 3: key, candle, trump
     magicItems = [
@@ -207,15 +216,18 @@ const fillGrid = (gameMap, level, hero) => {
   // randomly place other entities on floor cells throughout grid,
   // avoiding floor cells with doors as immediate neighbors because
   // monsters can't move through food or teamHeroes
+  // also don't place anything in trump's locked room or in room 0
+  //  (to keep monsters from spawning right next to hero on
+  //  levels where they go fast)
   [foods, monsters, teamHeroArray, staircases, magicItems].forEach((entities) => {
     while (entities.length) {
       const x = Math.floor(Math.random() * utils.gridWidth);
       const y = Math.floor(Math.random() * utils.gridHeight);
-      if (newMap[y][x].type === 'floor') {
+      if (newMap[y][x].type === 'floor' && newMap[y][x].room !== finalMonsterRoom && newMap[y][x].room !== 0) {
         const neighborCells = utils.getNeighbors([x, y]);
         const neighborDoors = neighborCells.filter(cell => newMap[cell[1]][cell[0]].type === 'door');
         if (!neighborDoors.length) {
-          // assign a room ID to each entity placed in the grod
+          // assign a room ID to each entity placed in the grid
           const room = newMap[y][x].room;
           newMap[y][x] = entities.pop();
           newMap[y][x].room = room;
@@ -243,6 +255,19 @@ const fillGrid = (gameMap, level, hero) => {
     }
     return null;
   }));
+
+  // on level 3, find trump's door
+  if (level === 3) {
+    const finalMonsterDoorCoords = doors.filter(door =>
+      door.rooms.includes(finalMonsterRoom))[0].coords;
+    // console.log(`trump's door: ${finalMonsterDoorCoords}`);
+
+    // place the padlock on the door of trump's room
+    const [xx, yy] = finalMonsterDoorCoords;
+    padlock.hue = (((xx + yy) * 7) % 360);
+    newMap[finalMonsterDoorCoords[1]][finalMonsterDoorCoords[0]] = padlock;
+  }
+
   // console.log(`doors array for level ${level}:`);
   // console.log(doors);
   return { newMap, heroPosition, trumpPosition, doors, finalMonsterRoom };

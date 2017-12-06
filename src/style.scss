@@ -11,6 +11,29 @@ body {
   font-family: 'Inconsolata', monospace;
 }
 
+.btn__small {
+  background: black;
+  color: Lime;
+  font-family: 'Inconsolata', monospace;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  background: transparent;
+  width: 100%;
+  text-align: center;
+  font-size: 1em;
+  padding: 15px;
+  border-radius: 40px;
+  border: 1px solid Lime;
+  width: 220px;
+  text-align: center;
+  z-index: $z-index-front;
+
+  &:hover, &:focus, &:active {
+    box-shadow: 0 0 20px Lime;
+  }
+}
+
 *, *::before, *::after {
   box-sizing: border-box;
   margin: 0;
@@ -47,7 +70,6 @@ body {
     appearance: none;
     border: none;
     background: transparent;
-    outline: none;
     color: inherit;
     font-size: inherit;
     font-family: inherit;
@@ -89,6 +111,26 @@ canvas {
     margin: 0 0 0 0;
   }
 
+  &__full {
+    width: 100vw;
+    height: 100vh;
+    max-width: 100vw;
+    border: 0px transparent;
+    padding: 40px;
+    background: black;
+  }
+
+  &__overlay {
+    background: rgba(0,0,0,.7);
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: $z-index-modal;
+    transform: scale(1);
+  }
+
   &__close {
     -webkit-appearance: none;
     appearance: none;
@@ -116,11 +158,32 @@ canvas {
     filter: alpha(opacity=50);
     opacity: .5;
     font-size: 2em;
+    z-index: $z-index-modal;
+
+    &:hover, &:focus, &:active {
+      font-size: 2em !important;
+    }
+  }
+
+  &__btn {
+    margin: 10px;
+    width: auto;
+    padding: 15px 30px;
   }
   &__btn-wrap {
-    display: flex;
-    justify-content: center;
-    padding: 20px;
+
+    @include for-phone-landscape-up {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      padding: 20px;
+    }
+
+
+    &--col {
+      display: flex;
+      z-index: $z-index-modal;
+    }
   }
   &__header {
     text-transform: uppercase;
@@ -131,6 +194,35 @@ canvas {
     letter-spacing: 2.5px;
     font-size: 1em;
     padding: 15px;
+
+    &--big {
+      font-size: 2em;
+      width: 200px;
+      padding: 5px;
+      display: inline-block;
+
+      @include for-phone-landscape-up {
+        font-size: 3em;
+        width: 270px;
+        padding: 15px;
+      }
+    }
+
+    &--span {
+      font-family: 'Inconsolata', monospace;
+      color: Lime;
+      display: inline-block;
+      vertical-align: 17%;
+      width: 2.5em;
+      padding: 5px;
+      @include for-phone-landscape-up {
+        padding: 15px;
+      }
+    }
+
+    &--wrap {
+      margin-bottom: 20px;
+    }
   }
 }
 

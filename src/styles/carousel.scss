@@ -17,7 +17,22 @@
   max-height: 480px;
 
   &:focus {
-    outline: 0;
+    outline: 5px;
+  }
+
+  &__button:focus {
+    .arrow-right {
+      border-left: 20px solid white;
+      @media (min-width: 340px) {
+        border-left: 30px solid white;
+      }
+    }
+    .arrow-left {
+      border-right: 20px solid white;
+      @media (min-width: 340px) {
+        border-right: 30px solid white;
+      }
+    }
   }
 
   &__header {
@@ -213,10 +228,12 @@ $level2-left: -407px;
     left: $level-2-left;
     margin-top: 25px;
     opacity: 0;
+    display: none;
     z-index: $z-index-back;
 
     @include for-tablet-landscape-up {
       opacity: .75;
+      display: block;
     }
 
 }
@@ -227,10 +244,12 @@ $level2-left: -407px;
     left: $level-1-left;
     margin-top: 10px;
     opacity: 0;
+    display: none;
     z-index: $z-index-mid;
 
     @media (min-width: 690px) {
       opacity: .9;
+      display: block;
     }
 }
 
@@ -252,11 +271,12 @@ $level2-left: -407px;
     width: $level1-width;
     margin-top: 10px;
     left: $level1-left;
-    opacity: 0;
+    display: none;
     z-index: $z-index-mid;
 
     @media (min-width: 690px) {
       opacity: .9;
+      display: block;
     }
 }
 
@@ -265,11 +285,12 @@ $level2-left: -407px;
     width: $level2-width;
     margin-top: 25px;
     left: $level2-left;
-    opacity: 0;
+    display: none;
     z-index: $z-index-back;
 
     @include for-tablet-landscape-up {
       opacity: .75;
+      display: block;
     }
 }
 

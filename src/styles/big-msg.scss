@@ -115,12 +115,11 @@
     background: transparent;
     text-transform: uppercase;
     font-family: 'G7 Silkworm TTF';
-    width: 100%;
     text-align: center;
     @include rainbow;
     letter-spacing: 2.5px;
     font-size: 1em;
-    padding: 15px;
+    padding: 15px 20px;
     border-radius: 40px;
     border: 1px solid Lime;
     width: 220px;
@@ -129,6 +128,15 @@
 
     &:hover, &:focus, &:active {
       box-shadow: 0 0 20px Lime;
+    }
+
+    &--wide {
+      margin: 20px auto;
+      width: auto;
+    }
+
+    &--flex {
+      width: auto;
     }
 
 

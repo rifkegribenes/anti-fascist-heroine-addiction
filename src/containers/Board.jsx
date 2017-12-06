@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import shortid from 'shortid';
 import { withRouter } from 'react-router';
-// import update from 'immutability-helper';
+import requestFrame from 'request-frame';
 
 import * as Actions from '../store/actions';
 import InfoLeft from './InfoLeft';
@@ -11,41 +11,6 @@ import InfoRight from './InfoRight';
 import * as utils from '../utils/index';
 import generateMap from '../utils/mapgen';
 import fillGrid from '../utils/fillGrid';
-
-// http://paulirish.com/2011/requestanimationframe-for-smart-animating/
-// http://my.opera.com/emoller/blog/2011/12/20/requestanimationframe-for-smart-er-animating
-// requestAnimationFrame polyfill by Erik Möller. fixes from Paul Irish and Tino Zijdel
-// MIT license
-
-const animate = () => {
-  let lastTime = 0;
-  const vendors = ['ms', 'moz', 'webkit', 'o'];
-  for (let x = 0; x < vendors.length && !window.requestAnimationFrame; ++x) {
-    window.requestAnimationFrame = window[`${vendors[x]}RequestAnimationFrame`];
-    window.cancelAnimationFrame = window[`${vendors[x]}CancelAnimationFrame`]
-    || window[`${vendors[x]}CancelRequestAnimationFrame`];
-  }
-
-  if (!window.requestAnimationFrame) {
-    window.requestAnimationFrame = (callback) => {
-      const currTime = new Date().getTime();
-      const timeToCall = Math.max(0, 16 - (currTime - lastTime));
-      const id = window.setTimeout(() => { callback(currTime + timeToCall); },
-        timeToCall);
-      lastTime = currTime + timeToCall;
-      return id;
-    };
-  }
-
-  if (!window.cancelAnimationFrame) {
-    window.cancelAnimationFrame = (id) => {
-      clearTimeout(id);
-    };
-  }
-};
-animate();
-
-// const lastRender = 0;
 
 const updateXP = (xp) => {
   const width = xp / 3;
@@ -59,7 +24,6 @@ class Board extends Component {
 
     this.state = {
       myReq: null,
-      modal: false,
     };
 
     this.handleKeydown = this.handleKeydown.bind(this);
@@ -87,8 +51,15 @@ class Board extends Component {
     // before rendering viewport and starting gameloop
     if (!prevProps.appState.gridFilled) {
       if (this.props.appState.gridFilled) {
-        // console.log('grid is now filled, calling play()');
-        this.play();
+        if (this.props.appState.difficulty > 0) {
+          console.log('grid is now filled, calling play()');
+          this.play();
+        } else {
+          console.log('grid filled, but difficulty level = 0');
+          this.draw();
+          return;
+        }
+        this.draw();
       }
     }
     // listen for window size change and render full viewport
@@ -102,24 +73,39 @@ class Board extends Component {
     window.removeEventListener('keydown', this.handleKeydown);
     window.removeEventListener('resize', this.updateDimensions);
     window.clearInterval(window.interval);
-    cancelAnimationFrame(this.state.myReq);
+    const cancel = requestFrame('cancel');
+    cancel(this.state.myReq);
   }
 
   updateDimensions() {
-    this.props.actions.updateDimensions(window.innerWidth, window.innerHeight);
+    // wide column max width = 675 inner width / 735 outer width
+    // board space is vh - 100px (header elements plus padding/margin)
+
+    // default size for big-enough screens
+    let clipSize = 640;
+    let colWide = 640;
+
+    // find width of middle column
+    if (document.getElementById('colWide')) {
+      colWide = document.getElementById('colWide').clientWidth;
+    }
+
+    // if either width or (adjusted) height is smaller than 640
+    // set clip size to actual space available
+    if (colWide < 640 || window.innerHeight < 740) {
+      if ((window.innerHeight - 100) > colWide) {
+        clipSize = colWide;
+      } else {
+        clipSize = Math.min(colWide,
+              (window.innerHeight - 100), 640);
+      }
+    }
+
+    // make sure clipSize and cellSize are integers, avoid rounding errors
+    clipSize = (Math.floor(clipSize / 20)) * 20;
+    const cellSize = Math.floor(clipSize / 20);
+    this.props.actions.updateDimensions(clipSize, cellSize);
     this.draw();
-  }
-
-  openModal() {
-    this.setState({
-      modal: true,
-    });
-  }
-
-  closeModal() {
-    this.setState({
-      modal: false,
-    });
   }
 
   handleKeydown(e) {
@@ -193,6 +179,30 @@ class Board extends Component {
         destination.type !== 'door' &&
         destination.type !== 'floor') {
         // console.log('Hero => MONSTER IN DOORWAY');
+        // special case: padlocked door to trump's room on level 3
+        if (destination.type === 'padlock') {
+          console.log(`key: ${this.props.appState.key}`);
+          const messages = [...this.props.appState.messages];
+          this.props.actions.updateMessages(messages);
+          if (!this.props.appState.key) {
+            this.props.actions.setCurrentEntity(destination);
+            messages.push("The door to Trump's chambers is locked! Find the key to unlock it before trying to enter.");
+            this.props.playSound('combat1');
+            return;
+          }
+          // change this to special graphic for unlocked padlock?
+          this.props.actions.setCurrentEntity(destination);
+          messages.push('You opened the door!');
+          this.props.actions.updateMessages(messages);
+          this.props.playSound('magicItem');
+          newHero.room = 'door';
+          grid1 = utils.changeEntity(this.props.appState.entities, { type: 'floor', room: oldRoom }, [x, y]);
+          grid2 = utils.changeEntity(grid1, newHero, newPosition);
+          this.props.actions.updateGrid(grid2, newPosition);
+          this.draw();
+          this.props.actions.updateHero(newHero);
+          return;
+        }
         newHero.room = 'door';
         this.props.actions.updateHero(newHero);
         document.getElementById('entity').classList.remove('spin');
@@ -228,7 +238,6 @@ class Board extends Component {
         grid1 = utils.changeEntity(this.props.appState.entities, { type: 'door', room: 'door' }, [x, y]);
         grid2 = utils.changeEntity(grid1, newHero, newPosition);
         this.props.actions.updateGrid(grid2, newPosition);
-        this.props.actions.setCurrentEntity(destination);
         document.getElementById('entity').classList.remove('spin');
         this.draw();
         switch (destination.type) {
@@ -236,33 +245,45 @@ class Board extends Component {
           case 'finalMonster':
           case 'monster':
             // console.log('Hero DOOR => MONSTER');
+            this.props.actions.setCurrentEntity(destination);
             this.props.actions.updateCombat(destination.name, 'hero');
             this.handleCombat(destination, newPosition, this.props.appState.heroPosition, 'hero');
             break;
           case 'food':
             // console.log('Hero DOOR => FOOD');
+            this.props.actions.setCurrentEntity(destination);
             this.props.playSound('food');
             this.healthBoost(destination);
             break;
           case 'teamHero':
             // console.log('Hero DOOR => THERO');
+            this.props.actions.setCurrentEntity(destination);
             this.props.playSound('addHero');
             this.addTeamHero(destination);
             break;
           case 'staircase':
             // console.log('Hero DOOR => STAIRCASE');
-            this.props.playSound('staircase');
+            if (this.props.appState.hero.level > this.props.appState.gameLevel
+             || this.props.appState.difficulty < 2) {
+              this.props.actions.setCurrentEntity(destination);
+              this.props.playSound('staircase');
+            }
             this.handleStaircase(destination);
             break;
           case 'candle':
             // console.log('Hero DOOR => CANDLE');
+            this.props.actions.setCurrentEntity(destination);
             this.props.playSound('magicItem');
             this.handleCandle();
             break;
           case 'key':
             // console.log('Hero DOOR => KEY');
-            this.props.playSound('magicItem');
-            this.handleKey();
+            if (this.props.appState.hero.level > this.props.appState.gameLevel
+               || this.props.appState.difficulty < 2) {
+              this.props.actions.setCurrentEntity(destination);
+              this.props.playSound('magicItem');
+              this.handleKey();
+            }
             break;
           default:
         }
@@ -284,29 +305,39 @@ class Board extends Component {
         grid1 = utils.changeEntity(this.props.appState.entities, { type: 'floor', room: oldRoom }, [x, y]);
         grid2 = utils.changeEntity(grid1, newHero, newPosition);
         this.props.actions.updateGrid(grid2, newPosition);
-        this.props.actions.setCurrentEntity(destination);
         document.getElementById('entity').classList.remove('spin');
         this.draw();
         switch (destination.type) {
           case 'food':
+            this.props.actions.setCurrentEntity(destination);
             this.props.playSound('food');
             this.healthBoost(destination);
             break;
           case 'teamHero':
+            this.props.actions.setCurrentEntity(destination);
             this.props.playSound('addHero');
             this.addTeamHero(destination);
             break;
           case 'staircase':
-            this.props.playSound('staircase');
+            if (this.props.appState.hero.level > this.props.appState.gameLevel
+             || this.props.appState.difficulty < 2) {
+              this.props.actions.setCurrentEntity(destination);
+              this.props.playSound('staircase');
+            }
             this.handleStaircase(destination);
             break;
           case 'candle':
+            this.props.actions.setCurrentEntity(destination);
             this.props.playSound('magicItem');
             this.handleCandle();
             break;
           case 'key':
-            this.props.playSound('magicItem');
-            this.handleKey();
+            if (this.props.appState.hero.level > this.props.appState.gameLevel
+             || this.props.appState.difficulty < 2) {
+              this.props.actions.setCurrentEntity(destination);
+              this.props.playSound('magicItem');
+              this.handleKey();
+            }
             break;
           default:
         }
@@ -333,7 +364,6 @@ class Board extends Component {
   healthBoost(food) {
     const hero = { ...this.props.appState.hero };
     const messages = [...this.props.appState.messages];
-    // const currentEntity = food;
     const healthBoost = food.healthBoost;
     hero.hp += healthBoost;
     // console.log(`new hero hp = ${hero.hp}`);
@@ -341,7 +371,6 @@ class Board extends Component {
     this.props.actions.updateHero(hero);
     // console.log(`hero hp after state update: ${this.props.appState.hero.hp}`);
     this.props.actions.updateMessages(messages);
-    // this.props.actions.setCurrentEntity(currentEntity);
     document.getElementById('hero').classList.add('powerUp');
     setTimeout(() => {
       document.getElementById('hero').classList.remove('powerUp');
@@ -495,7 +524,8 @@ class Board extends Component {
   heroDeath(monster) {
     // stop gameloop
     window.clearInterval(window.interval);
-    cancelAnimationFrame(this.state.myReq);
+    const cancel = requestFrame('cancel');
+    cancel(this.state.myReq);
     // define action for 'you died' screen
     const action = () => {
       this.props.actions.hideMsg();
@@ -519,13 +549,14 @@ class Board extends Component {
         body1: `You were defeated by ${monster.name}`,
         body2: monster.bio,
         action,
-        actionText: 'Play Again',
+        actionText: 'Try Again',
       });
       this.props.history.push('/gameover');
     }, 1000);
   }
 
   heroLevelUp(hero) {
+    const { difficulty, gameLevel } = this.props.appState;
     // add and remove powerup class
     document.getElementById('hero').classList.add('powerUp');
     document.getElementById('hero-level').classList.add('powerUp');
@@ -537,7 +568,15 @@ class Board extends Component {
     // display level up message
     const messages = [...this.props.appState.messages];
     messages.push(`Level UP!! Your team is now prepared to take on level ${hero.level} monsters.`);
+    if (difficulty > 1) {
+      messages.push(`Time to look for the staircase down to level ${gameLevel + 1}`);
+    }
     this.props.actions.updateMessages(messages);
+
+    // if staircases were hidden before (difficulty levels 2 & 3), add them now
+    if (difficulty > 1 && gameLevel < 3) {
+      this.addStaircase();
+    }
 
     // update hero state in redux store with updated level & xp
     this.props.actions.updateHero(hero);
@@ -650,7 +689,7 @@ class Board extends Component {
     this.props.actions.updateMessages(messages);
     const { newMap, heroPosition, trumpPosition, doors,
       finalMonsterRoom } = fillGrid(generateMap(level + 1),
-      level + 1, this.props.appState.hero);
+      level + 1, this.props.appState.hero, this.props.appState.difficulty);
     this.props.actions.handleStaircase(currentEntity,
       heroPosition, trumpPosition, newMap, level + 1, doors, finalMonsterRoom);
     document.getElementById('subhead').classList.add('powerUp');
@@ -661,6 +700,26 @@ class Board extends Component {
       document.getElementById('board').classList.remove('staircaseSpin');
       document.getElementById('subhead').classList.remove('powerUp');
     }, 2000);
+  }
+
+  addStaircase() {
+    const entities = this.props.appState.entities;
+    const staircases = [
+      {
+        type: 'staircase',
+        name: 'staircase',
+        cardUrl: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/staircase_200.png',
+        message: `Staircase down to level ${this.props.appState.gameLevel + 1}`,
+      },
+    ];
+    while (staircases.length) {
+      const x = Math.floor(Math.random() * utils.gridWidth);
+      const y = Math.floor(Math.random() * utils.gridHeight);
+      if (entities[y][x].type === 'floor') {
+        entities[y][x] = staircases.pop();
+      }
+    }
+    this.props.actions.updateEntities(entities);
   }
 
   // called from this.update()
@@ -752,6 +811,14 @@ class Board extends Component {
   }
 
   gameLoop(timestamp, grid2, newPosition) {
+    const request = requestFrame('request');
+    let speed = 1000;
+    const { difficulty, gameLevel } = this.props.appState;
+    if (difficulty === 2) {
+      speed = 1000 / gameLevel;
+    } else if (difficulty === 3) {
+      speed = 300;
+    }
     // console.log('gameloop');
     if (this.props.appState.running) {
       // console.log('gl running');
@@ -760,12 +827,12 @@ class Board extends Component {
       this.draw();
       // lastRender = timestamp;
       setTimeout(() => {
-        const myReq = requestAnimationFrame(() => {
+        const myReq = request(() => {
           this.gameLoop(timestamp,
             this.props.appState.entities, this.props.appState.heroPosition);
         });
         this.setState({ myReq });
-      }, 1000);
+      }, speed);
     } else {
       console.log('not running');
     }
@@ -818,42 +885,54 @@ class Board extends Component {
   }
 
   play() {
-    this.props.actions.play();
-    const myReq = requestAnimationFrame(this.gameLoop);
-    this.setState({ myReq });
+    if (this.props.appState.difficulty > 0) {
+      this.props.actions.play();
+      const request = requestFrame('request');
+      const myReq = request(this.gameLoop);
+      this.setState({ myReq });
+    }
   }
 
   pause() {
     // console.log('paused');
     // stop gameloop
     window.clearInterval(window.interval);
-    cancelAnimationFrame(this.state.myReq);
+    const cancel = requestFrame('cancel');
+    cancel(this.state.myReq);
     this.props.actions.pause();
   }
 
   startGame() {
+    console.log('start');
     const { newMap, heroPosition, trumpPosition, doors } =
-      fillGrid(generateMap(1), 1, this.props.appState.hero);
+      fillGrid(generateMap(1), 1, this.props.appState.hero, this.props.appState.difficulty);
     this.props.actions.start(newMap, heroPosition, trumpPosition, doors);
   }
 
   draw(resize) {
+    const { heroPosition, entities, cellSize, candle, key, hero, gameLevel,
+      difficulty } = this.props.appState;
     if (this.props.appState.gridFilled) {
       let prevVP;
       // render current viewport
       // save current viewport as 'prevVP'
 
+      // calculate whether level has been completed
+      // to decide whether to render staircase or key
+      let levelCompleted = false;
+      if (hero.level > gameLevel) {
+        levelCompleted = true;
+      }
+
       // if window has been resized since last render,
       // prevVP = null (full re-render)
       if (resize) {
-        prevVP = utils.renderViewport(this.props.appState.heroPosition,
-        this.props.appState.entities, this.props.appState.cellSize,
-        null, this.props.appState.candle, this.props.appState.key);
+        prevVP = utils.renderViewport(heroPosition, entities, cellSize,
+        null, candle, key, levelCompleted, difficulty);
       } else {
         // otherwise, use prevVP to decide which cells to render in this round
-        prevVP = utils.renderViewport(this.props.appState.heroPosition,
-          this.props.appState.entities, this.props.appState.cellSize,
-          this.props.appState.prevVP, this.props.appState.candle, this.props.appState.key);
+        prevVP = utils.renderViewport(heroPosition, entities, cellSize,
+          this.props.appState.prevVP, candle, key, levelCompleted, difficulty);
       }
       // save prevVP to app state to compare against next viewport
       // and only draw diff
@@ -872,32 +951,41 @@ class Board extends Component {
         {message}
       </li>));
     let canvasStyle = {};
+    const difficulty = ['practice', 'easy', 'medium', 'hard'];
     if (this.props.appState.torch) {
       canvasStyle = {
         clipPath: `circle(${clipRadius}px at center)`,
+        WebkitClipPath: `circle(${clipRadius}px at center)`,
+        MozClipPath: `circle(${clipRadius}px at center)`,
+
       };
     }
     return (
       <div>
-        { this.state.modal &&
-          <div className="modal">
-            <button
-              className="modal__close aria-button"
-              onClick={() => {
-                this.props.playSound('movement');
-                this.closeModal();
-              }}
-            >&times;</button>
-            <div className="modal__header">Game paused</div>
-            <div className="modal__btn-wrap">
+        { this.props.appState.modalType === 'pause' &&
+          <div className="modal__overlay">
+            <div className="modal">
               <button
-                className="big-msg__btn"
+                id="first"
+                className="modal__close aria-button"
                 onClick={() => {
+                  console.log('close modal');
                   this.props.playSound('movement');
-                  this.closeModal();
-                  this.play();
+                  this.props.actions.closeModal();
                 }}
-              >Resume</button>
+              >&times;</button>
+              <div className="modal__header">Game paused</div>
+              <div className="modal__btn-wrap">
+                <button
+                  id="last"
+                  className="big-msg__btn"
+                  onClick={() => {
+                    this.props.playSound('movement');
+                    this.props.actions.closeModal();
+                    this.play();
+                  }}
+                ><span className="rainbow">Resume</span></button>
+              </div>
             </div>
           </div>
         }
@@ -910,23 +998,31 @@ class Board extends Component {
           </div>
           <div className="col col--wide" id="colWide">
             <div className="info__controls">
-              <span className="info__subhead" id="subhead">Level:&nbsp;{this.props.appState.gameLevel}</span>
+              <span className="info__subhead" id="subhead">Game Level:&nbsp;{this.props.appState.gameLevel}</span>
               <div className="info__icons-wrap">
-                <button
-                  className="aria-button info__icon"
-                  onClick={
-                    () => {
-                      this.props.playSound('movement');
-                      if (this.props.appState.running) {
-                        this.openModal();
-                        this.props.actions.pause();
-                      }
-                    }}
-                  aria-label="pause"
-                  title="pause"
-                >
-                  <i className="icon icon-pause ctrl-icon" />
-                </button>
+                {this.props.appState.difficulty > 0 &&
+                  <button
+                    className="aria-button info__icon"
+                    onClick={
+                      () => {
+                        this.props.playSound('movement');
+                        if (this.props.appState.running) {
+                          this.props.actions.openModal('pause');
+                          this.props.actions.pause();
+                          utils.trapFocus();
+                        } else {
+                          console.log('resume');
+                          this.play();
+                        }
+                      }}
+                    aria-label="pause"
+                    title={this.props.appState.running ? 'pause' : 'resume'}
+                  >
+                    <span className={this.props.appState.running ?
+                      'icon icon-pause ctrl-icon' : 'icon ctrl-icon'}
+                    >{!this.props.appState.running && <span>&#9654;</span>}
+                    </span>
+                  </button> }
                 <button
                   className="aria-button info__icon"
                   onClick={
@@ -953,18 +1049,6 @@ class Board extends Component {
                 >
                   <i className={this.props.appState.sound ? 'icon icon-volume_off ctrl-icon' : 'icon icon-volume_up ctrl-icon'} />
                 </button>
-                <button
-                  className="aria-button info__icon"
-                  onClick={
-                    () => {
-                      this.props.playSound('movement');
-                      this.props.actions.toggleTorch(this.props.appState.torch);
-                    }}
-                  aria-label="toggle torch"
-                  title="toggle torch"
-                >
-                  <i className="icon icon-flashlight ctrl-icon" />
-                </button>
                 <a
                   className="aria-button info__icon"
                   href="https://github.com/rifkegribenes/dungeon-crawler"
@@ -975,6 +1059,9 @@ class Board extends Component {
                   <i className="icon icon-github ctrl-icon" />
                 </a>
               </div>
+            </div>
+            <div className="info__controls info__controls--bottom">
+              <span className="rainbow">Difficulty: {difficulty[this.props.appState.difficulty]}</span>
             </div>
             <canvas
               id="board"

@@ -1,7 +1,7 @@
 import update from 'immutability-helper';
 import teamHeroes from '../../utils/teamHeroes';
 
-import { SET_LEVEL, SET_HERO, UPDATE_HERO, UPDATE_TRUMP, CLOSE_MODAL, OPEN_MODAL, RESTART, START, USER_INPUT, SET_CURRENT_ENTITY, UPDATE_ENTITIES, UPDATE_ENTITY, UPDATE_COMBAT, UPDATE_MESSAGES, UPDATE_DIMENSIONS, HANDLE_STAIRCASE, UPDATE_GRID, SHOW_MSG, HIDE_MSG, TOGGLE_SOUND, TOGGLE_TORCH, SET_LOADED, PLAY, PAUSE, SET_PREV_VP, SET_CANDLE, SET_KEY } from '../actions';
+import { SET_LEVEL, SET_HERO, UPDATE_HERO, UPDATE_TRUMP, CLOSE_MODAL, OPEN_MODAL, RESTART, START, USER_INPUT, SET_CURRENT_ENTITY, UPDATE_ENTITIES, UPDATE_ENTITY, UPDATE_COMBAT, UPDATE_MESSAGES, UPDATE_DIMENSIONS, HANDLE_STAIRCASE, UPDATE_GRID, SHOW_MSG, HIDE_MSG, TOGGLE_SOUND, TOGGLE_TORCH, SET_LOADED, PLAY, PAUSE, SET_PREV_VP, SET_CANDLE, SET_KEY, SET_DIFFICULTY } from '../actions';
 
 const INITIAL_STATE = {
   entities: [[]],
@@ -52,14 +52,12 @@ const INITIAL_STATE = {
   prevVP: null,
   candle: false,
   key: false,
+  levelComplete: false,
+  difficulty: 0,
+  modalType: null,
 };
 
 function appState(state = INITIAL_STATE, action) {
-  let clipSize = 640;
-  let colWide = 640;
-  if (document.getElementById('colWide')) {
-    colWide = document.getElementById('colWide').clientWidth;
-  }
   let x;
   let y;
   if (action.type === 'UPDATE_ENTITY') {
@@ -75,7 +73,32 @@ function appState(state = INITIAL_STATE, action) {
         },
       );
 
+    case SET_DIFFICULTY:
+      return update(
+        state,
+        {
+          difficulty: { $set: action.payload },
+        },
+      );
+
+    case OPEN_MODAL:
+      return update(
+        state,
+        {
+          modalType: { $set: action.payload },
+        },
+      );
+
+    case CLOSE_MODAL:
+      return update(
+        state,
+        {
+          modalType: { $set: null },
+        },
+      );
+
     case SET_LOADED:
+      console.log('loaded');
       return update(
         state,
         {
@@ -174,26 +197,6 @@ function appState(state = INITIAL_STATE, action) {
         {
           trumpPosition: { $set: action.payload.trumpPosition },
           entities: { $set: action.payload.entities },
-        },
-      );
-
-
-    case CLOSE_MODAL:
-      return update(
-        state,
-        {
-          modalOpen: { $set: false },
-          modalTitle: { $set: '' },
-        },
-      );
-
-    case OPEN_MODAL:
-      return update(
-        state,
-        {
-          modalOpen: { $set: true },
-          modalTitle: { $set: action.payload.title },
-          modalList: { $set: action.payload.list },
         },
       );
 
@@ -324,22 +327,11 @@ function appState(state = INITIAL_STATE, action) {
       );
 
     case UPDATE_DIMENSIONS:
-    // wide column max width = 675 inner width / 735 outer width
-    // board space is vh - 50px (header)
-    // TODO: MOVE THIS LOGIC OUT OF THE REDUCER AND INTO UTILS OR BOARD.JSX
-      if (colWide < 640 || action.payload.height < 690) { // true
-        if ((action.payload.height - 70) > colWide) { // false
-          clipSize = colWide;
-        } else {
-          clipSize = Math.min(colWide,
-                (action.payload.height - 70), 640);
-        }
-      }
       return update(
         state,
         {
-          clipSize: { $set: (Math.floor(clipSize / 20)) * 20 },
-          cellSize: { $set: Math.floor(clipSize / 20) },
+          clipSize: { $set: action.payload.clipSize },
+          cellSize: { $set: action.payload.cellSize },
         },
       );
 

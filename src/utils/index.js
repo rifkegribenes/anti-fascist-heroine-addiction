@@ -1,8 +1,7 @@
 // global constants
 export const gridHeight = 60;
 export const gridWidth = 80;
-export const vHeight = 20;
-export const vWidth = 20;
+export const vSize = 20;
 
 
 // helper functions
@@ -11,7 +10,7 @@ export const randomInt = (min, max) => Math.floor(random(min, max));
 export const inViewport = (entityCoords, heroCoords) => {
   const [ex, ey] = entityCoords;
   const [hx, hy] = heroCoords;
-  if (Math.abs(ex - hx) < vWidth / 2 && Math.abs(ey - hy) < vHeight / 2) {
+  if (Math.abs(ex - hx) < vSize / 2 && Math.abs(ey - hy) < vSize / 2) {
     return true;
   }
   return false;
@@ -272,13 +271,15 @@ export const monsterAI = (entities, entityCoords, heroCoords, doors, heroRoom, p
 // render to canvas
 // called from renderViewport
 // if need coords printed: (cellSize, ctx, cell, x, y, vX, vY)
-const drawCell = (cellSize, ctx, cell, x, y, candle, key) => {
+const drawCell = (cellSize, ctx, cell, x, y, candle, key, levelCompleted,
+  difficulty) => {
   // console.log(`drawCell: vX: ${vX}, vY: ${vY}, x: ${x}, y: ${y}`);
   const img = new Image();
   const radius = Math.floor((cellSize) * 0.2) || 2;
   const size = cellSize * 2;
   ctx.clearRect(x, y, cellSize, cellSize);
   switch (cell.type) {
+    case 'padlock':
     case 'wall':
       ctx.lineJoin = 'round';
       ctx.lineWidth = radius;
@@ -289,12 +290,17 @@ const drawCell = (cellSize, ctx, cell, x, y, candle, key) => {
       ctx.fillRect(x + (radius / 2), y + (radius / 2), cellSize - radius, cellSize - radius);
         // ctx.fillStyle = `hsla(${hue}, 100%, 50%, ${opacity})`;
         // ctx.fillRect(x, y, cellSize, cellSize);
+      if (cell.type === 'padlock') {
+        img.src = cell.iconUrl;
+        img.onload = () => {
+          ctx.save();
+          ctx.drawImage(img, x, y, cellSize, cellSize);
+          ctx.restore();
+        };
+      }
       break;
     case 'floor':
     case 'door':
-      if (key) {
-        // console.log('key');
-      }
       // ctx.font = '8px Arial Narrow';
       // ctx.fillStyle = 'black';
       // ctx.fillText(`${Math.floor(cell.room)}`, x, y);
@@ -305,7 +311,6 @@ const drawCell = (cellSize, ctx, cell, x, y, candle, key) => {
       break;
     case 'hero':
     case 'candle':
-    case 'key':
       img.src = cell.iconUrl;
       img.onload = () => {
         ctx.save();
@@ -317,6 +322,22 @@ const drawCell = (cellSize, ctx, cell, x, y, candle, key) => {
       if (!cell.iconUrl) {
         ctx.fillStyle = 'hsla(60, 100%, 50%, 1)';
         ctx.fillRect(x, y, cellSize, cellSize);
+      }
+      break;
+    case 'key':
+      if (levelCompleted || difficulty < 2) {
+        img.src = cell.iconUrl;
+        img.onload = () => {
+          ctx.save();
+          ctx.shadowBlur = 20;
+          ctx.shadowColor = 'yellow';
+          ctx.drawImage(img, x, y, cellSize, cellSize);
+          ctx.restore();
+        };
+        if (!cell.iconUrl) {
+          ctx.fillStyle = 'hsla(60, 100%, 50%, 1)';
+          ctx.fillRect(x, y, cellSize, cellSize);
+        }
       }
       break;
     case 'monster':
@@ -388,13 +409,15 @@ const drawCell = (cellSize, ctx, cell, x, y, candle, key) => {
       }
       break;
     case 'staircase':
-      img.src = 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/staircase_32_c.png';
-      img.onload = () => {
-        ctx.save();
-        // console.log(`drawing staircase at ${x},${y}`);
-        ctx.drawImage(img, x, y, cellSize, cellSize);
-        ctx.restore();
-      };
+      if (levelCompleted || difficulty < 2) {
+        img.src = 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/staircase_32_c.png';
+        img.onload = () => {
+          ctx.save();
+          // console.log(`drawing staircase at ${x},${y}`);
+          ctx.drawImage(img, x, y, cellSize, cellSize);
+          ctx.restore();
+        };
+      }
       break;
     default:
       ctx.fillStyle = 'hsla(270, 100%, 50%, 1)';
@@ -406,7 +429,9 @@ export const clamp = (val, min, max) => Math.min(Math.max(val, min), max);
 
 // called from Board.jsx > draw()
 export const renderViewport = (heroPosition, entities, cellSize,
-  prevVP, candle, key) => {
+  prevVP, candle, key, levelCompleted, difficulty) => {
+  // if (levelCompleted) { console.log('level completed'); }
+  // if (key) { console.log('key'); }
   const [hX, hY] = heroPosition;
   // console.log(`hX: ${hX}, hY: ${hY}`);
   const newEntities = entities.map(row => row.map((cell) => {
@@ -418,18 +443,18 @@ export const renderViewport = (heroPosition, entities, cellSize,
   // reset the transform matrix
   ctx.setTransform(1, 0, 0, 1, 0, 0);
   // clear viewport
-  // ctx.clearRect(0, 0, vWidth * cellSize, vHeight * cellSize);
+  // ctx.clearRect(0, 0, vSize * cellSize, vSize * cellSize);
   // clamp viewport position to grid bounds, center around hero
-  const vX = clamp(((hX - (vWidth / 2))), 0, ((gridWidth - vWidth))); // 30
-  const vY = clamp(((hY - (vHeight / 2))), 0, ((gridHeight - vHeight))); // 20
-  // console.log(`vWidth: ${vWidth}, vHeight: ${vHeight}`);
+  const vX = clamp(((hX - (vSize / 2))), 0, ((gridWidth - vSize))); // 30
+  const vY = clamp(((hY - (vSize / 2))), 0, ((gridHeight - vSize))); // 20
+  // console.log(`vSize: ${vSize}, vSize: ${vSize}`);
   // console.log(`gridWidth: ${gridWidth}, gridHeight: ${gridHeight}`);
   // console.log(`vX: ${vX}, vY: ${vY}`);
   // filter out rows above or below viewport,
   // return current viewport to save to app state
-  return newEntities.filter((row, rIdx) => rIdx >= vY && rIdx < (vY + vHeight)).map((r, i) =>
+  return newEntities.filter((row, rIdx) => rIdx >= vY && rIdx < (vY + vSize)).map((r, i) =>
       // filter out cells to left or right of viewport
-       r.filter((r2, i2) => i2 >= vX && i2 < (vX + vWidth))
+       r.filter((r2, i2) => i2 >= vX && i2 < (vX + vSize))
       .map((c, j) => {
         const x = cellSize * j;
         const y = cellSize * i;
@@ -438,7 +463,7 @@ export const renderViewport = (heroPosition, entities, cellSize,
         if (!prevVP) {
           if (!newCell.level) { newCell.level = 1; }
           if (!newCell.hue) { newCell.hue = 0; }
-          drawCell(cellSize, ctx, newCell, x, y, vX, vY, candle, key);
+          drawCell(cellSize, ctx, newCell, x, y, vX, vY, candle, key, levelCompleted, difficulty);
           // console.log(`cell at ${(x / cellSize) + vX},
           // ${(y / cellSize) + vY} has changed, re-drawing`);
           return newCell;
@@ -450,7 +475,7 @@ export const renderViewport = (heroPosition, entities, cellSize,
           newCell.hue !== prevCell.hue) {
           if (!newCell.level) { newCell.level = 1; }
           if (!newCell.hue) { newCell.hue = 0; }
-          drawCell(cellSize, ctx, newCell, x, y, candle, key);
+          drawCell(cellSize, ctx, newCell, x, y, candle, key, levelCompleted, difficulty);
           // console.log(`cell at ${(x / cellSize) + vX},${(y / cellSize) + vY} has changed:`);
           // console.log('prevCell:');
           // console.log(prevCell);
@@ -515,4 +540,97 @@ export const animate = () => {
       clearTimeout(id);
     };
   }
+};
+
+export const hearts = (entity) => {
+  let totalHealth;
+  let healthNum;
+  if (entity.type === 'hero') {
+    const healthArray = [160, 280, 510];
+    totalHealth = healthArray[entity.level - 1];
+    healthNum = Math.floor((entity.hp / totalHealth) * 5) + 1;
+    if (entity.hp === 0) { healthNum = 0; }
+  } else if (entity.type === 'monster') {
+    const healthArray = [70, 243, 515];
+    totalHealth = healthArray[entity.level - 1];
+    healthNum = Math.floor((entity.health / totalHealth) * 5) + 1;
+    if (entity.health === 0) { healthNum = 0; }
+  } else if (entity.type === 'finalMonster') {
+    totalHealth = 500;
+    healthNum = Math.floor((entity.health / totalHealth) * 5) + 1;
+    if (entity.health === 0) { healthNum = 0; }
+  }
+  let heartsArr = [];
+  if (healthNum > 0) {
+    for (let i = 0; i < healthNum; i++) {
+      heartsArr.push('0');
+    }
+  }
+  if (heartsArr.length > 5) {
+    heartsArr = [0, 0, 0, 0, 0];
+  }
+  if (!heartsArr.length) {
+    heartsArr = [0];
+  }
+  return heartsArr;
+};
+
+export const trapFocus = () => {
+  const firstAnchor = document.getElementById('first');
+  const lastAnchor = document.getElementById('last');
+  if (firstAnchor) {
+    firstAnchor.focus();
+  }
+
+  const keydownHandler = (f) => {
+    const evt = f || window.event;
+    const keyCode = evt.which || evt.keyCode;
+    if (keyCode === 9 && !evt.shiftKey) { // TAB
+      if (evt.preventDefault) evt.preventDefault();
+      else evt.returnValue = false;
+      firstAnchor.focus();
+    }
+  };
+
+  const keydownHandlerFirst = (f) => {
+    const evt = f || window.event;
+    const keyCode = evt.which || evt.keyCode;
+    if (keyCode === 9 && evt.shiftKey) { // TAB+SHIFT
+      if (evt.preventDefault) evt.preventDefault();
+      else evt.returnValue = false;
+      lastAnchor.focus();
+    }
+  };
+
+  if (lastAnchor.addEventListener) lastAnchor.addEventListener('keydown', keydownHandler, false);
+  else if (lastAnchor.attachEvent) lastAnchor.attachEvent('onkeydown', keydownHandler);
+  if (firstAnchor.addEventListener) firstAnchor.addEventListener('keydown', keydownHandlerFirst, false);
+  else if (firstAnchor.attachEvent) firstAnchor.attachEvent('onkeydown', keydownHandlerFirst);
+};
+
+export const loaded = () => {
+  // console.log('calculating loaded');
+  if (document.getElementById('progress') &&
+        document.getElementById('progress-wrap')) {
+    if (document.getElementById('progress').clientWidth ===
+      document.getElementById('progress-wrap').clientWidth) {
+      console.log('loaded');
+      return true;
+    } // console.log('not loaded');
+    return false;
+  } // console.log('not loaded');
+  return false;
+};
+
+export const checkForTouchScreens = () => {
+  window.addEventListener('touchstart', function onFirstTouch() {
+    document.body.classList.add('touchscreen');
+    window.removeEventListener('touchstart', onFirstTouch, false);
+  }, false);
+};
+
+export const preloadImage = (url, callback) => {
+  const img = new Image();
+  img.src = url;
+  img.onload = callback;
 };

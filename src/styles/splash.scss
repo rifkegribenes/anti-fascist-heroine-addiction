@@ -62,6 +62,10 @@
     line-height: 1.2em;
     transition: opacity 1000ms ease-out;
     opacity: 1;
+
+    &--wide {
+      max-width: 100%;
+    }
   }
 
   &__subhead {
@@ -224,6 +228,11 @@
 
   }
 
+  &__center {
+    text-align: center;
+    line-height: 1.4em;
+  }
+
   &__avatar-wrap {
     width: 140px;
     flex-shrink: 0;
@@ -232,9 +241,10 @@
       min-width: 140px;
       width: fit-content;
       display: flex;
+      height: 100px;
 
       & img {
-        width: 120px;
+        width: 80px;
         height: auto;
       }
     }
@@ -242,6 +252,12 @@
 
   &__text-wrap {
     line-height: 1.5em;
+
+    &--right {
+      text-align: right;
+      padding-right: 20px;
+      width: 100%;
+    }
   }
 }
 
