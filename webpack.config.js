@@ -8,22 +8,12 @@ const HTMLWebpackPluginConfig = new HTMLWebpackPlugin({
   template: path.join(__dirname, '/src/index.html'),
   filename: 'index.html',
   inject: 'body',
+  favicon: 'src/icons/favicon.ico',
 });
 
 const DefinePluginConfig = new webpack.DefinePlugin({
   'process.env.NODE_ENV': JSON.stringify('production'),
 });
-
-// const UglifyJsPluginConfig = new webpack.optimize.UglifyJsPlugin({
-//   beautify: false,
-//   mangle: {
-//     screw_ie8: true,
-//   },
-//   compress: {
-//     screw_ie8: true,
-//   },
-//   comments: false,
-// });
 
 module.exports = {
   devtool: 'cheap-module-source-map',
@@ -51,8 +41,8 @@ module.exports = {
         loader: 'style-loader!css-loader!sass-loader',
       },
       {
-        test:/\.(jpg|png|gif|bmp|svg|woff|woff2|ttf|eot)$/,
-        loader: require.resolve("file-loader"),
+        test: /\.(jpg|png|gif|bmp|svg|woff|woff2|ttf|eot)$/,
+        loader: require.resolve('file-loader'),
       },
     ],
   },
@@ -62,11 +52,6 @@ module.exports = {
   output: {
     filename: 'index.js',
     path: path.join(__dirname, '/build'),
-  },
-  images: {
-    assetsPath: path.join(__dirname, '/src/img'),
-    rewritePath: 'img/',
-    ignore: ['.DS_Store', 'share_*', '*-icon-*', 'favicon*'],
   },
   plugins: dev ?
   [
