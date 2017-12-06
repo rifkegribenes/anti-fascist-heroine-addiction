@@ -47,7 +47,7 @@ const Splash = props => (
                 props.actions.openModal('difficulty');
               }
             }}
-          ><span className="rainbow">Start Game</span></button>
+          ><span className="rainbow">{props.appState.loaded ? 'Start Game' : 'Loading'}</span></button>
         </div>
         <div className="splash__instructions">
           <h3 className="splash__subhead">How to Play</h3>

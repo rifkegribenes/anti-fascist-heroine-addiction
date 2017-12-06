@@ -2,6 +2,7 @@ import React from 'react';
 import { Switch, Route, BrowserRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import ReactHowler from 'react-howler';
 
 import Splash from './containers/Splash';
 import Board from './containers/Board';
@@ -9,24 +10,32 @@ import About from './containers/About';
 import HeroPicker from './containers/HeroPicker';
 import BigMsg from './containers/BigMsg';
 import * as Actions from './store/actions';
-import assetLoader from './utils/asset_loader';
-import sounds from './utils/sounds';
-import { loaded, checkForTouchScreens } from './utils';
+// import assetLoader from './utils/asset_loader';
+// import sounds from './utils/sounds';
+import manifest from './sounds/asset_manifest.json';
+import { checkForTouchScreens } from './utils';
 
 
 class App extends React.Component {
   constructor(props) {
     super(props);
+
+    this.state = {
+      playing: null,
+      loaded: 0,
+    };
+
     this.playSound = this.playSound.bind(this);
   }
 
   componentDidMount() {
     checkForTouchScreens();
-    assetLoader();
+    // assetLoader().then(result =>
+    //   console.log(result)).catch(err => console.log(err));
   }
 
   componentDidUpdate() {
-    if (loaded() && !this.props.appState.loaded) {
+    if (this.state.loaded === 17 && !this.props.appState.loaded) {
       console.log('set loaded');
       this.props.actions.setLoaded();
     }
@@ -34,29 +43,53 @@ class App extends React.Component {
 
   playSound(item) {
     if (this.props.appState.sound) {
-      // aL.playSound(item);
-      const sound = document.createElement('audio');
-      sound.setAttribute('autoplay', 'autoplay');
-      sound.setAttribute('src', sounds[item]);
-      const playPromise = sound.play();
-      // In browsers that don't support html5 audio,
-      // playPromise won’t be defined.
-      if (playPromise !== undefined) {
-        playPromise.then(() => {
-          // Automatic playback started!
-        }).catch((err) => {
-          console.log(err);
-        });
-      } else {
-        console.log('this browser does not support html5 audio');
-      }
+      let playing = this.state.playing;
+      playing = item;
+      this.setState({
+        playing,
+      });
+    }
+  }
+
+  incrementLoader() {
+    let soundsLoaded = this.state.loaded;
+    soundsLoaded += 1;
+    this.setState({
+      loaded: soundsLoaded,
+    });
+  }
+
+  handleLoadProgress() {
+    if (document.getElementById('progress') &&
+        document.getElementById('progress-wrap')) {
+      document.getElementById('progress').style.width =
+      `${((this.state.loaded / 17) * document.getElementById('progress-wrap').clientWidth)}px`;
     }
   }
 
   render() {
+    const logError = id => console.log(`error: ${id}`);
+    const onLoad = () => {
+      this.incrementLoader();
+      this.handleLoadProgress();
+    };
+    const assetManifest = manifest.manifest;
+    const preloadSounds = assetManifest.map(sound => (
+      <ReactHowler
+        src={sound.src}
+        key={sound.id}
+        preload
+        playing={this.state.playing === sound.id}
+        volume={sound.volume}
+        onLoad={onLoad}
+        onLoadError={() => {
+          logError(sound.id);
+        }}
+      />));
     return (
       <BrowserRouter>
         <main className="main" id="main">
+          {preloadSounds}
           <Switch>
             <Route
               exact
