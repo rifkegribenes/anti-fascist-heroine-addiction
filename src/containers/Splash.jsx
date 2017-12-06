@@ -40,14 +40,16 @@ const Splash = props => (
           <button
             className="big-msg__btn"
             onClick={() => {
-              props.playSound('movement');
-              if (document.body.classList.contains('touchscreen') || window.innerWidth < 1000) {
-                props.actions.openModal('sorry');
-              } else {
-                props.actions.openModal('difficulty');
+              if (props.appState.loaded) {
+                props.playSound('movement');
+                if (document.body.classList.contains('touchscreen') || window.innerWidth < 1000) {
+                  props.actions.openModal('sorry');
+                } else {
+                  props.actions.openModal('difficulty');
+                }
               }
             }}
-          ><span className="rainbow">{props.appState.loaded ? 'Start Game' : 'Loading'}</span></button>
+          ><span className={props.appState.loaded ? 'rainbow' : 'rainbow blink'}>{props.appState.loaded ? 'Start Game' : 'Loading'}</span></button>
         </div>
         <div className="splash__instructions">
           <h3 className="splash__subhead">How to Play</h3>

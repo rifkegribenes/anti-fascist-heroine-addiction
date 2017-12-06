@@ -47,6 +47,7 @@
     "react-router-dom": "^4.1.1",
     "react-transition-group": "1.x",
     "redux": "^3.7.2",
+    "request-frame": "^1.5.3",
     "shortid": "^2.2.8"
   }
 }

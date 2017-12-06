@@ -142,7 +142,7 @@ const About = props => (
         </div>
         <div className="splash__btn-wrap">
           <button
-            className="big-msg__btn"
+            className="big-msg__btn big-msg__btn--flex"
             onClick={() => {
               props.playSound('movement');
               props.history.push('/');
@@ -162,7 +162,7 @@ const About = props => (
             <span className="rainbow">Start Game</span></button>
         </div>
         <div className="splash__instructions">
-          <p className="splash__center">Game design, code, and all artwork not credited below by <a className="splash__link" href="https://github.com/rifkegribenes" target="blank" rel="noopener noreferrer">@rifkegribenes</a>.<br />Thanks to Max and Leo T for beta testing and to Jay Schwane for the name.</p>
+          <p className="splash__center">Game design, code, and all artwork not credited below by <a className="splash__link" href="https://github.com/rifkegribenes" target="blank" rel="noopener noreferrer">@rifkegribenes</a>.<br />This project was created to fulfill the <a className="splash__link" href="https://www.freecodecamp.org/challenges/build-a-roguelike-dungeon-crawler-game" target="_blank" rel="noopener noreferrer">RogueLike Dungeon Crawler</a> assignment for freeCodeCamp.<br />Thanks to Max and Leo T for beta testing and to Jay Schwane for the name.</p>
           <p className="splash__center">If you find a bug or have a feature request, please submit that <a className="splash__link" href="https://github.com/rifkegribenes/dungeon-crawler/issues" target="blank" rel="noopener noreferrer">here.</a></p>
           <h3 className="splash__subhead">Artwork</h3>
           <h4 className="splash__bold">Heroes</h4>

@@ -10,52 +10,97 @@ import About from './containers/About';
 import HeroPicker from './containers/HeroPicker';
 import BigMsg from './containers/BigMsg';
 import * as Actions from './store/actions';
-// import assetLoader from './utils/asset_loader';
-// import sounds from './utils/sounds';
-import manifest from './sounds/asset_manifest.json';
-import { checkForTouchScreens } from './utils';
-
+import soundManifest from './sounds/asset_manifest.json';
+import imageManifest from './utils/imageManifest';
+import { checkForTouchScreens, preloadImage } from './utils';
 
 class App extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      playing: null,
-      loaded: 0,
+      playing: [],
+      loadProgress: 0,
+      totalAssets: 0,
     };
 
     this.playSound = this.playSound.bind(this);
+    this.incrementLoader = this.incrementLoader.bind(this);
+    this.handleLoadProgress = this.handleLoadProgress.bind(this);
+  }
+
+  componentWillMount() {
+    const totalAssets = imageManifest.length + soundManifest.manifest.length;
+    this.setState({
+      totalAssets,
+    });
   }
 
   componentDidMount() {
     checkForTouchScreens();
-    // assetLoader().then(result =>
-    //   console.log(result)).catch(err => console.log(err));
+    const imageUrls = imageManifest.map(image => image.download_url);
+    this.preloadImages(imageUrls, () => {
+      this.incrementLoader(1);
+      this.handleLoadProgress();
+    });
   }
 
   componentDidUpdate() {
-    if (this.state.loaded === 17 && !this.props.appState.loaded) {
-      console.log('set loaded');
+    if (this.state.loadProgress === this.state.totalAssets && !this.props.appState.loaded) {
       this.props.actions.setLoaded();
     }
   }
 
+  preloadImages(urls, allImagesLoadedCallback) {
+    let loadedCounter = 0;
+    const toBeLoadedNumber = urls.length;
+    urls.forEach((url) => {
+      preloadImage(url, () => {
+        this.incrementLoader(1);
+        loadedCounter += 1;
+        if (loadedCounter === toBeLoadedNumber) {
+          allImagesLoadedCallback();
+        }
+      });
+    });
+  }
+
   playSound(item) {
     if (this.props.appState.sound) {
-      let playing = this.state.playing;
-      playing = item;
-      this.setState({
-        playing,
-      });
+      if (item === 'movement') {
+        const sound = document.createElement('audio');
+        sound.setAttribute('autoplay', 'autoplay');
+        sound.setAttribute('src', item);
+        const playPromise = sound.play();
+        // In browsers that don't support html5 audio,
+        // playPromise won’t be defined.
+        if (playPromise !== undefined) {
+          playPromise.then(() => {
+            // Automatic playback started!
+          }).catch((err) => {
+            console.log(err);
+          });
+        } else {
+          console.log('this browser does not support html5 audio');
+        }
+      } else {
+        const playing = [...this.state.playing];
+        const index = playing.indexOf(item);
+        if (index === -1) {
+          playing.push(item);
+        }
+        this.setState({
+          playing,
+        });
+      }
     }
   }
 
-  incrementLoader() {
-    let soundsLoaded = this.state.loaded;
-    soundsLoaded += 1;
+  incrementLoader(num) {
+    let loadProgress = this.state.loadProgress;
+    loadProgress += num;
     this.setState({
-      loaded: soundsLoaded,
+      loadProgress,
     });
   }
 
@@ -63,29 +108,44 @@ class App extends React.Component {
     if (document.getElementById('progress') &&
         document.getElementById('progress-wrap')) {
       document.getElementById('progress').style.width =
-      `${((this.state.loaded / 17) * document.getElementById('progress-wrap').clientWidth)}px`;
+      `${((this.state.loadProgress / this.state.totalAssets) * document.getElementById('progress-wrap').clientWidth)}px`;
     }
   }
 
   render() {
     const logError = id => console.log(`error: ${id}`);
+    const manifest = soundManifest.manifest;
     const onLoad = () => {
-      this.incrementLoader();
+      this.incrementLoader(1);
       this.handleLoadProgress();
     };
-    const assetManifest = manifest.manifest;
-    const preloadSounds = assetManifest.map(sound => (
-      <ReactHowler
-        src={sound.src}
-        key={sound.id}
-        preload
-        playing={this.state.playing === sound.id}
-        volume={sound.volume}
-        onLoad={onLoad}
-        onLoadError={() => {
-          logError(sound.id);
-        }}
-      />));
+    const onEnd = (id) => {
+      const playing = [...this.state.playing];
+      const index = playing.indexOf(id);
+      if (index > -1) {
+        playing.splice(index, 1);
+      }
+      this.setState({
+        playing,
+      });
+    };
+    const preloadSounds = manifest.map((sound) => {
+      const { id, src, volume } = sound;
+      return (
+        <ReactHowler
+          src={src}
+          key={id}
+          preload
+          playing={this.state.playing.includes(id)}
+          volume={volume}
+          onLoad={onLoad}
+          onEnd={() => onEnd(id)}
+          onLoadError={() => {
+            logError(sound.id);
+          }}
+        />
+      );
+    });
     return (
       <BrowserRouter>
         <main className="main" id="main">

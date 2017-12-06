@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import shortid from 'shortid';
 import { withRouter } from 'react-router';
+import requestFrame from 'request-frame';
 
 import * as Actions from '../store/actions';
 import InfoLeft from './InfoLeft';
@@ -10,41 +11,6 @@ import InfoRight from './InfoRight';
 import * as utils from '../utils/index';
 import generateMap from '../utils/mapgen';
 import fillGrid from '../utils/fillGrid';
-
-// http://paulirish.com/2011/requestanimationframe-for-smart-animating/
-// http://my.opera.com/emoller/blog/2011/12/20/requestanimationframe-for-smart-er-animating
-// requestAnimationFrame polyfill by Erik Möller. fixes from Paul Irish and Tino Zijdel
-// MIT license
-
-const animate = () => {
-  let lastTime = 0;
-  const vendors = ['ms', 'moz', 'webkit', 'o'];
-  for (let x = 0; x < vendors.length && !window.requestAnimationFrame; ++x) {
-    window.requestAnimationFrame = window[`${vendors[x]}RequestAnimationFrame`];
-    window.cancelAnimationFrame = window[`${vendors[x]}CancelAnimationFrame`]
-    || window[`${vendors[x]}CancelRequestAnimationFrame`];
-  }
-
-  if (!window.requestAnimationFrame) {
-    window.requestAnimationFrame = (callback) => {
-      const currTime = new Date().getTime();
-      const timeToCall = Math.max(0, 16 - (currTime - lastTime));
-      const id = window.setTimeout(() => { callback(currTime + timeToCall); },
-        timeToCall);
-      lastTime = currTime + timeToCall;
-      return id;
-    };
-  }
-
-  if (!window.cancelAnimationFrame) {
-    window.cancelAnimationFrame = (id) => {
-      clearTimeout(id);
-    };
-  }
-};
-animate();
-
-// const lastRender = 0;
 
 const updateXP = (xp) => {
   const width = xp / 3;
@@ -107,7 +73,8 @@ class Board extends Component {
     window.removeEventListener('keydown', this.handleKeydown);
     window.removeEventListener('resize', this.updateDimensions);
     window.clearInterval(window.interval);
-    cancelAnimationFrame(this.state.myReq);
+    const cancel = requestFrame('cancel');
+    cancel(this.state.myReq);
   }
 
   updateDimensions() {
@@ -557,7 +524,8 @@ class Board extends Component {
   heroDeath(monster) {
     // stop gameloop
     window.clearInterval(window.interval);
-    cancelAnimationFrame(this.state.myReq);
+    const cancel = requestFrame('cancel');
+    cancel(this.state.myReq);
     // define action for 'you died' screen
     const action = () => {
       this.props.actions.hideMsg();
@@ -843,6 +811,7 @@ class Board extends Component {
   }
 
   gameLoop(timestamp, grid2, newPosition) {
+    const request = requestFrame('request');
     let speed = 1000;
     const { difficulty, gameLevel } = this.props.appState;
     if (difficulty === 2) {
@@ -858,7 +827,7 @@ class Board extends Component {
       this.draw();
       // lastRender = timestamp;
       setTimeout(() => {
-        const myReq = requestAnimationFrame(() => {
+        const myReq = request(() => {
           this.gameLoop(timestamp,
             this.props.appState.entities, this.props.appState.heroPosition);
         });
@@ -918,7 +887,8 @@ class Board extends Component {
   play() {
     if (this.props.appState.difficulty > 0) {
       this.props.actions.play();
-      const myReq = requestAnimationFrame(this.gameLoop);
+      const request = requestFrame('request');
+      const myReq = request(this.gameLoop);
       this.setState({ myReq });
     }
   }
@@ -927,7 +897,8 @@ class Board extends Component {
     // console.log('paused');
     // stop gameloop
     window.clearInterval(window.interval);
-    cancelAnimationFrame(this.state.myReq);
+    const cancel = requestFrame('cancel');
+    cancel(this.state.myReq);
     this.props.actions.pause();
   }
 
