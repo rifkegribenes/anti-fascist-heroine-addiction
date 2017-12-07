@@ -1,7 +1,6 @@
 {
   "manifest": [
 		{ "id": "magicItem", "src": ["https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/sounds/sfx_sounds_powerup4.ogg", "https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/sounds/sfx_sounds_powerup4.mp3"] },
-		{ "id": "cheer", "src": ["https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/sounds/5_Sec_Crowd_Cheer-Mike_Koenig-1562033255.ogg", "https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/sounds/5_Sec_Crowd_Cheer-Mike_Koenig-1562033255.mp3"] },
 	  { "id": "startGame", "src": ["https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/sounds/270333__littlerobotsoundfactory__jingle-win-00.ogg", "https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/sounds/270333__littlerobotsoundfactory__jingle-win-00.mp3"] },
 	  { "id": "food", "src": ["https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/sounds/sfx_sounds_powerup1.ogg", "https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/sounds/sfx_sounds_powerup1.mp3"] },
 	  { "id": "addHero", "src": ["https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/sounds/sfx_sounds_powerup2.ogg", "https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/sounds/sfx_sounds_powerup2.mp3"] },
@@ -16,7 +15,7 @@
 	  { "id": "movement", "src": ["https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/sounds/pop_drip.ogg", "https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/sounds/pop_drip.mp3"] },
 	  { "id": "heroDeath", "src": ["https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/sounds/Shut_Down1.ogg", "https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/sounds/Shut_Down1.mp3"] },
 	  { "id": "staircase", "src": ["https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/sounds/sfx_movement_portal1.ogg", "https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/sounds/sfx_movement_portal1.mp3"] },
-	  { "id": "evilLaugh", "src": ["https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/sounds/322459__lalazzylee1__game-boss-or-character-laughter.ogg", "https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/sounds/322459__lalazzylee1__game-boss-or-character-laughter.mp3"] },
+	  { "id": "evilLaugh", "src": ["https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/sounds/155633__gabemiller74__evil-laugh.ogg", "https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/sounds/155633__gabemiller74__evil-laugh.mp3"] },
 	  { "id": "gameOver", "src": ["https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/sounds/sfx_sound_shutdown2.ogg", "https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/sounds/sfx_sound_shutdown2.mp3"] }
 	]
 }

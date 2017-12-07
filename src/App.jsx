@@ -123,9 +123,10 @@ class App extends React.Component {
   }
 
   render() {
-    const logError = id => console.log(`error: ${id}`);
+    const logError = msg => console.log(`error: ${msg}`);
     const manifest = soundManifest.manifest;
-    const onLoad = () => {
+    const onLoad = (id) => {
+      console.log(`loaded: ${id}`);
       this.incrementLoader(1);
       this.handleLoadProgress();
     };
@@ -148,10 +149,10 @@ class App extends React.Component {
           preload
           playing={this.state.playing.includes(id)}
           volume={volume}
-          onLoad={onLoad}
+          onLoad={() => onLoad(id)}
           onEnd={() => onEnd(id)}
           onLoadError={() => {
-            logError(sound.id);
+            logError();
           }}
         />
       );
