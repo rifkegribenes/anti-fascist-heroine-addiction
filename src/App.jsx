@@ -69,6 +69,7 @@ class App extends React.Component {
   }
 
   playSound(item) {
+    console.log(`playSound: ${item}`);
     if (this.props.appState.sound) {
       // can't get this one to work with react-howler
       // for overlapping play requests, so defaulting to plain old html5 audio
@@ -76,9 +77,11 @@ class App extends React.Component {
         const sound = document.createElement('audio');
         const source = document.createElement('source');
         if (sound.canPlayType('audio/ogg;')) {
+          console.log('can play ogg');
           source.type = 'audio/ogg';
           source.src = 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/sounds/pop_drip.ogg';
         } else {
+          console.log('playing mp3');
           source.type = 'audio/mpeg';
           source.src = 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/sounds/pop_drip.mp3';
         }
@@ -89,6 +92,7 @@ class App extends React.Component {
         // playPromise won’t be defined.
         if (playPromise !== undefined) {
           playPromise.then(() => {
+            console.log('playing');
             // Automatic playback started!
           }).catch((err) => {
             console.log(err);
@@ -98,9 +102,11 @@ class App extends React.Component {
         }
       } else {
         const playing = [...this.state.playing];
+        console.log(playing);
         const index = playing.indexOf(item);
         if (index === -1) {
           playing.push(item);
+          console.log(playing);
         }
         this.setState({
           playing,

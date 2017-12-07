@@ -42,6 +42,7 @@ const INITIAL_STATE = {
     type: 'floor',
   },
   clipSize: 640,
+  cellSize: 32,
   gridFilled: false,
   sound: true,
   torch: true,

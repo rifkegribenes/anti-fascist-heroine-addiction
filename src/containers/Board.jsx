@@ -876,7 +876,7 @@ class Board extends Component {
   draw(resize) {
     const { heroPosition, entities, cellSize, candle, key, hero, gameLevel,
       difficulty } = this.props.appState;
-    if (this.props.appState.gridFilled) {
+    if (this.props.appState.gridFilled && document.getElementById('board')) {
       let prevVP;
       // render current viewport
       // save current viewport as 'prevVP'
@@ -905,8 +905,8 @@ class Board extends Component {
   }
 
   render() {
-    const clipRadius = this.props.appState.clipSize / 2;
-    const cellSize = this.props.appState.cellSize;
+    const { clipSize, cellSize } = this.props.appState;
+    const clipRadius = clipSize / 2;
     const messages = [...this.props.appState.messages];
     const messageList = messages.map(message => (
       <li key={shortid.generate()} className="message__item">
@@ -914,14 +914,11 @@ class Board extends Component {
       </li>));
     let canvasStyle = {};
     const difficulty = ['practice', 'easy', 'medium', 'hard'];
-    if (this.props.appState.torch) {
-      canvasStyle = {
-        clipPath: `circle(${clipRadius}px at center)`,
-        WebkitClipPath: `circle(${clipRadius}px at center)`,
-        MozClipPath: `circle(${clipRadius}px at center)`,
-
-      };
-    }
+    canvasStyle = {
+      clipPath: `circle(${clipRadius}px at center)`,
+      WebkitClipPath: `circle(${clipRadius}px at center)`,
+      MozClipPath: `circle(${clipRadius}px at center)`,
+    };
     return (
       <div>
         { this.props.appState.modalType === 'pause' &&
@@ -1023,13 +1020,29 @@ class Board extends Component {
             <div className="info__controls info__controls--bottom">
               <span className="rainbow">Difficulty: {difficulty[this.props.appState.difficulty]}</span>
             </div>
-            <canvas
-              id="board"
-              className="board"
-              width={20 * cellSize}
-              height={20 * cellSize}
-              style={canvasStyle}
-            />
+            <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox={`0 0 ${clipSize} ${clipSize}`} xmlSpace="preserve" width={`${clipSize}px`} className="board">
+              <defs>
+                <circle id="circle" cx={clipRadius} cy={clipRadius} r={clipRadius} />
+              </defs>
+              <clipPath id="clip">
+                <use xlinkHref="#circle" overflow="visible" />
+              </clipPath>
+              <g clipPath="url(#clip)">
+                <foreignObject
+                  width={20 * cellSize}
+                  height={20 * cellSize}
+                >
+                  <canvas
+                    id="board"
+                    className="board"
+                    width={20 * cellSize}
+                    height={20 * cellSize}
+                    style={canvasStyle}
+                    clipPath="url(#clip)"
+                  />
+                </foreignObject>
+              </g>
+            </svg>
           </div>
           <div className="col col--narrow">
             <InfoRight
