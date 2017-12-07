@@ -67,10 +67,20 @@ class App extends React.Component {
 
   playSound(item) {
     if (this.props.appState.sound) {
+      // can't get this one to work with react-howler
+      // for overlapping play requests, so defaulting to plain old html5 audio
       if (item === 'movement') {
         const sound = document.createElement('audio');
+        const source = document.createElement('source');
+        if (sound.canPlayType('audio/ogg;')) {
+          source.type = 'audio/ogg';
+          source.src = 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/sounds/pop_drip.ogg';
+        } else {
+          source.type = 'audio/mpeg';
+          source.src = 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/sounds/pop_drip.mp3';
+        }
+        sound.appendChild(source);
         sound.setAttribute('autoplay', 'autoplay');
-        sound.setAttribute('src', 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/sounds/pop_drip.mp3');
         const playPromise = sound.play();
         // In browsers that don't support html5 audio,
         // playPromise won’t be defined.
