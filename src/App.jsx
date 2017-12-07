@@ -22,6 +22,7 @@ class App extends React.Component {
       playing: [],
       loadProgress: 0,
       totalAssets: 0,
+      assetList: [],
     };
 
     this.playSound = this.playSound.bind(this);
@@ -30,6 +31,9 @@ class App extends React.Component {
   }
 
   componentWillMount() {
+    console.log(imageManifest.length, soundManifest.manifest.length);
+    const imageUrls = imageManifest.map(image => image.download_url);
+    console.log(imageUrls);
     const totalAssets = imageManifest.length + soundManifest.manifest.length;
     this.setState({
       totalAssets,
@@ -46,7 +50,9 @@ class App extends React.Component {
   }
 
   componentDidUpdate() {
+    this.handleLoadProgress();
     if (this.state.loadProgress === this.state.totalAssets && !this.props.appState.loaded) {
+      console.log('setLoaded');
       this.props.actions.setLoaded();
     }
   }
@@ -54,10 +60,16 @@ class App extends React.Component {
   preloadImages(urls, allImagesLoadedCallback) {
     let loadedCounter = 0;
     const toBeLoadedNumber = urls.length;
-    urls.forEach((url) => {
+    urls.forEach((url, idx) => {
       preloadImage(url, () => {
         this.incrementLoader(1);
+        const assetList = [...this.state.assetList];
+        assetList.push(idx);
+        this.setState({ assetList });
         loadedCounter += 1;
+        if ( toBeLoadedNumber - loadedCounter < 2 ) {
+          console.log(this.state.assetList);
+        }
         if (loadedCounter === toBeLoadedNumber) {
           allImagesLoadedCallback();
         }
@@ -115,6 +127,8 @@ class App extends React.Component {
   }
 
   handleLoadProgress() {
+    console.log(this.state.loadProgress, this.state.totalAssets);
+    console.log(this.state.loadProgress / this.state.totalAssets);
     if (document.getElementById('progress') &&
         document.getElementById('progress-wrap')) {
       document.getElementById('progress').style.width =
@@ -123,12 +137,15 @@ class App extends React.Component {
   }
 
   render() {
-    const logError = msg => console.log(`error: ${msg}`);
+    const logError = id => console.log(`error: ${id}`);
     const manifest = soundManifest.manifest;
     const onLoad = (id) => {
       console.log(`loaded: ${id}`);
       this.incrementLoader(1);
       this.handleLoadProgress();
+      const assetList = [...this.state.assetList];
+      assetList.push(id);
+      this.setState({ assetList });
     };
     const onEnd = (id) => {
       const playing = [...this.state.playing];
@@ -152,7 +169,7 @@ class App extends React.Component {
           onLoad={() => onLoad(id)}
           onEnd={() => onEnd(id)}
           onLoadError={() => {
-            logError();
+            logError(id);
           }}
         />
       );
@@ -165,7 +182,13 @@ class App extends React.Component {
             <Route
               exact
               path="/"
-              render={routeProps => <Splash {...routeProps} playSound={this.playSound} />
+              render={routeProps => (
+                <Splash
+                  {...routeProps}
+                  playSound={this.playSound}
+                  loaded={this.state.loadProgress / this.state.totalAssets}
+                />
+                )
               }
             />
             <Route

@@ -64,22 +64,6 @@ const imageManifest = [
     }
   },
   {
-    "name": "apple.png",
-    "path": "src/img/apple.png",
-    "sha": "1d9b3ed15cacf664ec711e194e388461162b5b0b",
-    "size": 15842,
-    "url": "https://api.github.com/repos/rifkegribenes/dungeon-crawler/contents/src/img/apple.png?ref=master",
-    "html_url": "https://github.com/rifkegribenes/dungeon-crawler/blob/master/src/img/apple.png",
-    "git_url": "https://api.github.com/repos/rifkegribenes/dungeon-crawler/git/blobs/1d9b3ed15cacf664ec711e194e388461162b5b0b",
-    "download_url": "https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/apple.png",
-    "type": "file",
-    "_links": {
-      "self": "https://api.github.com/repos/rifkegribenes/dungeon-crawler/contents/src/img/apple.png?ref=master",
-      "git": "https://api.github.com/repos/rifkegribenes/dungeon-crawler/git/blobs/1d9b3ed15cacf664ec711e194e388461162b5b0b",
-      "html": "https://github.com/rifkegribenes/dungeon-crawler/blob/master/src/img/apple.png"
-    }
-  },
-  {
     "name": "apple_200.png",
     "path": "src/img/apple_200.png",
     "sha": "d759ee42e143ec5bcd5a806c71b4037dc1384a6f",
@@ -221,22 +205,6 @@ const imageManifest = [
       "self": "https://api.github.com/repos/rifkegribenes/dungeon-crawler/contents/src/img/candle_200.gif?ref=master",
       "git": "https://api.github.com/repos/rifkegribenes/dungeon-crawler/git/blobs/53df90c9a6c9a696b62b96c18f8f24fb45b15d5a",
       "html": "https://github.com/rifkegribenes/dungeon-crawler/blob/master/src/img/candle_200.gif"
-    }
-  },
-  {
-    "name": "candle_200.png",
-    "path": "src/img/candle_200.png",
-    "sha": "0b4037849c5124a855fcf9357311ed02895c7087",
-    "size": 10461,
-    "url": "https://api.github.com/repos/rifkegribenes/dungeon-crawler/contents/src/img/candle_200.png?ref=master",
-    "html_url": "https://github.com/rifkegribenes/dungeon-crawler/blob/master/src/img/candle_200.png",
-    "git_url": "https://api.github.com/repos/rifkegribenes/dungeon-crawler/git/blobs/0b4037849c5124a855fcf9357311ed02895c7087",
-    "download_url": "https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/candle_200.png",
-    "type": "file",
-    "_links": {
-      "self": "https://api.github.com/repos/rifkegribenes/dungeon-crawler/contents/src/img/candle_200.png?ref=master",
-      "git": "https://api.github.com/repos/rifkegribenes/dungeon-crawler/git/blobs/0b4037849c5124a855fcf9357311ed02895c7087",
-      "html": "https://github.com/rifkegribenes/dungeon-crawler/blob/master/src/img/candle_200.png"
     }
   },
   {
@@ -496,38 +464,6 @@ const imageManifest = [
     }
   },
   {
-    "name": "donald-trump_200.png",
-    "path": "src/img/donald-trump_200.png",
-    "sha": "ae53431a706cfb9ff2611bb6d0af5e1b37f06cfd",
-    "size": 33637,
-    "url": "https://api.github.com/repos/rifkegribenes/dungeon-crawler/contents/src/img/donald-trump_200.png?ref=master",
-    "html_url": "https://github.com/rifkegribenes/dungeon-crawler/blob/master/src/img/donald-trump_200.png",
-    "git_url": "https://api.github.com/repos/rifkegribenes/dungeon-crawler/git/blobs/ae53431a706cfb9ff2611bb6d0af5e1b37f06cfd",
-    "download_url": "https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/donald-trump_200.png",
-    "type": "file",
-    "_links": {
-      "self": "https://api.github.com/repos/rifkegribenes/dungeon-crawler/contents/src/img/donald-trump_200.png?ref=master",
-      "git": "https://api.github.com/repos/rifkegribenes/dungeon-crawler/git/blobs/ae53431a706cfb9ff2611bb6d0af5e1b37f06cfd",
-      "html": "https://github.com/rifkegribenes/dungeon-crawler/blob/master/src/img/donald-trump_200.png"
-    }
-  },
-  {
-    "name": "donald-trump_64.gif",
-    "path": "src/img/donald-trump_64.gif",
-    "sha": "29593b2c6dfdba753fbc5aec59ac483c1c133dbe",
-    "size": 6437,
-    "url": "https://api.github.com/repos/rifkegribenes/dungeon-crawler/contents/src/img/donald-trump_64.gif?ref=master",
-    "html_url": "https://github.com/rifkegribenes/dungeon-crawler/blob/master/src/img/donald-trump_64.gif",
-    "git_url": "https://api.github.com/repos/rifkegribenes/dungeon-crawler/git/blobs/29593b2c6dfdba753fbc5aec59ac483c1c133dbe",
-    "download_url": "https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/donald-trump_64.gif",
-    "type": "file",
-    "_links": {
-      "self": "https://api.github.com/repos/rifkegribenes/dungeon-crawler/contents/src/img/donald-trump_64.gif?ref=master",
-      "git": "https://api.github.com/repos/rifkegribenes/dungeon-crawler/git/blobs/29593b2c6dfdba753fbc5aec59ac483c1c133dbe",
-      "html": "https://github.com/rifkegribenes/dungeon-crawler/blob/master/src/img/donald-trump_64.gif"
-    }
-  },
-  {
     "name": "donald-trump_64.png",
     "path": "src/img/donald-trump_64.png",
     "sha": "360bce4eaa6aca3fbe93962db8e32586bff430d8",
@@ -784,22 +720,6 @@ const imageManifest = [
     }
   },
   {
-    "name": "jet_32_c.png",
-    "path": "src/img/jet_32_c.png",
-    "sha": "aad1b258f9419d4c19b8f3f7e4da2f403bfe22cb",
-    "size": 2609,
-    "url": "https://api.github.com/repos/rifkegribenes/dungeon-crawler/contents/src/img/jet_32_c.png?ref=master",
-    "html_url": "https://github.com/rifkegribenes/dungeon-crawler/blob/master/src/img/jet_32_c.png",
-    "git_url": "https://api.github.com/repos/rifkegribenes/dungeon-crawler/git/blobs/aad1b258f9419d4c19b8f3f7e4da2f403bfe22cb",
-    "download_url": "https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/jet_32_c.png",
-    "type": "file",
-    "_links": {
-      "self": "https://api.github.com/repos/rifkegribenes/dungeon-crawler/contents/src/img/jet_32_c.png?ref=master",
-      "git": "https://api.github.com/repos/rifkegribenes/dungeon-crawler/git/blobs/aad1b258f9419d4c19b8f3f7e4da2f403bfe22cb",
-      "html": "https://github.com/rifkegribenes/dungeon-crawler/blob/master/src/img/jet_32_c.png"
-    }
-  },
-  {
     "name": "key_200.gif",
     "path": "src/img/key_200.gif",
     "sha": "e3402cb015ff25e68ea8da1dd2e55242a7b1cb1e",
@@ -813,22 +733,6 @@ const imageManifest = [
       "self": "https://api.github.com/repos/rifkegribenes/dungeon-crawler/contents/src/img/key_200.gif?ref=master",
       "git": "https://api.github.com/repos/rifkegribenes/dungeon-crawler/git/blobs/e3402cb015ff25e68ea8da1dd2e55242a7b1cb1e",
       "html": "https://github.com/rifkegribenes/dungeon-crawler/blob/master/src/img/key_200.gif"
-    }
-  },
-  {
-    "name": "key_200.png",
-    "path": "src/img/key_200.png",
-    "sha": "d5723f8873803db042653b49cf25a00a75fe5cb3",
-    "size": 47394,
-    "url": "https://api.github.com/repos/rifkegribenes/dungeon-crawler/contents/src/img/key_200.png?ref=master",
-    "html_url": "https://github.com/rifkegribenes/dungeon-crawler/blob/master/src/img/key_200.png",
-    "git_url": "https://api.github.com/repos/rifkegribenes/dungeon-crawler/git/blobs/d5723f8873803db042653b49cf25a00a75fe5cb3",
-    "download_url": "https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/key_200.png",
-    "type": "file",
-    "_links": {
-      "self": "https://api.github.com/repos/rifkegribenes/dungeon-crawler/contents/src/img/key_200.png?ref=master",
-      "git": "https://api.github.com/repos/rifkegribenes/dungeon-crawler/git/blobs/d5723f8873803db042653b49cf25a00a75fe5cb3",
-      "html": "https://github.com/rifkegribenes/dungeon-crawler/blob/master/src/img/key_200.png"
     }
   },
   {
@@ -1421,22 +1325,6 @@ const imageManifest = [
       "self": "https://api.github.com/repos/rifkegribenes/dungeon-crawler/contents/src/img/staircase_200.png?ref=master",
       "git": "https://api.github.com/repos/rifkegribenes/dungeon-crawler/git/blobs/d35f1e9c49b91f3d074aa4e716ccad6e823ad122",
       "html": "https://github.com/rifkegribenes/dungeon-crawler/blob/master/src/img/staircase_200.png"
-    }
-  },
-  {
-    "name": "staircase_32.png",
-    "path": "src/img/staircase_32.png",
-    "sha": "f3d51f5bd43ad8254a4113d8f81153728c7c87b7",
-    "size": 2696,
-    "url": "https://api.github.com/repos/rifkegribenes/dungeon-crawler/contents/src/img/staircase_32.png?ref=master",
-    "html_url": "https://github.com/rifkegribenes/dungeon-crawler/blob/master/src/img/staircase_32.png",
-    "git_url": "https://api.github.com/repos/rifkegribenes/dungeon-crawler/git/blobs/f3d51f5bd43ad8254a4113d8f81153728c7c87b7",
-    "download_url": "https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/staircase_32.png",
-    "type": "file",
-    "_links": {
-      "self": "https://api.github.com/repos/rifkegribenes/dungeon-crawler/contents/src/img/staircase_32.png?ref=master",
-      "git": "https://api.github.com/repos/rifkegribenes/dungeon-crawler/git/blobs/f3d51f5bd43ad8254a4113d8f81153728c7c87b7",
-      "html": "https://github.com/rifkegribenes/dungeon-crawler/blob/master/src/img/staircase_32.png"
     }
   },
   {

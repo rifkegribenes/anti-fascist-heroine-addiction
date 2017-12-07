@@ -505,6 +505,7 @@ export const checkForTouchScreens = () => {
 
 export const preloadImage = (url, callback) => {
   const img = new Image();
+  // console.log(`loaded: ${url}`);
   img.src = url;
   img.onload = callback;
 };
