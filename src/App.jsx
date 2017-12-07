@@ -11,7 +11,7 @@ import HeroPicker from './containers/HeroPicker';
 import BigMsg from './containers/BigMsg';
 import * as Actions from './store/actions';
 import soundManifest from './sounds/asset_manifest.json';
-import imageManifest from './utils/imageManifest';
+import imgUrls from './utils/imageManifest';
 import { checkForTouchScreens, preloadImage } from './utils';
 
 class App extends React.Component {
@@ -31,10 +31,7 @@ class App extends React.Component {
   }
 
   componentWillMount() {
-    console.log(imageManifest.length, soundManifest.manifest.length);
-    const imageUrls = imageManifest.map(image => image.download_url);
-    console.log(imageUrls);
-    const totalAssets = imageManifest.length + soundManifest.manifest.length;
+    const totalAssets = imgUrls.length + soundManifest.manifest.length;
     this.setState({
       totalAssets,
     });
@@ -42,9 +39,7 @@ class App extends React.Component {
 
   componentDidMount() {
     checkForTouchScreens();
-    const imageUrls = imageManifest.map(image => image.download_url);
-    this.preloadImages(imageUrls, () => {
-      this.incrementLoader(1);
+    this.preloadImages(imgUrls, () => {
       this.handleLoadProgress();
     });
   }
@@ -52,7 +47,6 @@ class App extends React.Component {
   componentDidUpdate() {
     this.handleLoadProgress();
     if (this.state.loadProgress === this.state.totalAssets && !this.props.appState.loaded) {
-      console.log('setLoaded');
       this.props.actions.setLoaded();
     }
   }
@@ -67,9 +61,6 @@ class App extends React.Component {
         assetList.push(idx);
         this.setState({ assetList });
         loadedCounter += 1;
-        if ( toBeLoadedNumber - loadedCounter < 2 ) {
-          console.log(this.state.assetList);
-        }
         if (loadedCounter === toBeLoadedNumber) {
           allImagesLoadedCallback();
         }
@@ -127,8 +118,6 @@ class App extends React.Component {
   }
 
   handleLoadProgress() {
-    console.log(this.state.loadProgress, this.state.totalAssets);
-    console.log(this.state.loadProgress / this.state.totalAssets);
     if (document.getElementById('progress') &&
         document.getElementById('progress-wrap')) {
       document.getElementById('progress').style.width =
@@ -140,7 +129,6 @@ class App extends React.Component {
     const logError = id => console.log(`error: ${id}`);
     const manifest = soundManifest.manifest;
     const onLoad = (id) => {
-      console.log(`loaded: ${id}`);
       this.incrementLoader(1);
       this.handleLoadProgress();
       const assetList = [...this.state.assetList];

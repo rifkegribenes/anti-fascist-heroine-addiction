@@ -49,7 +49,7 @@ const Splash = props => (
                 }
               }
             }}
-          ><span className={props.loaded > 0.9 ? 'rainbow' : 'rainbow blink'}>{props.loaded > 0.9 ? 'Start Game' : 'Loading'}</span></button>
+          ><span className={props.loaded >= 0.9 ? 'rainbow' : 'rainbow blink'}>{props.loaded >= 0.9 ? 'Start Game' : 'Loading'}</span></button>
         </div>
         <div className="splash__instructions">
           <h3 className="splash__subhead">How to Play</h3>
