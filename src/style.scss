@@ -226,6 +226,10 @@ canvas {
   }
 }
 
+.board {
+  margin: auto;
+}
+
 .staircaseSpin {
   -webkit-animation: stspin 2s linear infinite;
     -moz-animation: stspin 2s linear infinite;
