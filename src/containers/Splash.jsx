@@ -36,7 +36,7 @@ const Splash = props => (
               props.playSound('movement');
               props.history.push('/about');
             }}
-          ><span className="rainbow">Credits</span></button>
+          ><span className="rainbow">About</span></button>
           <button
             className="big-msg__btn"
             onClick={() => {

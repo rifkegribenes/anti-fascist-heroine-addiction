@@ -20,7 +20,6 @@ class SetDifficulty extends React.Component {
             id="first"
             className="modal__close aria-button"
             onClick={() => {
-              console.log('close');
               this.props.playSound('movement');
               this.props.actions.closeModal();
             }}
