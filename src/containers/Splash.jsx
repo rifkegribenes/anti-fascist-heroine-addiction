@@ -25,6 +25,7 @@ const Splash = props => (
         <div className="splash__header">
           <h2 className="splash__title splash__title--wide">Anti-Fascist Heroine Addiction, the game</h2>
           <h3 className="splash__title splash__title--wide">Hanukkah Edition</h3>
+          <div className="splash__og-img" />
           <div id="progress-wrap">
             <div id="progress" />
           </div>

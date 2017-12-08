@@ -27,6 +27,14 @@
     line-height: 1.3em;
   }
 
+  &__og-img {
+    background-image: url("https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/og-image.jpg");
+    background-repeat: no-repeat;
+    background-position: center top;
+    background-size: contain;
+    width: 100%;
+  }
+
   &__btn-wrap {
     display: flex;
     justify-content: center;

@@ -410,6 +410,7 @@ export const renderViewport = (heroPosition, entities, cellSize,
       }));
 };
 
+
 export const changeEntity = (entities, entity, coords) => {
   const [x, y] = coords;
   return entities.map((row, idx) => {
