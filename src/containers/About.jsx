@@ -9,11 +9,11 @@ import Sorry from './Sorry';
 
 const heroCredits = teamHeroes.map(hero => (
   <div className="splash__item" key={hero.name}>
-    <div className="splash__avatar-wrap">
+    <div className="about__avatar-wrap">
       <img src={hero.cardUrl} alt={hero.name} className="card-pic card-pic--round" />
+      <div className="about__name">{hero.name}</div>
     </div>
-    <div className="splash__text-wrap">
-      <span className="splash__bold">{hero.name}</span><br />
+    <div className="about__text-wrap">
           Character created by: {hero.createdBy || ''}<br />
           Image source:&nbsp;
           <a

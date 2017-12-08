@@ -217,11 +217,18 @@
     padding: 10px;
     border: 1px solid white;
     display: flex;
+    flex-direction: column;
     width: 100%;
 
+    @include for-phone-landscape-up {
+      flex-direction: row;
+    }
 
+    @media (min-width: 750px) {
+        width: 47%;
+      }
     @include for-tablet-portrait-up {
-      width: 47%;
+
     }
 
     @include for-tablet-landscape-up {
@@ -249,8 +256,11 @@
   }
 
   &__center {
-    text-align: center;
     line-height: 1.4em;
+
+    @media (min-width: 665px) {
+        text-align: center;
+      }
   }
 
   &__avatar-wrap {
@@ -303,4 +313,41 @@
   background-image: -ms-linear-gradient(-45deg,#E605C1 0%,#AD79FC 15%,#806BF7 30%,#09E6E6 45%,#14E609 60%,#FFFF00 74%,#FF8C00 88%,#FF0000 99%);
   background-image: linear-gradient(-45deg,#E605C1 0%,#AD79FC 15%,#806BF7 30%,#09E6E6 45%,#14E609 60%,#FFFF00 74%,#FF8C00 88%,#FF0000 99%);
   display:inline-block; /*required*/
+}
+
+.about {
+
+  &__name {
+    font-size: 1.2em;
+    color: white;
+
+    @include for-phone-landscape-up {
+      margin: 10px 0 5px;
+      text-align: center;
+    }
+  }
+
+  &__text-wrap {
+    line-height: 1.5em;
+    margin-left: 20px;
+  }
+
+  &__avatar-wrap {
+  width: 100%;
+  flex-shrink: 0;
+  display: flex;
+
+  @include for-phone-landscape-up {
+    display: block;
+    width: 140px;
+  }
+
+    & img {
+    width: 140px;
+      @include for-phone-landscape-up {
+
+    }
+      height: auto;
+    }
+  }
 }
