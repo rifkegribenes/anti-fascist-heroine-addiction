@@ -1,5 +1,3 @@
-# Anti-Fascist Heroine Addiction, The Game
-
 ![Anti-Fascist Heroine Addiction, The Game](https://raw.githubusercontent.com/rifkegribenes/anti-fascist-heroine-addiction/master/src/img/og-image.jpg "Lady superheroes vs Republican politicians: the ultimate smackdown")
 
 Do you ever wish you could chase Ted Cruz’s disembodied head around a game board and then punch it repeatedly, accompanied by cheesy 8-bit sound effects?

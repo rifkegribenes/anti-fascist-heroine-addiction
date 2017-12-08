@@ -1013,7 +1013,7 @@ class Board extends Component {
                 </button>
                 <a
                   className="aria-button info__icon"
-                  href="https://github.com/rifkegribenes/dungeon-crawler"
+                  href="https://github.com/rifkegribenes/anti-fascist-heroine-addiction"
                   rel="noopener noreferrer"
                   target="_blank"
                   title="github"
