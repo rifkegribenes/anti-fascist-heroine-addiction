@@ -22,19 +22,19 @@ Use the arrow keys or W-A-S-D to move through the grid.
 
 #### Health
 
-<div class="splash__key-wrap">![ice cream](https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/ice-cream_32.png)![hamburger](https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/hamburger_32.png)![donut](https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/donut_32.png)![fries](https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/fries_32.png)</div>
+![ice cream](https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/ice-cream_32.png) ![hamburger](https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/hamburger_32.png) ![donut](https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/donut_32.png) ![fries](https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/fries_32.png)
 
 Eat food you find in the grid to stay alive. It takes strength to fight monsters. Walk into a food to eat it.
 
 #### Your team
 
-<div class="splash__key-wrap">![misty knight](https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/misty-knight_32_c.png)![wonder woman](https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/wonder-woman_32_c.png)![silk](https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/silk_32_c.png)![la borinqueña](https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/la-borinquena_32_c.png)</div>
+![misty knight](https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/misty-knight_32_c.png) ![wonder woman](https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/wonder-woman_32_c.png) ![silk](https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/silk_32_c.png) ![la borinqueña](https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/la-borinquena_32_c.png)
 
 Gather a team of superheroes to help you fight monsters. You can’t do it alone! Each member of your team adds attack strength. Walk into a superhero to add her to your team.
 
 #### Monsters
 
-<div class="splash__key-wrap">![george bush](https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/bush_32.png)![mitch mcconnell](https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/mcconnell_32.png)![ted cruz](https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/cruz_32.png)![ronald reagan](https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/reagan_32.png)</div>
+![george bush](https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/bush_32.png) ![mitch mcconnell](https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/mcconnell_32.png) ![ted cruz](https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/cruz_32.png) ![ronald reagan](https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/reagan_32.png)
 
 Each monster your team defeats gives you experience points. It takes 100 XP to level up. You’ll need all the experience you can get to defeat the final monster. Walk into a monster repeatedly until you defeat it... or it defeats you!
 
