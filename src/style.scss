@@ -93,6 +93,9 @@ canvas {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
+  @media (max-height: 500px) {
+    transform: translate(-50%, -100%);
+  }
   border: none;
   padding: 0;
   background-color: transparent;
@@ -113,7 +116,7 @@ canvas {
 
   &__full {
     width: 100vw;
-    height: 100vh;
+    height: 90vh;
     max-width: 100vw;
     border: 0px transparent;
     padding: 40px;
@@ -127,6 +130,9 @@ canvas {
     left: 0;
     width: 100vw;
     height: 100vh;
+    @media (max-height: 500px) {
+      min-height: 200vh;
+    }
     z-index: $z-index-modal;
     transform: scale(1);
   }
@@ -166,9 +172,15 @@ canvas {
   }
 
   &__btn {
-    margin: 10px;
+    margin: 10px auto;
     width: auto;
     padding: 15px 30px;
+
+    @media (max-width: 589px) {
+    &:last-child {
+      margin-top: 10px !important;
+    }
+  }
   }
   &__btn-wrap {
 
@@ -227,7 +239,7 @@ canvas {
 }
 
 .board {
-  margin: auto;
+  margin: 20px auto;
 }
 
 .staircaseSpin {
