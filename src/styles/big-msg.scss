@@ -130,6 +130,13 @@
       box-shadow: 0 0 20px Lime;
     }
 
+    @media (max-width: 589px) {
+      display: block;
+        &:last-child {
+          margin-top: 20px;
+        }
+      }
+
     &--wide {
       margin: 20px auto;
       width: auto;

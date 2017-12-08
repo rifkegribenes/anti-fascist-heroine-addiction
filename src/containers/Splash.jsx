@@ -104,6 +104,11 @@ const Splash = props => (
           <img className="splash__icon--c" src="https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/staircase_32_c.png" alt="staircase" /> Staircases take you down to the next level of the dungeon. In &lsquo;Medium&rsquo; and &lsquo;Hard&rsquo; difficulty levels, staircases are hidden until your character has enough XP to level up.
           <h4 className="splash__bold">Winning the game</h4>
             To win, defeat the final monster on level 3.
+          <h4 className="splash__bold">Strategy</h4>
+            Try to gather all the members of your team and eat all the food
+             you can find before beginning your attack. You will be stronger
+              if you defeat all the monsters on each level before moving to
+               the next.
         </div>
       </div>
     </div>

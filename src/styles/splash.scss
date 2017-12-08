@@ -43,9 +43,19 @@
     padding: 20px;
     flex-wrap: wrap;
 
+    @media (max-width: 569px) {
+        display: block;
+      }
+
     & .big-msg__btn {
+      @media (max-width: 569px) {
+        margin: auto;
+      }
       &:first-child {
-         @include for-phone-landscape-up {
+        @media (max-width: 569px) {
+        margin-bottom: 20px;
+      }
+         @media (min-width: 570px) {
         margin-right: 20px;
       }
       }
