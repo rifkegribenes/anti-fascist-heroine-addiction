@@ -103,7 +103,7 @@ const fillGrid = (gameMap, level, hero, difficulty) => {
       damage: 60,
       type: 'finalMonster',
       name: 'Donald Trump',
-      bio: 'Does this guy even need a bio??',
+      bio: 'You know who this guy is',
       iconUrl: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/donald-trump_64.gif',
       cardUrl: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/donald-trump_200.gif',
       opacity: 1,

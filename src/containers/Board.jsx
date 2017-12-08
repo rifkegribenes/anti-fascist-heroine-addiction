@@ -507,36 +507,35 @@ class Board extends Component {
 
   heroDeath(monster) {
     // stop gameloop
-    window.clearInterval(window.interval);
-    const cancel = requestFrame('cancel');
-    cancel(this.state.myReq);
-    // define action for 'you died' screen
-    const action = () => {
-      this.props.actions.hideMsg();
-      this.props.history.push('/');
-      this.props.actions.restart();
-    };
-    document.getElementById('hero').classList.add('spin');
-    this.props.playSound('heroDeath');
+    this.pause().then(() => {
+      // define action for 'you died' screen
+      const action = () => {
+        this.props.actions.hideMsg();
+        this.props.history.push('/');
+        this.props.actions.restart();
+      };
+      document.getElementById('hero').classList.add('spin');
+      this.props.playSound('heroDeath');
 
-    // display message
-    const messages = [...this.props.appState.messages];
-    setTimeout(() => {
-      messages.push(`${utils.badNews[Math.floor(utils.random(0, 13))]} You died! ${monster.youDiedMsg}.`);
-      this.props.actions.updateMessages(messages);
-      this.props.playSound('evilLaugh');
-      this.props.actions.showMsg({
-        title: 'You died!',
-        imgUrl: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/you-died.png',
-        imgAlt: 'skull and crossbones',
-        news: `${utils.badNews[Math.floor(utils.random(0, 13))]}!`,
-        body1: `You were defeated by ${monster.name}`,
-        body2: monster.bio,
-        action,
-        actionText: 'Try Again',
-      });
-      this.props.history.push('/gameover');
-    }, 1000);
+      // display message
+      const messages = [...this.props.appState.messages];
+      setTimeout(() => {
+        messages.push(`${utils.badNews[Math.floor(utils.random(0, 13))]} You died! ${monster.youDiedMsg}.`);
+        this.props.actions.updateMessages(messages);
+        this.props.playSound('evilLaugh');
+        this.props.actions.showMsg({
+          title: 'You died!',
+          imgUrl: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/you-died.png',
+          imgAlt: 'skull and crossbones',
+          news: `${utils.badNews[Math.floor(utils.random(0, 13))]}!`,
+          body1: `You were defeated by ${monster.name}`,
+          body2: monster.bio,
+          action,
+          actionText: 'Try Again',
+        });
+        this.props.history.push('/gameover');
+      }, 1000);
+    });
   }
 
   heroLevelUp(hero) {
@@ -711,7 +710,7 @@ class Board extends Component {
     if (this.props.appState.combatName === entity.name && this.props.appState.gridFilled) {
       return;
     }
-    if (this.props.appState.running && this.props.appState.combatName !== entity.name) {
+    if (this.props.appState.running && this.props.appState.combatName !== entity.name && entities) {
       // define constants
       const newEntity = { ...entity };
       const [x, y] = coords;
@@ -861,10 +860,15 @@ class Board extends Component {
   }
 
   pause() {
-    window.clearInterval(window.interval);
-    const cancel = requestFrame('cancel');
-    cancel(this.state.myReq);
-    this.props.actions.pause();
+    return new Promise((resolve) => {
+      window.clearInterval(window.interval);
+      const cancel = requestFrame('cancel');
+      cancel(this.state.myReq);
+      this.props.actions.pause();
+      if (!this.props.appState.running) {
+        resolve();
+      }
+    });
   }
 
   startGame() {
@@ -985,9 +989,10 @@ class Board extends Component {
                   onClick={
                     () => {
                       this.props.playSound('movement');
-                      window.clearInterval(window.interval);
-                      this.props.actions.restart();
-                      this.props.history.push('/');
+                      this.pause().then(() => {
+                        this.props.actions.restart();
+                        this.props.history.push('/');
+                      });
                     }}
                   aria-label="restart game"
                   title="restart game"

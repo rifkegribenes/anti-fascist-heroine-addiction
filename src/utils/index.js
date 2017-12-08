@@ -374,7 +374,6 @@ export const renderViewport = (heroPosition, entities, cellSize,
     return newCell;
   }));
   const canvas = document.getElementById('board');
-  console.log(canvas);
   const ctx = canvas.getContext('2d');
   // reset the transform matrix
   ctx.setTransform(1, 0, 0, 1, 0, 0);
