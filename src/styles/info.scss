@@ -1,5 +1,8 @@
 .col {
   padding: 10px;
+  @media(max-width: 600px) {
+    padding: 0;
+  }
   &--wide {
       margin: 0 20px;
       width: 60%;
@@ -8,7 +11,7 @@
         @media(max-width: 600px) {
           width: 100vw;
           margin: 0;
-          padding: 20px;
+          padding: 0;
         }
     }
   &--narrow {
@@ -52,6 +55,10 @@
         margin-top: 0;
         margin-bottom: 10px;
       }
+
+      @media (max-width: 600px) {
+      text-align: center;
+    }
     }
   }
 
