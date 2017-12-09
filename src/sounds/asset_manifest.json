@@ -16,6 +16,7 @@
 	  { "id": "heroDeath", "src": ["https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/sounds/Shut_Down1.ogg", "https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/sounds/Shut_Down1.mp3"], "volume": 0.6 },
 	  { "id": "staircase", "src": ["https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/sounds/sfx_movement_portal1.ogg", "https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/sounds/sfx_movement_portal1.mp3"], "volume": 0.6 },
 	  { "id": "evilLaugh", "src": ["https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/sounds/155633__gabemiller74__evil-laugh.ogg", "https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/sounds/155633__gabemiller74__evil-laugh.mp3"], "volume": 0.6 },
-	  { "id": "gameOver", "src": ["https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/sounds/sfx_sound_shutdown2.ogg", "https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/sounds/sfx_sound_shutdown2.mp3"], "volume": 0.6 }
+	  { "id": "gameOver", "src": ["https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/sounds/sfx_sound_shutdown2.ogg", "https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/sounds/sfx_sound_shutdown2.mp3"], "volume": 0.6 },
+	  { "id": "gameWin", "src": ["https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/sounds/270330__littlerobotsoundfactory__jingle-achievement-01.ogg", "https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/sounds/270330__littlerobotsoundfactory__jingle-achievement-01.mp3"], "volume": 1.0 }
 	]
 }
