@@ -892,15 +892,20 @@ class Board extends Component {
         levelCompleted = true;
       }
 
+      const request = requestFrame('request');
       // if window has been resized since last render,
       // prevVP = null (full re-render)
       if (resize) {
-        prevVP = utils.renderViewport(heroPosition, entities, cellSize,
-        null, candle, key, levelCompleted, difficulty);
+        request(() => {
+          prevVP = utils.renderViewport(heroPosition, entities,
+         cellSize, null, candle, key, levelCompleted, difficulty);
+        });
       } else {
         // otherwise, use prevVP to decide which cells to render in this round
-        prevVP = utils.renderViewport(heroPosition, entities, cellSize,
+        request(() => {
+          prevVP = utils.renderViewport(heroPosition, entities, cellSize,
           this.props.appState.prevVP, candle, key, levelCompleted, difficulty);
+        });
       }
       // save prevVP to app state to compare against next viewport
       // and only draw diff
