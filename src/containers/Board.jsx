@@ -945,7 +945,7 @@ class Board extends Component {
               <div className="modal__btn-wrap">
                 <button
                   id="last"
-                  className="big-msg__btn"
+                  className="big-msg__btn big-msg__btn--single"
                   onClick={() => {
                     this.props.playSound('movement');
                     this.props.actions.closeModal();
