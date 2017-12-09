@@ -9,11 +9,11 @@
 
 @font-face {
   font-family: 'icomoon';
-  src:  url('fonts/icomoon.eot?cx2xjq');
-  src:  url('fonts/icomoon.eot?cx2xjq#iefix') format('embedded-opentype'),
-    url('fonts/icomoon.ttf?cx2xjq') format('truetype'),
-    url('fonts/icomoon.woff?cx2xjq') format('woff'),
-    url('fonts/icomoon.svg?cx2xjq#icomoon') format('svg');
+  src:  url('fonts/icomoon.eot?7zinlk');
+  src:  url('fonts/icomoon.eot?7zinlk#iefix') format('embedded-opentype'),
+    url('fonts/icomoon.ttf?7zinlk') format('truetype'),
+    url('fonts/icomoon.woff?7zinlk') format('woff'),
+    url('fonts/icomoon.svg?7zinlk#icomoon') format('svg');
   font-weight: normal;
   font-style: normal;
 }
@@ -306,10 +306,27 @@ $z-index-back: 1;
 .icon-volume_off:before {
   content: "\e904";
 }
-
-.icon-play {
-  font-family: Arial, sans-serif;
+.icon-tumblr:before {
+  content: "\e906";
 }
-.icon-play:before {
-  content: "&#9654;";
+.icon-twitter:before {
+  content: "\e907";
+}
+.icon-brand:before {
+  content: "\e907";
+}
+.icon-tweet:before {
+  content: "\e907";
+}
+.icon-social:before {
+  content: "\e907";
+}
+.icon-facebook:before {
+  content: "\e908";
+}
+.icon-brand2:before {
+  content: "\e908";
+}
+.icon-social2:before {
+  content: "\e908";
 }
