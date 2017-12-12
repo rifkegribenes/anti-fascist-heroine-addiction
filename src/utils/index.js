@@ -221,8 +221,11 @@ export const monsterAI = (entities, entityCoords, heroCoords, doors, heroRoom, p
 
 // render to canvas
 // called from renderViewport()
-const drawCell = (cellSize, ctx, cell, x, y, candle, key, levelCompleted,
+const drawCell = (cellSize, ctx, cellInput, x, y, candle, key, levelCompleted,
   difficulty) => {
+  const cell = { ...cellInput };
+  if (!cell.level) { cell.level = 1; }
+  if (!cell.hue) { cell.hue = 0; }
   const img = new Image();
   const radius = Math.floor((cellSize) * 0.2) || 2;
   const size = cellSize * 2;
@@ -401,8 +404,6 @@ export const renderViewport = (heroPosition, entities, cellSize,
           newCell.name !== prevCell.name ||
           newCell.opacity !== prevCell.opacity ||
           newCell.hue !== prevCell.hue) {
-          if (!newCell.level) { newCell.level = 1; }
-          if (!newCell.hue) { newCell.hue = 0; }
           drawCell(cellSize, ctx, newCell, x, y, candle, key, levelCompleted, difficulty);
           return newCell;
         }

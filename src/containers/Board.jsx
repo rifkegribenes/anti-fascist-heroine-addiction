@@ -24,6 +24,9 @@ class Board extends Component {
 
     this.state = {
       myReq: null,
+      counter: 0,
+      intervalID: null,
+      speed: 0,
     };
 
     this.handleKeydown = this.handleKeydown.bind(this);
@@ -51,15 +54,10 @@ class Board extends Component {
     // before rendering viewport and starting gameloop
     if (!prevProps.appState.gridFilled) {
       if (this.props.appState.gridFilled) {
-        if (this.props.appState.difficulty > 0) {
-          this.play();
-        } else {
-          this.draw();
-          return;
-        }
-        this.draw();
+        this.play();
       }
     }
+
     // listen for window size change and render full viewport
     // instead of only changed cells
     if (prevProps.appState.clipSize !== this.props.appState.clipSize) {
@@ -158,7 +156,6 @@ class Board extends Component {
         grid1 = utils.changeEntity(this.props.appState.entities, { type: 'floor', room: oldRoom }, [x, y]);
         grid2 = utils.changeEntity(grid1, newHero, newPosition);
         this.props.actions.updateGrid(grid2, newPosition);
-        this.draw();
       }
 
       // ANYTHING => UNOCCUPIED DOORWAY
@@ -168,7 +165,6 @@ class Board extends Component {
         grid1 = utils.changeEntity(this.props.appState.entities, { type: 'floor', room: oldRoom }, [x, y]);
         grid2 = utils.changeEntity(grid1, newHero, newPosition);
         this.props.actions.updateGrid(grid2, newPosition);
-        this.draw();
         this.props.actions.updateHero(newHero);
         return;
       }
@@ -197,7 +193,6 @@ class Board extends Component {
           grid1 = utils.changeEntity(this.props.appState.entities, { type: 'floor', room: oldRoom }, [x, y]);
           grid2 = utils.changeEntity(grid1, newHero, newPosition);
           this.props.actions.updateGrid(grid2, newPosition);
-          this.draw();
           this.props.actions.updateHero(newHero);
           return;
         }
@@ -216,7 +211,6 @@ class Board extends Component {
         grid1 = utils.changeEntity(this.props.appState.entities, { type: 'door', room: 'door' }, [x, y]);
         grid2 = utils.changeEntity(grid1, newHero, newPosition);
         this.props.actions.updateGrid(grid2, newPosition);
-        this.draw();
       }
 
       // DOOR => MONSTER NOT IN DOORWAY
@@ -236,7 +230,6 @@ class Board extends Component {
         grid2 = utils.changeEntity(grid1, newHero, newPosition);
         this.props.actions.updateGrid(grid2, newPosition);
         document.getElementById('entity').classList.remove('spin');
-        this.draw();
         switch (destination.type) {
           // if monster, handle combat
           case 'finalMonster':
@@ -296,7 +289,6 @@ class Board extends Component {
         grid2 = utils.changeEntity(grid1, newHero, newPosition);
         this.props.actions.updateGrid(grid2, newPosition);
         document.getElementById('entity').classList.remove('spin');
-        this.draw();
         switch (destination.type) {
           case 'food':
             this.props.actions.setCurrentEntity(destination);
@@ -597,7 +589,6 @@ class Board extends Component {
     }
     const grid2 = utils.changeEntity(grid1, hero, monsterCoords);
     this.props.actions.updateGrid(grid2, monsterCoords);
-    this.draw();
 
     // update xp slider
     const newHero = { ...hero };
@@ -784,25 +775,17 @@ class Board extends Component {
     }
   }
 
-  gameLoop(timestamp, grid2, newPosition) {
-    const request = requestFrame('request');
-    let speed = 1000;
-    const { difficulty, gameLevel } = this.props.appState;
-    if (difficulty === 2) {
-      speed = 1000 / gameLevel;
-    } else if (difficulty === 3) {
-      speed = 300;
-    }
+  gameLoop() {
     if (this.props.appState.running) {
-      this.update(grid2, newPosition);
-      this.draw();
-      setTimeout(() => {
-        const myReq = request(() => {
-          this.gameLoop(timestamp,
-            this.props.appState.entities, this.props.appState.heroPosition);
-        });
-        this.setState({ myReq });
-      }, speed);
+      this.update(this.props.appState.entities, this.props.appState.heroPosition);
+      const request = requestFrame('request');
+      const myReq = request(() => {
+        this.draw();
+      });
+      const newState = { ...this.state };
+      newState.counter += 1;
+      newState.myReq = myReq;
+      this.setState({ ...newState });
     }
   }
 
@@ -817,7 +800,9 @@ class Board extends Component {
     this.props.actions.updateEntities(currentEntities, newPosition);
 
     // calculate monster movement only if doors has populated from fillGrid
-    if (doors && doors.length) {
+    // and only if counter is divisible by speed factor
+    if (doors && doors.length &&
+      this.state.counter % this.state.speed === 0) {
       // store each monster's target move in an array
       // if a second monster tries to move into the same cell
       // disable his movement for that turn
@@ -851,17 +836,28 @@ class Board extends Component {
   }
 
   play() {
-    if (this.props.appState.difficulty > 0) {
-      this.props.actions.play();
-      const request = requestFrame('request');
-      const myReq = request(this.gameLoop);
-      this.setState({ myReq });
+    console.log('play');
+    // set monster speed
+    let speed = 0;
+    const { gameLevel, difficulty } = this.props.appState;
+    if (difficulty === 1) {
+      speed = 60;
+    } else if (difficulty === 2) {
+      speed = 60 / gameLevel;
+    } else if (difficulty === 3) {
+      speed = 20;
     }
+    const newState = { ...this.state };
+    newState.speed = speed;
+
+    this.props.actions.play();
+    newState.intervalID = setInterval(this.gameLoop, 1000 / 60);
+    this.setState({ ...newState });
   }
 
   pause() {
     return new Promise((resolve) => {
-      window.clearInterval(window.interval);
+      window.clearInterval(this.state.intervalID);
       const cancel = requestFrame('cancel');
       cancel(this.state.myReq);
       this.props.actions.pause();
@@ -880,37 +876,30 @@ class Board extends Component {
   draw(resize) {
     const { heroPosition, entities, cellSize, candle, key, hero, gameLevel,
       difficulty } = this.props.appState;
-    if (this.props.appState.gridFilled && document.getElementById('board')) {
-      let prevVP;
-      // render current viewport
-      // save current viewport as 'prevVP'
+    let prevVP;
+    // render current viewport
+    // save current viewport as 'prevVP'
 
-      // calculate whether level has been completed
-      // to decide whether to render staircase or key
-      let levelCompleted = false;
-      if (hero.level > gameLevel) {
-        levelCompleted = true;
-      }
-
-      const request = requestFrame('request');
-      // if window has been resized since last render,
-      // prevVP = null (full re-render)
-      if (resize) {
-        request(() => {
-          prevVP = utils.renderViewport(heroPosition, entities,
-         cellSize, null, candle, key, levelCompleted, difficulty);
-        });
-      } else {
-        // otherwise, use prevVP to decide which cells to render in this round
-        request(() => {
-          prevVP = utils.renderViewport(heroPosition, entities, cellSize,
-          this.props.appState.prevVP, candle, key, levelCompleted, difficulty);
-        });
-      }
-      // save prevVP to app state to compare against next viewport
-      // and only draw diff
-      this.props.actions.setPrevVP(prevVP);
+    // calculate whether level has been completed
+    // to decide whether to render staircase or key
+    let levelCompleted = false;
+    if (hero.level > gameLevel) {
+      levelCompleted = true;
     }
+
+    // if window has been resized since last render,
+    // prevVP = null (full re-render)
+    if (resize) {
+      prevVP = utils.renderViewport(heroPosition, entities,
+     cellSize, null, candle, key, levelCompleted, difficulty);
+    } else {
+      // otherwise, use prevVP to decide which cells to render in this round
+      prevVP = utils.renderViewport(heroPosition, entities, cellSize,
+      this.props.appState.prevVP, candle, key, levelCompleted, difficulty);
+    }
+    // save prevVP to app state to compare against next viewport
+    // and only draw diff
+    this.props.actions.setPrevVP(prevVP);
   }
 
   render() {
