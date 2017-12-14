@@ -12,6 +12,9 @@ import * as utils from '../utils/index';
 import generateMap from '../utils/mapgen';
 import fillGrid from '../utils/fillGrid';
 
+let myReq = null;
+let lastMonsterMove = 0;
+
 const updateXP = (xp) => {
   const width = xp / 3;
   document.styleSheets[0].addRule('.hero__xp-slider::after', `width: ${width}% !important`);
@@ -23,10 +26,8 @@ class Board extends Component {
     super(props);
 
     this.state = {
-      myReq: null,
-      counter: 0,
       intervalID: null,
-      speed: 0,
+      speed: 1,
     };
 
     this.handleKeydown = this.handleKeydown.bind(this);
@@ -54,6 +55,13 @@ class Board extends Component {
     // before rendering viewport and starting gameloop
     if (!prevProps.appState.gridFilled) {
       if (this.props.appState.gridFilled) {
+        console.log('gridFilled, calling play');
+        this.props.actions.play();
+      }
+    }
+    if (!prevProps.appState.running) {
+      if (this.props.appState.running) {
+        console.log('running state set, starting game');
         this.play();
       }
     }
@@ -70,7 +78,7 @@ class Board extends Component {
     window.removeEventListener('resize', this.updateDimensions);
     window.clearInterval(window.interval);
     const cancel = requestFrame('cancel');
-    cancel(this.state.myReq);
+    cancel(myReq);
   }
 
   updateDimensions() {
@@ -775,21 +783,33 @@ class Board extends Component {
     }
   }
 
-  gameLoop() {
+  gameLoop(timestamp) {
+    let delta;
+    let monsterMove = false;
     if (this.props.appState.running) {
-      this.update(this.props.appState.entities, this.props.appState.heroPosition);
+      if (!timestamp) {
+        delta = 0;
+      } else {
+        delta = (timestamp - lastMonsterMove) / 1000;
+        // console.log(`delta: ${delta}, speed: ${this.state.speed}`);
+        if (delta > this.state.speed) {
+          lastMonsterMove = timestamp;
+          monsterMove = true; // tell update function to move monsters
+          // console.log(monsterMove);
+        }
+      }
+      this.update(this.props.appState.entities, this.props.appState.heroPosition, monsterMove);
+      this.draw();
       const request = requestFrame('request');
-      const myReq = request(() => {
-        this.draw();
+      myReq = request((ts) => {
+        this.gameLoop(ts);
       });
-      const newState = { ...this.state };
-      newState.counter += 1;
-      newState.myReq = myReq;
-      this.setState({ ...newState });
+    } else {
+      console.log('not running');
     }
   }
 
-  update(grid2, newPosition) {
+  update(grid2, newPosition, monsterMove) {
     // update position and object values for hero and all entities
     // for time elapsed since last render
     const currentEntities = this.props.appState.entities;
@@ -800,9 +820,8 @@ class Board extends Component {
     this.props.actions.updateEntities(currentEntities, newPosition);
 
     // calculate monster movement only if doors has populated from fillGrid
-    // and only if counter is divisible by speed factor
-    if (doors && doors.length &&
-      this.state.counter % this.state.speed === 0) {
+    // and only if monsters are due to move this round
+    if (doors && doors.length && monsterMove) {
       // store each monster's target move in an array
       // if a second monster tries to move into the same cell
       // disable his movement for that turn
@@ -836,30 +855,31 @@ class Board extends Component {
   }
 
   play() {
+    this.props.actions.play();
     console.log('play');
     // set monster speed
-    let speed = 0;
+    let speed = 1;
     const { gameLevel, difficulty } = this.props.appState;
     if (difficulty === 1) {
-      speed = 60;
+      speed = 1; // move once per second
     } else if (difficulty === 2) {
-      speed = 60 / gameLevel;
+      speed = 1 / gameLevel; // 1 sec, 1/2 sec, 1/3 sec
     } else if (difficulty === 3) {
-      speed = 20;
+      speed = 0.3; // < 1/3 sec
     }
     const newState = { ...this.state };
     newState.speed = speed;
-
-    this.props.actions.play();
-    newState.intervalID = setInterval(this.gameLoop, 1000 / 60);
     this.setState({ ...newState });
+
+    this.gameLoop();
   }
 
   pause() {
     return new Promise((resolve) => {
       window.clearInterval(this.state.intervalID);
+      window.clearInterval();
       const cancel = requestFrame('cancel');
-      cancel(this.state.myReq);
+      cancel(myReq);
       this.props.actions.pause();
       if (!this.props.appState.running) {
         resolve();
@@ -873,10 +893,10 @@ class Board extends Component {
     this.props.actions.start(newMap, heroPosition, trumpPosition, doors);
   }
 
-  draw(resize) {
+  draw() {
     const { heroPosition, entities, cellSize, candle, key, hero, gameLevel,
       difficulty } = this.props.appState;
-    let prevVP;
+    // let prevVP;
     // render current viewport
     // save current viewport as 'prevVP'
 
@@ -889,17 +909,17 @@ class Board extends Component {
 
     // if window has been resized since last render,
     // prevVP = null (full re-render)
-    if (resize) {
-      prevVP = utils.renderViewport(heroPosition, entities,
-     cellSize, null, candle, key, levelCompleted, difficulty);
-    } else {
-      // otherwise, use prevVP to decide which cells to render in this round
-      prevVP = utils.renderViewport(heroPosition, entities, cellSize,
-      this.props.appState.prevVP, candle, key, levelCompleted, difficulty);
-    }
-    // save prevVP to app state to compare against next viewport
-    // and only draw diff
-    this.props.actions.setPrevVP(prevVP);
+    // if (resize) {
+    utils.renderViewport(heroPosition, entities,
+     cellSize, candle, key, levelCompleted, difficulty);
+    // } else {
+    //   // otherwise, use prevVP to decide which cells to render in this round
+    //   prevVP = utils.renderViewport(heroPosition, entities, cellSize,
+    //   this.props.appState.prevVP, candle, key, levelCompleted, difficulty);
+    // }
+    // // save prevVP to app state to compare against next viewport
+    // // and only draw diff
+    // this.props.actions.setPrevVP(prevVP);
   }
 
   render() {
@@ -984,6 +1004,7 @@ class Board extends Component {
                     () => {
                       this.props.playSound('movement');
                       this.pause().then(() => {
+                        console.log('pause resolved, restart');
                         this.props.actions.restart();
                         this.props.history.push('/');
                       });

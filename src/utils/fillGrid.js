@@ -74,7 +74,7 @@ const fillGrid = (gameMap, level, hero, difficulty) => {
     level: 3,
     room: 'door',
   };
-  if (level === 3) {
+  if (level === 1) {
     // special entities for level 3: key, candle, trump
     magicItems = [
       {
@@ -131,6 +131,7 @@ const fillGrid = (gameMap, level, hero, difficulty) => {
               [anchorCell[1] + 1, anchorCell[0] + 1],
               [anchorCell[1], anchorCell[0] + 1],
             ];
+            console.log(`trumpPosition: ${trumpPosition}`);
             break;
           }
         }

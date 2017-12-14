@@ -229,10 +229,10 @@ const drawCell = (cellSize, ctx, cellInput, x, y, candle, key, levelCompleted,
   const img = new Image();
   const radius = Math.floor((cellSize) * 0.2) || 2;
   const size = cellSize * 2;
-  ctx.clearRect(x, y, cellSize, cellSize);
   switch (cell.type) {
     case 'padlock':
     case 'wall':
+      ctx.clearRect(x, y, cellSize, cellSize);
       ctx.lineJoin = 'round';
       ctx.lineWidth = radius;
       ctx.strokeStyle = `hsl(${cell.hue}, ${100 - ((cell.level - 1) * 10)}%, ${(cell.opacity - (cell.level / 10)) * 100}%)`;
@@ -258,54 +258,42 @@ const drawCell = (cellSize, ctx, cellInput, x, y, candle, key, levelCompleted,
       img.src = cell.iconUrl;
       img.onload = () => {
         ctx.save();
+        ctx.clearRect(x, y, cellSize, cellSize);
         ctx.shadowBlur = 20;
         ctx.shadowColor = 'yellow';
         ctx.drawImage(img, x, y, cellSize, cellSize);
         ctx.restore();
       };
-      if (!cell.iconUrl) {
-        ctx.fillStyle = 'hsla(60, 100%, 50%, 1)';
-        ctx.fillRect(x, y, cellSize, cellSize);
-      }
       break;
     case 'key':
       if (levelCompleted || difficulty < 2) {
         img.src = cell.iconUrl;
         img.onload = () => {
           ctx.save();
+          ctx.clearRect(x, y, cellSize, cellSize);
           ctx.shadowBlur = 20;
           ctx.shadowColor = 'yellow';
           ctx.drawImage(img, x, y, cellSize, cellSize);
           ctx.restore();
         };
-        if (!cell.iconUrl) {
-          ctx.fillStyle = 'hsla(60, 100%, 50%, 1)';
-          ctx.fillRect(x, y, cellSize, cellSize);
-        }
       }
       break;
     case 'monster':
-      ctx.fillStyle = 'hsla(0, 0%, 80%, 1)';
-      ctx.fillRect(x, y, cellSize, cellSize);
       img.src = cell.iconUrl;
       img.onload = () => {
         ctx.save();
+        ctx.clearRect(x, y, cellSize, cellSize);
         ctx.drawImage(img, x, y, cellSize, cellSize);
         ctx.restore();
       };
-      if (!cell.iconUrl) {
-        ctx.fillStyle = 'hsla(360, 100%, 50%, 1)';
-        ctx.fillRect(x, y, cellSize, cellSize);
-      }
       break;
     case 'food':
-      ctx.fillStyle = 'hsla(0, 0%, 80%, 1)';
-      ctx.fillRect(x, y, cellSize, cellSize);
       img.src = cell.iconUrl;
       if (cell.title === 'Invisible Sufganiyah') {
         if (candle === true) {
           img.onload = () => {
             ctx.save();
+            ctx.clearRect(x, y, cellSize, cellSize);
             ctx.drawImage(img, x, y, cellSize, cellSize);
             ctx.restore();
           };
@@ -313,41 +301,31 @@ const drawCell = (cellSize, ctx, cellInput, x, y, candle, key, levelCompleted,
       } else {
         img.onload = () => {
           ctx.save();
+          ctx.clearRect(x, y, cellSize, cellSize);
           ctx.drawImage(img, x, y, cellSize, cellSize);
           ctx.restore();
         };
       }
-      if (!cell.iconUrl) {
-        ctx.fillStyle = 'hsla(120, 100%, 50%, 1)';
-        ctx.fillRect(x, y, cellSize, cellSize);
-      }
       break;
     case 'teamHero':
-      ctx.fillStyle = 'hsla(0, 0%, 80%, 1)';
-      ctx.fillRect(x, y, cellSize, cellSize);
       img.src = cell.iconUrl;
       img.onload = () => {
         ctx.save();
+        ctx.clearRect(x, y, cellSize, cellSize);
         ctx.drawImage(img, x, y, cellSize, cellSize);
         ctx.restore();
       };
-      if (!cell.iconUrl) {
-        ctx.fillStyle = 'hsla(180, 100%, 50%, 1)';
-        ctx.fillRect(x, y, cellSize, cellSize);
-      }
       break;
     case 'finalMonster':
+      ctx.clearRect(x, y, cellSize, cellSize);
       if (cell.opacity) {
         img.src = cell.iconUrl;
         img.onload = () => {
           ctx.save();
+          ctx.clearRect(x, y, cellSize, cellSize);
           ctx.drawImage(img, x, y, size, size);
           ctx.restore();
         };
-        if (!cell.iconUrl) {
-          ctx.fillStyle = 'black';
-          ctx.fillRect(x, y, size, size);
-        }
       }
       break;
     case 'staircase':
@@ -355,6 +333,7 @@ const drawCell = (cellSize, ctx, cellInput, x, y, candle, key, levelCompleted,
         img.src = 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/staircase_32_c.png';
         img.onload = () => {
           ctx.save();
+          ctx.clearRect(x, y, cellSize, cellSize);
           ctx.drawImage(img, x, y, cellSize, cellSize);
           ctx.restore();
         };
@@ -370,7 +349,7 @@ export const clamp = (val, min, max) => Math.min(Math.max(val, min), max);
 
 // called from Board.jsx > draw()
 export const renderViewport = (heroPosition, entities, cellSize,
-  prevVP, candle, key, levelCompleted, difficulty) => {
+  candle, key, levelCompleted, difficulty) => {
   const [hX, hY] = heroPosition;
   const newEntities = entities.map(row => row.map((cell) => {
     const newCell = { ...cell };
@@ -384,8 +363,7 @@ export const renderViewport = (heroPosition, entities, cellSize,
   const vX = clamp(((hX - (vSize / 2))), 0, ((gridWidth - vSize))); // 30
   const vY = clamp(((hY - (vSize / 2))), 0, ((gridHeight - vSize))); // 20
   // filter out rows above or below viewport,
-  // return current viewport to save to app state
-  return newEntities.filter((row, rIdx) => rIdx >= vY && rIdx < (vY + vSize)).map((r, i) =>
+  newEntities.filter((row, rIdx) => rIdx >= vY && rIdx < (vY + vSize)).map((r, i) =>
       // filter out cells to left or right of viewport
        r.filter((r2, i2) => i2 >= vX && i2 < (vX + vSize))
       .map((c, j) => {
@@ -393,21 +371,19 @@ export const renderViewport = (heroPosition, entities, cellSize,
         const y = cellSize * i;
         const newCell = { ...c };
         // only draw cells if they are DIFFERENT from last viewport update
-        if (!prevVP) {
-          if (!newCell.level) { newCell.level = 1; }
-          if (!newCell.hue) { newCell.hue = 0; }
-          drawCell(cellSize, ctx, newCell, x, y, vX, vY, candle, key, levelCompleted, difficulty);
-          return newCell;
-        }
-        const prevCell = prevVP[i][j];
-        if (newCell.type !== prevCell.type ||
-          newCell.name !== prevCell.name ||
-          newCell.opacity !== prevCell.opacity ||
-          newCell.hue !== prevCell.hue) {
-          drawCell(cellSize, ctx, newCell, x, y, candle, key, levelCompleted, difficulty);
-          return newCell;
-        }
-        return newCell;
+        // if (!prevVP) {
+        drawCell(cellSize, ctx, newCell, x, y, vX, vY, candle, key, levelCompleted, difficulty);
+          return null;
+        // }
+        // const prevCell = prevVP[i][j];
+        // if (newCell.type !== prevCell.type ||
+        //   newCell.name !== prevCell.name ||
+        //   newCell.opacity !== prevCell.opacity ||
+        //   newCell.hue !== prevCell.hue) {
+        //   drawCell(cellSize, ctx, newCell, x, y, candle, key, levelCompleted, difficulty);
+        //   return newCell;
+        // }
+        // return newCell;
       }));
 };
 
