@@ -111,6 +111,7 @@ const fillGrid = (gameMap, level, hero, difficulty) => {
 
     // generate random corner for trump
     const corner = utils.randomInt(0, 4);
+    console.log(`corner: ${corner}`);
     let anchorCell = [];
 
     // Save an array of the coordinates of the four blocks
@@ -131,7 +132,6 @@ const fillGrid = (gameMap, level, hero, difficulty) => {
               [anchorCell[1] + 1, anchorCell[0] + 1],
               [anchorCell[1], anchorCell[0] + 1],
             ];
-            console.log(`trumpPosition: ${trumpPosition}`);
             break;
           }
         }

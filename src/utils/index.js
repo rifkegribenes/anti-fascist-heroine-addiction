@@ -240,6 +240,7 @@ const drawCell = (cellSize, ctx, cellInput, x, y, candle, key, levelCompleted,
       ctx.fillStyle = `hsl(${cell.hue}, ${100 - ((cell.level - 1) * 10)}%, ${(cell.opacity - (cell.level / 10)) * 100}%)`; // rainbow
       ctx.fillRect(x + (radius / 2), y + (radius / 2), cellSize - radius, cellSize - radius);
       if (cell.type === 'padlock') {
+        console.log('drawing padlock');
         img.src = cell.iconUrl;
         img.onload = () => {
           ctx.save();
@@ -317,12 +318,11 @@ const drawCell = (cellSize, ctx, cellInput, x, y, candle, key, levelCompleted,
       };
       break;
     case 'finalMonster':
-      ctx.clearRect(x, y, cellSize, cellSize);
       if (cell.opacity) {
         img.src = cell.iconUrl;
         img.onload = () => {
           ctx.save();
-          ctx.clearRect(x, y, cellSize, cellSize);
+          ctx.clearRect(x, y, (cellSize * 2), (cellSize * 2));
           ctx.drawImage(img, x, y, size, size);
           ctx.restore();
         };
@@ -373,7 +373,7 @@ export const renderViewport = (heroPosition, entities, cellSize,
         // only draw cells if they are DIFFERENT from last viewport update
         // if (!prevVP) {
         drawCell(cellSize, ctx, newCell, x, y, vX, vY, candle, key, levelCompleted, difficulty);
-          return null;
+        return null;
         // }
         // const prevCell = prevVP[i][j];
         // if (newCell.type !== prevCell.type ||

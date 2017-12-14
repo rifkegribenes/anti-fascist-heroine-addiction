@@ -819,9 +819,11 @@ class Board extends Component {
     // calculate hero movement
     this.props.actions.updateEntities(currentEntities, newPosition);
 
-    // calculate monster movement only if doors has populated from fillGrid
-    // and only if monsters are due to move this round
-    if (doors && doors.length && monsterMove) {
+    // calculate monster movement  if
+    // difficulty > 0
+    // doors has populated from fillGrid
+    // & monsters are due to move this round
+    if (this.props.appState.difficulty > 0 && doors && doors.length && monsterMove) {
       // store each monster's target move in an array
       // if a second monster tries to move into the same cell
       // disable his movement for that turn
