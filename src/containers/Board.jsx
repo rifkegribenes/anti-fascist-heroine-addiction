@@ -371,6 +371,7 @@ class Board extends Component {
     document.getElementById('hero').classList.add('powerUp');
     setTimeout(() => {
       document.getElementById('hero').classList.remove('powerUp');
+      console.log(`candle: ${this.props.appState.candle}`);
     }, 1000);
   }
 
@@ -801,9 +802,11 @@ class Board extends Component {
       this.update(this.props.appState.entities, this.props.appState.heroPosition, monsterMove);
       this.draw();
       const request = requestFrame('request');
-      myReq = request((ts) => {
-        this.gameLoop(ts);
-      });
+      setTimeout(() => {
+        myReq = request((ts) => {
+          this.gameLoop(ts);
+        });
+      }, 1000 / 12);
     } else {
       console.log('not running');
     }

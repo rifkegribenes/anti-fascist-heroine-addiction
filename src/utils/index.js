@@ -230,7 +230,6 @@ const drawCell = (cellSize, ctx, cellInput, x, y, candle, key, levelCompleted,
   const radius = Math.floor((cellSize) * 0.2) || 2;
   const size = cellSize * 2;
   switch (cell.type) {
-    case 'padlock':
     case 'wall':
       ctx.clearRect(x, y, cellSize, cellSize);
       ctx.lineJoin = 'round';
@@ -239,15 +238,21 @@ const drawCell = (cellSize, ctx, cellInput, x, y, candle, key, levelCompleted,
       ctx.strokeRect(x + (radius / 2), y + (radius / 2), cellSize - radius, cellSize - radius);
       ctx.fillStyle = `hsl(${cell.hue}, ${100 - ((cell.level - 1) * 10)}%, ${(cell.opacity - (cell.level / 10)) * 100}%)`; // rainbow
       ctx.fillRect(x + (radius / 2), y + (radius / 2), cellSize - radius, cellSize - radius);
-      if (cell.type === 'padlock') {
-        console.log('drawing padlock');
-        img.src = cell.iconUrl;
-        img.onload = () => {
-          ctx.save();
-          ctx.drawImage(img, x, y, cellSize, cellSize);
-          ctx.restore();
-        };
-      }
+      break;
+    case 'padlock':
+      // ctx.save();
+      ctx.clearRect(x, y, cellSize, cellSize);
+      ctx.lineJoin = 'round';
+      ctx.lineWidth = radius;
+      ctx.strokeStyle = `hsl(${cell.hue}, ${100 - ((cell.level - 1) * 10)}%, ${(cell.opacity - (cell.level / 10)) * 100}%)`;
+      ctx.strokeRect(x + (radius / 2), y + (radius / 2), cellSize - radius, cellSize - radius);
+      ctx.fillStyle = `hsl(${cell.hue}, ${100 - ((cell.level - 1) * 10)}%, ${(cell.opacity - (cell.level / 10)) * 100}%)`; // rainbow
+      ctx.fillRect(x + (radius / 2), y + (radius / 2), cellSize - radius, cellSize - radius);
+      img.src = cell.iconUrl;
+      // img.onload = () => {
+        ctx.drawImage(img, x, y, cellSize, cellSize);
+        // ctx.restore();
+      // };
       break;
     case 'floor':
     case 'door':
@@ -294,7 +299,6 @@ const drawCell = (cellSize, ctx, cellInput, x, y, candle, key, levelCompleted,
         if (candle === true) {
           img.onload = () => {
             ctx.save();
-            ctx.clearRect(x, y, cellSize, cellSize);
             ctx.drawImage(img, x, y, cellSize, cellSize);
             ctx.restore();
           };
@@ -372,7 +376,7 @@ export const renderViewport = (heroPosition, entities, cellSize,
         const newCell = { ...c };
         // only draw cells if they are DIFFERENT from last viewport update
         // if (!prevVP) {
-        drawCell(cellSize, ctx, newCell, x, y, vX, vY, candle, key, levelCompleted, difficulty);
+        drawCell(cellSize, ctx, newCell, x, y, candle, key, levelCompleted, difficulty);
         return null;
         // }
         // const prevCell = prevVP[i][j];
