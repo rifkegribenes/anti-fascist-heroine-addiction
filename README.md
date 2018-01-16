@@ -46,5 +46,9 @@ Each monster your team defeats gives you experience points. It takes 100 XP to l
 
 To win, defeat the final monster on level 3.</div>
 
+### About
+
+FreeCodeCamp 'Build a Roguelike Dungeon Crawler' project for Data Visualization certification
+
 
 
