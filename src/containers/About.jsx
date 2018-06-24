@@ -16,12 +16,12 @@ const heroCredits = teamHeroes.map(hero => (
     <div className="about__text-wrap">
           Character created by: {hero.createdBy || ''}<br />
           Image source:&nbsp;
-          <a
-            className="splash__link"
-            href={hero.srcUrl}
-            rel="noopener noreferrer"
-            target="_blank"
-          >{hero.srcName}</a><br />
+      <a
+        className="splash__link"
+        href={hero.srcUrl}
+        rel="noopener noreferrer"
+        target="_blank"
+      >{hero.srcName}</a><br />
           Artwork by: {hero.artBy || 'Unknown'}
     </div>
   </div>
@@ -36,12 +36,12 @@ const otherCredits = (
       <div className="splash__text-wrap">
         <span className="splash__bold">George W. Bush</span><br />
           Modified from&nbsp;
-          <a
-            className="splash__link"
-            href="https://www.artfire.com/ext/shop/product_view/DressXpress/12389222/george_w_bush_face_with_horns_die-cut_decal_car_window_wall_bumper_phone_laptop/commercial/home_and_garden/home_decor"
-            rel="noopener noreferrer"
-            target="_blank"
-          >this image</a>&nbsp;(artist unknown)<br />
+        <a
+          className="splash__link"
+          href="https://www.artfire.com/ext/shop/product_view/DressXpress/12389222/george_w_bush_face_with_horns_die-cut_decal_car_window_wall_bumper_phone_laptop/commercial/home_and_garden/home_decor"
+          rel="noopener noreferrer"
+          target="_blank"
+        >this image</a>&nbsp;(artist unknown)<br />
           All other monster images by <a className="splash__link" href="https://github.com/rifkegribenes" target="blank" rel="noopener noreferrer">@rifkegribenes</a>
       </div>
     </div>

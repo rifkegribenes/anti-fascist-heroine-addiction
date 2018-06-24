@@ -49,6 +49,15 @@
     opacity: 1;
   }
 
+  &__btn-wrap {
+  	margin: 10px auto;
+  	position: static;
+  	z-index: 3;
+  	&--top {
+      margin-top: -15px;
+  	}
+  }
+
   &__img-wrap {
     position: relative;
 
@@ -91,7 +100,7 @@
   }
 
   &__body1 {
-    margin: 3vh 0;
+    margin: 10px 0;
     z-index: $z-index-front;
     font-weight: 700;
   }
@@ -125,6 +134,8 @@
     width: 220px;
     text-align: center;
     z-index: $z-index-front;
+    flex-shrink: 0;
+    position: static;
 
     &:hover, &:focus, &:active {
       box-shadow: 0 0 20px Lime;

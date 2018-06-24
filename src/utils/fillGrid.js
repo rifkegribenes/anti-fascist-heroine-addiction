@@ -111,6 +111,7 @@ const fillGrid = (gameMap, level, hero, difficulty) => {
 
     // generate random corner for trump
     const corner = utils.randomInt(0, 4);
+    console.log(`corner: ${corner}`);
     let anchorCell = [];
 
     // Save an array of the coordinates of the four blocks
@@ -260,7 +261,7 @@ const fillGrid = (gameMap, level, hero, difficulty) => {
   if (level === 3) {
     const finalMonsterDoorCoords = doors.filter(door =>
       door.rooms.includes(finalMonsterRoom))[0].coords;
-    // console.log(`trump's door: ${finalMonsterDoorCoords}`);
+    console.log(`trump's door: ${finalMonsterDoorCoords}`);
 
     // place the padlock on the door of trump's room
     const [xx, yy] = finalMonsterDoorCoords;

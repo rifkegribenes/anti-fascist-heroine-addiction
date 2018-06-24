@@ -12,9 +12,12 @@ import * as utils from '../utils/index';
 import generateMap from '../utils/mapgen';
 import fillGrid from '../utils/fillGrid';
 
+let myReq = null;
+let lastMonsterMove = 0;
+
 const updateXP = (xp) => {
   const width = xp / 3;
-  document.styleSheets[0].addRule('.hero__xp-slider::after', `width: ${width}% !important`);
+  document.styleSheets[1].addRule('.hero__xp-slider::after', `width: ${width}% !important`);
 };
 
 class Board extends Component {
@@ -23,7 +26,8 @@ class Board extends Component {
     super(props);
 
     this.state = {
-      myReq: null,
+      intervalID: null,
+      speed: 1,
     };
 
     this.handleKeydown = this.handleKeydown.bind(this);
@@ -51,15 +55,17 @@ class Board extends Component {
     // before rendering viewport and starting gameloop
     if (!prevProps.appState.gridFilled) {
       if (this.props.appState.gridFilled) {
-        if (this.props.appState.difficulty > 0) {
-          this.play();
-        } else {
-          this.draw();
-          return;
-        }
-        this.draw();
+        // console.log('gridFilled, calling play');
+        this.props.actions.play();
       }
     }
+    if (!prevProps.appState.running) {
+      if (this.props.appState.running) {
+        // console.log('running state set, starting game');
+        this.play();
+      }
+    }
+
     // listen for window size change and render full viewport
     // instead of only changed cells
     if (prevProps.appState.clipSize !== this.props.appState.clipSize) {
@@ -72,7 +78,7 @@ class Board extends Component {
     window.removeEventListener('resize', this.updateDimensions);
     window.clearInterval(window.interval);
     const cancel = requestFrame('cancel');
-    cancel(this.state.myReq);
+    cancel(myReq);
   }
 
   updateDimensions() {
@@ -158,7 +164,6 @@ class Board extends Component {
         grid1 = utils.changeEntity(this.props.appState.entities, { type: 'floor', room: oldRoom }, [x, y]);
         grid2 = utils.changeEntity(grid1, newHero, newPosition);
         this.props.actions.updateGrid(grid2, newPosition);
-        this.draw();
       }
 
       // ANYTHING => UNOCCUPIED DOORWAY
@@ -168,12 +173,11 @@ class Board extends Component {
         grid1 = utils.changeEntity(this.props.appState.entities, { type: 'floor', room: oldRoom }, [x, y]);
         grid2 = utils.changeEntity(grid1, newHero, newPosition);
         this.props.actions.updateGrid(grid2, newPosition);
-        this.draw();
         this.props.actions.updateHero(newHero);
         return;
       }
 
-      // ANYTHING => MONSTER IN DOORWAY (no other entitity can be in door)
+      // ANYTHING => MONSTER IN DOORWAY (no other entity can be in door)
       // replace vacated cell with floor, change hero room, handle entity
       if (destination.room === 'door' &&
         destination.type !== 'door' &&
@@ -197,7 +201,6 @@ class Board extends Component {
           grid1 = utils.changeEntity(this.props.appState.entities, { type: 'floor', room: oldRoom }, [x, y]);
           grid2 = utils.changeEntity(grid1, newHero, newPosition);
           this.props.actions.updateGrid(grid2, newPosition);
-          this.draw();
           this.props.actions.updateHero(newHero);
           return;
         }
@@ -216,7 +219,6 @@ class Board extends Component {
         grid1 = utils.changeEntity(this.props.appState.entities, { type: 'door', room: 'door' }, [x, y]);
         grid2 = utils.changeEntity(grid1, newHero, newPosition);
         this.props.actions.updateGrid(grid2, newPosition);
-        this.draw();
       }
 
       // DOOR => MONSTER NOT IN DOORWAY
@@ -236,7 +238,6 @@ class Board extends Component {
         grid2 = utils.changeEntity(grid1, newHero, newPosition);
         this.props.actions.updateGrid(grid2, newPosition);
         document.getElementById('entity').classList.remove('spin');
-        this.draw();
         switch (destination.type) {
           // if monster, handle combat
           case 'finalMonster':
@@ -296,7 +297,6 @@ class Board extends Component {
         grid2 = utils.changeEntity(grid1, newHero, newPosition);
         this.props.actions.updateGrid(grid2, newPosition);
         document.getElementById('entity').classList.remove('spin');
-        this.draw();
         switch (destination.type) {
           case 'food':
             this.props.actions.setCurrentEntity(destination);
@@ -371,6 +371,7 @@ class Board extends Component {
     document.getElementById('hero').classList.add('powerUp');
     setTimeout(() => {
       document.getElementById('hero').classList.remove('powerUp');
+      console.log(`candle: ${this.props.appState.candle}`);
     }, 1000);
   }
 
@@ -552,7 +553,11 @@ class Board extends Component {
     const messages = [...this.props.appState.messages];
     messages.push(`Level UP!! Your team is now prepared to take on level ${hero.level} monsters.`);
     if (difficulty > 1) {
-      messages.push(`Time to look for the staircase down to level ${gameLevel + 1}`);
+      if (gameLevel < 3) {
+        messages.push(`Time to look for the staircase down to level ${gameLevel + 1}`);
+      } else {
+        messages.push('Time to look for the key to Trump\'s chambers');
+      }
     }
     this.props.actions.updateMessages(messages);
 
@@ -597,13 +602,14 @@ class Board extends Component {
     }
     const grid2 = utils.changeEntity(grid1, hero, monsterCoords);
     this.props.actions.updateGrid(grid2, monsterCoords);
-    this.draw();
 
     // update xp slider
     const newHero = { ...hero };
     newHero.xp += 25;
+    console.log(`newHero.xp: ${newHero.xp}`);
     updateXP(newHero.xp);
     this.props.actions.updateHero(newHero);
+    console.log(newHero);
 
     // update hero level
     if (newHero.xp % 100 === 0) {
@@ -678,6 +684,12 @@ class Board extends Component {
     document.getElementById('subhead').classList.add('powerUp');
     setTimeout(() => {
       this.draw();
+      // for difficulty level = 2, reset monster speed after level up
+      if (this.props.appState.difficulty === 2) {
+        const newState = { ...this.state };
+        newState.speed = 1 / this.props.appState.gameLevel; // 1 sec, 1/2 sec, 1/3 sec
+        this.setState({ ...newState });
+      }
     }, 1000);
     setTimeout(() => {
       document.getElementById('board').classList.remove('staircaseSpin');
@@ -784,29 +796,33 @@ class Board extends Component {
     }
   }
 
-  gameLoop(timestamp, grid2, newPosition) {
-    const request = requestFrame('request');
-    let speed = 1000;
-    const { difficulty, gameLevel } = this.props.appState;
-    if (difficulty === 2) {
-      speed = 1000 / gameLevel;
-    } else if (difficulty === 3) {
-      speed = 300;
-    }
+  gameLoop(timestamp) {
+    let delta;
+    let monsterMove = false;
     if (this.props.appState.running) {
-      this.update(grid2, newPosition);
+      if (!timestamp) {
+        delta = 0;
+      } else {
+        delta = (timestamp - lastMonsterMove) / 1000;
+        if (delta > this.state.speed) {
+          lastMonsterMove = timestamp;
+          monsterMove = true; // tell update function to move monsters
+        }
+      }
+      this.update(this.props.appState.entities, this.props.appState.heroPosition, monsterMove);
       this.draw();
+      const request = requestFrame('request');
       setTimeout(() => {
-        const myReq = request(() => {
-          this.gameLoop(timestamp,
-            this.props.appState.entities, this.props.appState.heroPosition);
+        myReq = request((ts) => {
+          this.gameLoop(ts);
         });
-        this.setState({ myReq });
-      }, speed);
+      }, 1000 / 12);
+    } else {
+      console.log('not running');
     }
   }
 
-  update(grid2, newPosition) {
+  update(grid2, newPosition, monsterMove) {
     // update position and object values for hero and all entities
     // for time elapsed since last render
     const currentEntities = this.props.appState.entities;
@@ -816,8 +832,11 @@ class Board extends Component {
     // calculate hero movement
     this.props.actions.updateEntities(currentEntities, newPosition);
 
-    // calculate monster movement only if doors has populated from fillGrid
-    if (doors && doors.length) {
+    // calculate monster movement  if
+    // difficulty > 0
+    // doors has populated from fillGrid
+    // & monsters are due to move this round
+    if (this.props.appState.difficulty > 0 && doors && doors.length && monsterMove) {
       // store each monster's target move in an array
       // if a second monster tries to move into the same cell
       // disable his movement for that turn
@@ -851,19 +870,31 @@ class Board extends Component {
   }
 
   play() {
-    if (this.props.appState.difficulty > 0) {
-      this.props.actions.play();
-      const request = requestFrame('request');
-      const myReq = request(this.gameLoop);
-      this.setState({ myReq });
+    this.props.actions.play();
+    console.log('play');
+    // set monster speed
+    let speed = 1;
+    const { gameLevel, difficulty } = this.props.appState;
+    if (difficulty === 1) {
+      speed = 1; // move once per second
+    } else if (difficulty === 2) {
+      speed = 1 / gameLevel; // 1 sec, 1/2 sec, 1/3 sec
+    } else if (difficulty === 3) {
+      speed = 0.3; // < 1/3 sec
     }
+    const newState = { ...this.state };
+    newState.speed = speed;
+    this.setState({ ...newState });
+
+    this.gameLoop();
   }
 
   pause() {
     return new Promise((resolve) => {
-      window.clearInterval(window.interval);
+      window.clearInterval(this.state.intervalID);
+      window.clearInterval();
       const cancel = requestFrame('cancel');
-      cancel(this.state.myReq);
+      cancel(myReq);
       this.props.actions.pause();
       if (!this.props.appState.running) {
         resolve();
@@ -877,40 +908,34 @@ class Board extends Component {
     this.props.actions.start(newMap, heroPosition, trumpPosition, doors);
   }
 
-  draw(resize) {
+  draw() {
     const { heroPosition, entities, cellSize, candle, key, hero, gameLevel,
       difficulty } = this.props.appState;
-    if (this.props.appState.gridFilled && document.getElementById('board')) {
-      let prevVP;
-      // render current viewport
-      // save current viewport as 'prevVP'
+    // let prevVP;
+    // render current viewport
+    // save current viewport as 'prevVP'
 
-      // calculate whether level has been completed
-      // to decide whether to render staircase or key
-      let levelCompleted = false;
-      if (hero.level > gameLevel) {
-        levelCompleted = true;
-      }
-
-      const request = requestFrame('request');
-      // if window has been resized since last render,
-      // prevVP = null (full re-render)
-      if (resize) {
-        request(() => {
-          prevVP = utils.renderViewport(heroPosition, entities,
-         cellSize, null, candle, key, levelCompleted, difficulty);
-        });
-      } else {
-        // otherwise, use prevVP to decide which cells to render in this round
-        request(() => {
-          prevVP = utils.renderViewport(heroPosition, entities, cellSize,
-          this.props.appState.prevVP, candle, key, levelCompleted, difficulty);
-        });
-      }
-      // save prevVP to app state to compare against next viewport
-      // and only draw diff
-      this.props.actions.setPrevVP(prevVP);
+    // calculate whether level has been completed
+    // to decide whether to render staircase or key
+    let levelCompleted = false;
+    if (hero.level > gameLevel) {
+      levelCompleted = true;
     }
+    if (levelCompleted) { console.log('level Completed'); }
+
+    // if window has been resized since last render,
+    // prevVP = null (full re-render)
+    // if (resize) {
+    utils.renderViewport(heroPosition, entities,
+     cellSize, candle, key, levelCompleted, difficulty);
+    // } else {
+    //   // otherwise, use prevVP to decide which cells to render in this round
+    //   prevVP = utils.renderViewport(heroPosition, entities, cellSize,
+    //   this.props.appState.prevVP, candle, key, levelCompleted, difficulty);
+    // }
+    // // save prevVP to app state to compare against next viewport
+    // // and only draw diff
+    // this.props.actions.setPrevVP(prevVP);
   }
 
   render() {
@@ -995,6 +1020,7 @@ class Board extends Component {
                     () => {
                       this.props.playSound('movement');
                       this.pause().then(() => {
+                        console.log('pause resolved, restart');
                         this.props.actions.restart();
                         this.props.history.push('/');
                       });
