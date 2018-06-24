@@ -250,7 +250,7 @@ const drawCell = (cellSize, ctx, cellInput, x, y, candle, key, levelCompleted,
       ctx.fillRect(x + (radius / 2), y + (radius / 2), cellSize - radius, cellSize - radius);
       img.src = cell.iconUrl;
       // img.onload = () => {
-        ctx.drawImage(img, x, y, cellSize, cellSize);
+      ctx.drawImage(img, x, y, cellSize, cellSize);
         // ctx.restore();
       // };
       break;
@@ -273,6 +273,7 @@ const drawCell = (cellSize, ctx, cellInput, x, y, candle, key, levelCompleted,
       break;
     case 'key':
       if (levelCompleted || difficulty < 2) {
+        console.log('drawing key');
         img.src = cell.iconUrl;
         img.onload = () => {
           ctx.save();

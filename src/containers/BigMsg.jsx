@@ -33,37 +33,7 @@ class BigMsg extends React.Component {
       <div className="big-msg" style={this.props.style}>
         <div className="big-msg__container">
           <h2 className="big-msg__title blink" id="msgTitle">{this.props.appState.bigMsg.title}</h2>
-          <div id="msgImg" className={this.props.appState.bigMsg.title === 'You won!' ? 'big-msg__img-wrap' : ''}>
-            <img src={this.props.appState.bigMsg.imgUrl} className="big-msg__img" alt={this.props.appState.bigMsg.imgAlt} />
-          </div>
-          {this.props.appState.bigMsg.title === 'You won!' &&
-            <div className="big-msg__team--wrapper">
-              {teamList(this.props.appState.hero.team)}
-            </div>
-          }
-          <div className="big-msg__news">{this.props.appState.bigMsg.news}</div>
-          <div className="big-msg__body1">{this.props.appState.bigMsg.body1}</div>
-          {this.props.appState.bigMsg.body2 &&
-            <div className="big-msg__body2">{this.props.appState.bigMsg.body2}</div>
-          }
-          <button
-            className="big-msg__btn"
-            onClick={this.props.appState.bigMsg.action}
-          >
-            <span className="rainbow">{this.props.appState.bigMsg.actionText}</span>
-          </button>
-          <div className="modal__btn-wrap modal__btn-wrap--col">
-          Defeat these chucklef@cks in real life!
-            <a
-              className="big-msg__btn big-msg__btn--wide"
-              href="https://www.vote.org/"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <span className="rainbow">Register to vote</span>
-            </a>
-          </div>
-          <div className="modal__btn-wrap">
+          <div className="big-msg__btn-wrap big-msg__btn-wrap--top">
             <a
               className="big-msg__btn big-msg__btn--icon"
               href="http://www.facebook.com/sharer.php?u=http://anti-fascist-heroine-addiction.surge.sh/"
@@ -87,6 +57,36 @@ class BigMsg extends React.Component {
               rel="noopener noreferrer"
             >
               <span className="rainbow icon icon-tumblr" />
+            </a>
+          </div>
+          <div id="msgImg" className={this.props.appState.bigMsg.title === 'You won!' ? 'big-msg__img-wrap' : ''}>
+            <img src={this.props.appState.bigMsg.imgUrl} className="big-msg__img" alt={this.props.appState.bigMsg.imgAlt} />
+          </div>
+          {this.props.appState.bigMsg.title === 'You won!' &&
+            <div className="big-msg__team--wrapper">
+              {teamList(this.props.appState.hero.team)}
+            </div>
+          }
+          <div className="big-msg__news">{this.props.appState.bigMsg.news}</div>
+          <div className="big-msg__body1">{this.props.appState.bigMsg.body1}</div>
+          {this.props.appState.bigMsg.body2 &&
+            <div className="big-msg__body2">{this.props.appState.bigMsg.body2}</div>
+          }
+          <button
+            className="big-msg__btn big-msg__btn--wide"
+            onClick={this.props.appState.bigMsg.action}
+          >
+            <span className="rainbow">{this.props.appState.bigMsg.actionText}</span>
+          </button>
+          <div className="big-msg__btn-wrap">
+          Defeat these chucklef@cks in real life!
+            <a
+              className="big-msg__btn big-msg__btn--wide"
+              href="https://www.vote.org/"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <span className="rainbow">Register to vote</span>
             </a>
           </div>
         </div>

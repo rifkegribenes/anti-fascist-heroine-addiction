@@ -17,7 +17,7 @@ let lastMonsterMove = 0;
 
 const updateXP = (xp) => {
   const width = xp / 3;
-  document.styleSheets[0].addRule('.hero__xp-slider::after', `width: ${width}% !important`);
+  document.styleSheets[1].addRule('.hero__xp-slider::after', `width: ${width}% !important`);
 };
 
 class Board extends Component {
@@ -55,13 +55,13 @@ class Board extends Component {
     // before rendering viewport and starting gameloop
     if (!prevProps.appState.gridFilled) {
       if (this.props.appState.gridFilled) {
-        console.log('gridFilled, calling play');
+        // console.log('gridFilled, calling play');
         this.props.actions.play();
       }
     }
     if (!prevProps.appState.running) {
       if (this.props.appState.running) {
-        console.log('running state set, starting game');
+        // console.log('running state set, starting game');
         this.play();
       }
     }
@@ -177,7 +177,7 @@ class Board extends Component {
         return;
       }
 
-      // ANYTHING => MONSTER IN DOORWAY (no other entitity can be in door)
+      // ANYTHING => MONSTER IN DOORWAY (no other entity can be in door)
       // replace vacated cell with floor, change hero room, handle entity
       if (destination.room === 'door' &&
         destination.type !== 'door' &&
@@ -553,7 +553,11 @@ class Board extends Component {
     const messages = [...this.props.appState.messages];
     messages.push(`Level UP!! Your team is now prepared to take on level ${hero.level} monsters.`);
     if (difficulty > 1) {
-      messages.push(`Time to look for the staircase down to level ${gameLevel + 1}`);
+      if (gameLevel < 3) {
+        messages.push(`Time to look for the staircase down to level ${gameLevel + 1}`);
+      } else {
+        messages.push('Time to look for the key to Trump\'s chambers');
+      }
     }
     this.props.actions.updateMessages(messages);
 
@@ -602,8 +606,10 @@ class Board extends Component {
     // update xp slider
     const newHero = { ...hero };
     newHero.xp += 25;
+    console.log(`newHero.xp: ${newHero.xp}`);
     updateXP(newHero.xp);
     this.props.actions.updateHero(newHero);
+    console.log(newHero);
 
     // update hero level
     if (newHero.xp % 100 === 0) {
@@ -678,6 +684,12 @@ class Board extends Component {
     document.getElementById('subhead').classList.add('powerUp');
     setTimeout(() => {
       this.draw();
+      // for difficulty level = 2, reset monster speed after level up
+      if (this.props.appState.difficulty === 2) {
+        const newState = { ...this.state };
+        newState.speed = 1 / this.props.appState.gameLevel; // 1 sec, 1/2 sec, 1/3 sec
+        this.setState({ ...newState });
+      }
     }, 1000);
     setTimeout(() => {
       document.getElementById('board').classList.remove('staircaseSpin');
@@ -792,11 +804,9 @@ class Board extends Component {
         delta = 0;
       } else {
         delta = (timestamp - lastMonsterMove) / 1000;
-        // console.log(`delta: ${delta}, speed: ${this.state.speed}`);
         if (delta > this.state.speed) {
           lastMonsterMove = timestamp;
           monsterMove = true; // tell update function to move monsters
-          // console.log(monsterMove);
         }
       }
       this.update(this.props.appState.entities, this.props.appState.heroPosition, monsterMove);
@@ -911,6 +921,7 @@ class Board extends Component {
     if (hero.level > gameLevel) {
       levelCompleted = true;
     }
+    if (levelCompleted) { console.log('level Completed'); }
 
     // if window has been resized since last render,
     // prevVP = null (full re-render)
