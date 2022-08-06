@@ -41,16 +41,21 @@ const Splash = props => (
           <button
             className="big-msg__btn"
             onClick={() => {
-              if (props.appState.loaded) {
-                props.playSound('movement');
-                if (document.body.classList.contains('touchscreen') || window.innerWidth < 1000) {
-                  props.actions.openModal('sorry');
-                } else {
+              // if (props.appState.loaded) {
+                // props.playSound('movement');
+                // if (document.body.classList.contains('touchscreen') || window.innerWidth < 1000) {
+                //   props.actions.openModal('sorry');
+                // } else {
+                  console.log('click');
                   props.actions.openModal('difficulty');
-                }
-              }
+                // }
+              // }
             }}
-          ><span className={props.loaded >= 0.9 ? 'rainbow' : 'rainbow blink'}>{props.loaded >= 0.9 ? 'Start Game' : 'Loading'}</span></button>
+          >
+            <span className={props.loaded >= 0.9 ? 'rainbow' : 'rainbow blink'}>
+              {props.loaded >= 0.9 ? 'Start Game' : 'Loading'}
+            </span>
+          </button>
         </div>
         <div className="splash__instructions">
           <h3 className="splash__subhead">How to Play</h3>
@@ -72,36 +77,36 @@ const Splash = props => (
           </div>
           <h4 className="splash__bold">Health</h4>
           <div className="splash__key-wrap">
-            <img className="splash__icon" src="https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/ice-cream_32.png" alt="ice cream" />
-            <img className="splash__icon" src="https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/hamburger_32.png" alt="hamburger" />
-            <img className="splash__icon" src="https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/donut_32.png" alt="donut" />
-            <img className="splash__icon" src="https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/fries_32.png" alt="fries" />
+            <img className="splash__icon" src="./img/ice-cream_32.png" alt="ice cream" />
+            <img className="splash__icon" src="./img/hamburger_32.png" alt="hamburger" />
+            <img className="splash__icon" src="./img/donut_32.png" alt="donut" />
+            <img className="splash__icon" src="./img/fries_32.png" alt="fries" />
           </div>
             Eat food you find in the grid to stay alive. It takes strength to
             fight monsters. Walk into a food to eat it.
           <h4 className="splash__bold">Your team</h4>
           <div className="splash__key-wrap">
-            <img className="splash__icon--c" src="https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/misty-knight_32_c.png" alt="misty knight" />
-            <img className="splash__icon--c" src="https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/wonder-woman_32_c.png" alt="wonder woman" />
-            <img className="splash__icon--c" src="https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/silk_32_c.png" alt="silk" />
-            <img className="splash__icon--c" src="https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/la-borinquena_32_c.png" alt="la borinqueña" />
+            <img className="splash__icon--c" src="./img/misty-knight_32_c.png" alt="misty knight" />
+            <img className="splash__icon--c" src="./img/wonder-woman_32_c.png" alt="wonder woman" />
+            <img className="splash__icon--c" src="./img/silk_32_c.png" alt="silk" />
+            <img className="splash__icon--c" src="./img/la-borinquena_32_c.png" alt="la borinqueña" />
           </div>
             Gather a team of superheroes to help you fight monsters. You
             can&rsquo;t do it alone! Each member of your team adds attack
             strength. Walk into a superhero to add her to your team.
           <h4 className="splash__bold">Monsters</h4>
           <div className="splash__key-wrap">
-            <img className="splash__icon" src="https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/bush_32.png" alt="george bush" />
-            <img className="splash__icon" src="https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/mcconnell_32.png" alt="mitch mcconnell" />
-            <img className="splash__icon" src="https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/cruz_32.png" alt="ted cruz" />
-            <img className="splash__icon" src="https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/reagan_32.png" alt="ronald reagan" />
+            <img className="splash__icon" src="./img/bush_32.png" alt="george bush" />
+            <img className="splash__icon" src="./img/mcconnell_32.png" alt="mitch mcconnell" />
+            <img className="splash__icon" src="./img/cruz_32.png" alt="ted cruz" />
+            <img className="splash__icon" src="./img/reagan_32.png" alt="ronald reagan" />
           </div>
             Each monster your team defeats gives you experience points. It takes
             100 XP to level up. You&rsquo;ll need all the experience you can get
             to defeat the final monster. Walk into a monster repeatedly until
             you defeat it... or it defeats you!
           <h4 className="splash__bold">Staircases</h4>
-          <img className="splash__icon--c" src="https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/staircase_32_c.png" alt="staircase" /> Staircases take you down to the next level of the dungeon. In &lsquo;Medium&rsquo; and &lsquo;Hard&rsquo; difficulty levels, staircases are hidden until your character has enough XP to level up.
+          <img className="splash__icon--c" src="./img/staircase_32_c.png" alt="staircase" /> Staircases take you down to the next level of the dungeon. In &lsquo;Medium&rsquo; and &lsquo;Hard&rsquo; difficulty levels, staircases are hidden until your character has enough XP to level up.
           <h4 className="splash__bold">Winning the game</h4>
             To win, defeat the final monster on level 3.
           <h4 className="splash__bold">Strategy</h4>

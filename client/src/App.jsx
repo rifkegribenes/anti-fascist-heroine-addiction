@@ -1,8 +1,8 @@
 import React from 'react';
-import { Switch, Route, BrowserRouter } from 'react-router-dom';
+import { Routes, Route, BrowserRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import ReactHowler from 'react-howler';
+import {Howl} from 'howler';
 
 import Splash from './containers/Splash';
 import Board from './containers/Board';
@@ -20,21 +20,23 @@ class App extends React.Component {
 
     this.state = {
       playing: [],
-      loadProgress: 0,
+      loadProgress: 100,
       totalAssets: 0,
       assetList: [],
     };
 
+    // this.soundEffects = new Howl({
+    //   src: [effects/effects.webm’, effects/effects.mp3’],
+    //   sprite: {
+    //     correct_sound: [0, 2063.673469387755],
+    //     incorrect_sound: [4000, 2063.673469387755],
+    //     win_sound: [8000, 4519.183673469389]
+    //   }
+    // });
+
     this.playSound = this.playSound.bind(this);
     this.incrementLoader = this.incrementLoader.bind(this);
     this.handleLoadProgress = this.handleLoadProgress.bind(this);
-  }
-
-  componentWillMount() {
-    const totalAssets = imgUrls.length + soundManifest.manifest.length;
-    this.setState({
-      totalAssets,
-    });
   }
 
   componentDidMount() {
@@ -42,13 +44,17 @@ class App extends React.Component {
     this.preloadImages(imgUrls, () => {
       this.handleLoadProgress();
     });
+    const totalAssets = imgUrls.length + soundManifest.manifest.length;
+    this.setState({
+      totalAssets,
+    });
   }
 
   componentDidUpdate() {
-    this.handleLoadProgress();
-    if (this.state.loadProgress === this.state.totalAssets && !this.props.appState.loaded) {
-      this.props.actions.setLoaded();
-    }
+    // this.handleLoadProgress();
+    // if (this.state.loadProgress === this.state.totalAssets && !this.props.appState.loaded) {
+    //   this.props.actions.setLoaded();
+    // }
   }
 
   preloadImages(urls, allImagesLoadedCallback) {
@@ -73,39 +79,44 @@ class App extends React.Component {
       // can't get this one to work with react-howler
       // for overlapping play requests, so defaulting to plain old html5 audio
       if (item === 'movement') {
-        const sound = document.createElement('audio');
-        const source = document.createElement('source');
-        if (sound.canPlayType('audio/ogg;')) {
-          source.type = 'audio/ogg';
-          source.src = 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/sounds/pop_drip.ogg';
-        } else {
-          source.type = 'audio/mpeg';
-          source.src = 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/sounds/pop_drip.mp3';
-        }
-        sound.appendChild(source);
-        sound.setAttribute('autoplay', 'autoplay');
-        const playPromise = sound.play();
-        // In browsers that don't support html5 audio,
-        // playPromise won’t be defined.
-        if (playPromise !== undefined) {
-          playPromise.then(() => {
-            // Automatic playback started!
-          }).catch((err) => {
-            console.log(err);
-          });
+        console.log('this would play a sound');
+        // const sound = document.createElement('audio');
+        // const source = document.createElement('source');
+        // if (sound.canPlayType('audio/ogg;')) {
+        //   source.type = 'audio/ogg';
+        //   source.src = './sounds/pop_drip.ogg?raw=true';
+        // } else {
+        //   source.type = 'audio/mpeg';
+        //   source.src = './sounds/pop_drip.mp3?raw=true';
+        // }
+        // sound.appendChild(source);
+        // console.log(sound);
+        // sound.setAttribute('autoplay', 'autoplay');
+        // const playPromise = sound.play();
+        // // In browsers that don't support html5 audio,
+        // // playPromise won’t be defined.
+        // if (playPromise !== undefined) {
+        //   playPromise.then(() => {
+        //     getAudioContext().resume();
+        //   }).catch((err) => {
+        //     console.log(err);
+        //   });
         } else {
           console.log('this browser does not support html5 audio');
         }
       } else {
-        const playing = [...this.state.playing];
-        const index = playing.indexOf(item);
-        if (index === -1) {
-          playing.push(item);
-        }
-        this.setState({
-          playing,
-        });
-      }
+        console.log('this would play a sound');
+        // const playing = [...this.state.playing];
+        // const index = playing.indexOf(item);
+        // if (index === -1) {
+        //   playing.push(item);
+        // }
+        // this.setState({
+        //   playing,
+        // });
+        // console.log(this.state.playing);
+        // getAudioContext().resume();
+      // }
     }
   }
 
@@ -126,6 +137,7 @@ class App extends React.Component {
   }
 
   render() {
+    console.log(this.props.history);
     const logError = id => console.log(`error: ${id}`);
     const manifest = soundManifest.manifest;
     const onLoad = (id) => {
@@ -134,6 +146,7 @@ class App extends React.Component {
       const assetList = [...this.state.assetList];
       assetList.push(id);
       this.setState({ assetList });
+      console.log(assetList);
     };
     const onEnd = (id) => {
       const playing = [...this.state.playing];
@@ -147,8 +160,9 @@ class App extends React.Component {
     };
     const preloadSounds = manifest.map((sound) => {
       const { id, src, volume } = sound;
+      // console.log(id);
       return (
-        <ReactHowler
+        <Howl
           src={src}
           key={id}
           preload
@@ -165,45 +179,39 @@ class App extends React.Component {
     return (
       <BrowserRouter>
         <main className="main" id="main">
-          {preloadSounds}
-          <Switch>
+{/*          {preloadSounds}*/}
+          <Routes>
             <Route
-              exact
               path="/"
-              render={routeProps => (
+              element={
                 <Splash
-                  {...routeProps}
+                  history={this.props.history}
                   playSound={this.playSound}
                   loaded={this.state.loadProgress / this.state.totalAssets}
                 />
-                )
               }
             />
             <Route
-              exact
               path="/about"
-              render={routeProps => <About {...routeProps} playSound={this.playSound} />
+              element={<About playSound={this.playSound} />
               }
             />
             <Route
-              exact
               path="/hero-picker"
-              render={routeProps => <HeroPicker {...routeProps} playSound={this.playSound} />
+              element={<HeroPicker playSound={this.playSound} />
               }
             />
             <Route
-              exact
               path="/play"
-              render={routeProps => <Board {...routeProps} playSound={this.playSound} />
+              element={<Board playSound={this.playSound} />
               }
             />
             <Route
-              exact
               path="/gameover"
-              render={routeProps => <BigMsg {...routeProps} playSound={this.playSound} />
+              element={<BigMsg playSound={this.playSound} />
               }
             />
-          </Switch>
+          </Routes>
         </main>
       </BrowserRouter>
     );

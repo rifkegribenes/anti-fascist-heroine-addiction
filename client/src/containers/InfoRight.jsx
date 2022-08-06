@@ -26,7 +26,7 @@ class InfoRight extends React.Component {
         if (this.props.appState.currentEntity.type === 'monster' || this.props.appState.currentEntity.type === 'finalMonster') {
           return (
             <span className="info__heart-wrap" key={shortid.generate()}>
-              <img className="info__heart" src="https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/heart.png" alt="" /></span>
+              <img className="info__heart" src="./img/heart.png" alt="" /></span>
           );
         }
         return '';
@@ -49,7 +49,7 @@ class InfoRight extends React.Component {
               }
               <div className="card-pic-wrapper">
                 <img
-                  src={this.props.appState.currentEntity.health === 0 ? 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/you-died.png' : this.props.appState.currentEntity.cardUrl}
+                  src={this.props.appState.currentEntity.health === 0 ? './img/you-died.png?raw=true' : this.props.appState.currentEntity.cardUrl}
                   alt={this.props.appState.currentEntity.type === 'food' ? this.props.appState.currentEntity.title : this.props.appState.currentEntity.name}
                   className={this.props.appState.currentEntity.type === 'hero' || this.props.appState.currentEntity.type === 'teamHero' || this.props.appState.currentEntity.type === 'staircase' ? 'card-pic card-pic--round' : 'card-pic'}
                   id="entity"

@@ -1,3 +1,9 @@
+require("react-hot-loader/patch");
+import { hot, setConfig } from 'react-hot-loader'
+
+setConfig({
+    showReactDomPatchNotification: false
+})
 const path = require('path');
 const webpack = require('webpack');
 const HTMLWebpackPlugin = require('html-webpack-plugin');

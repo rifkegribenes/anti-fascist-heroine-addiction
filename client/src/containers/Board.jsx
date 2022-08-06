@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import shortid from 'shortid';
-import { withRouter } from 'react-router';
+import { useParams } from 'react-router-dom'; 
 import requestFrame from 'request-frame';
 
 import * as Actions from '../store/actions';
@@ -36,9 +36,6 @@ class Board extends Component {
     this.play = this.play.bind(this);
     this.pause = this.pause.bind(this);
     this.gameLoop = this.gameLoop.bind(this);
-  }
-
-  componentWillMount() {
   }
 
   componentDidMount() {
@@ -526,7 +523,7 @@ class Board extends Component {
         this.props.playSound('evilLaugh');
         this.props.actions.showMsg({
           title: 'You died!',
-          imgUrl: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/you-died.png',
+          imgUrl: './img/you-died.png?raw=true',
           imgAlt: 'skull and crossbones',
           news: `${utils.badNews[Math.floor(utils.random(0, 13))]}!`,
           body1: `You were defeated by ${monster.name}`,
@@ -635,7 +632,7 @@ class Board extends Component {
       // document.getElementById('msgTitle').classList.remove('blink');
       this.props.actions.showMsg({
         title: 'You won!',
-        imgUrl: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/rainbow.png',
+        imgUrl: './img/rainbow.png?raw=true',
         imgAlt: 'rainbow',
         news: `${utils.goodNews[Math.floor(utils.random(0, 13))]}!`,
         body1: 'You and your team defeated the biggest monster of all! Great work!',
@@ -670,7 +667,7 @@ class Board extends Component {
     const currentEntity = {
       type: 'staircase',
       name: 'staircase',
-      cardUrl: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/staircase_200.png',
+      cardUrl: './img/staircase_200.png?raw=true',
       message: `Staircase down to level ${this.props.appState.gameLevel + 1}` };
     this.props.actions.setCurrentEntity(currentEntity);
     const level = this.props.appState.gameLevel;
@@ -703,7 +700,7 @@ class Board extends Component {
       {
         type: 'staircase',
         name: 'staircase',
-        cardUrl: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/staircase_200.png',
+        cardUrl: './img/staircase_200.png?raw=true',
         message: `Staircase down to level ${this.props.appState.gameLevel + 1}`,
       },
     ];
@@ -1105,4 +1102,4 @@ const mapDispatchToProps = dispatch => ({
   actions: bindActionCreators({ ...Actions }, dispatch),
 });
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Board));
+export default connect(mapStateToProps, mapDispatchToProps)(Board);

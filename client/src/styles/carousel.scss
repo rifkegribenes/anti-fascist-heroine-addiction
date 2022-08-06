@@ -323,12 +323,12 @@ $level2-left: -407px;
 }
 
 .left-leave.left-leave-active {
-    left: calc($level-2-left + $level2-width + 20);
+    left: calc($level-2-left + $level2-width + 20px);
     opacity: 0;
-    height: $level2-height - 30;
+    height: $level2-height - 30px;
     line-height: 120px;
     margin-top: 40px;
-    width: $level2-width - 20;
+    width: $level2-width - 20px;
     transition: left 1s, opacity 1s, height 1s, width 1s, margin-top 1s, line-height 1s;
 }
 

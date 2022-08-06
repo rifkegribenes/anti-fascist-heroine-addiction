@@ -31,7 +31,7 @@ const otherCredits = (
   <div>
     <div className="splash__item">
       <div className="splash__avatar-wrap">
-        <img src="https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/bush_200.png" alt="George W. Bush" className="card-pic" />
+        <img src="./img/bush_200.png" alt="George W. Bush" className="card-pic" />
       </div>
       <div className="splash__text-wrap">
         <span className="splash__bold">George W. Bush</span><br />
@@ -47,10 +47,10 @@ const otherCredits = (
     </div>
     <div className="splash__item splash__item--food">
       <div className="splash__avatar-wrap splash__avatar-wrap--multi">
-        <img src="https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/raspberry_200.png" alt="raspberry" className="card-pic" />
-        <img src="https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/pear_200.png" alt="pear" className="card-pic" />
-        <img src="https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/plum_200.png" alt="plum" className="card-pic" />
-        <img src="https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/kiwi_200.png" alt="kiwi" className="card-pic" />
+        <img src="./img/raspberry_200.png" alt="raspberry" className="card-pic" />
+        <img src="./img/pear_200.png" alt="pear" className="card-pic" />
+        <img src="./img/plum_200.png" alt="plum" className="card-pic" />
+        <img src="./img/kiwi_200.png" alt="kiwi" className="card-pic" />
       </div>
       <div className="splash__text-wrap splash__text-wrap--right">
         <a
@@ -63,8 +63,8 @@ const otherCredits = (
     </div>
     <div className="splash__item splash__item--food">
       <div className="splash__avatar-wrap splash__avatar-wrap--multi">
-        <img src="https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/cherries_200.png" alt="cherries" className="card-pic" />
-        <img src="https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/apple_200.png" alt="apple" className="card-pic" />
+        <img src="./img/cherries_200.png" alt="cherries" className="card-pic" />
+        <img src="./img/apple_200.png" alt="apple" className="card-pic" />
       </div>
       <div className="splash__text-wrap splash__text-wrap--right">
         <a
@@ -77,7 +77,7 @@ const otherCredits = (
     </div>
     <div className="splash__item splash__item--food">
       <div className="splash__avatar-wrap splash__avatar-wrap--multi">
-        <img src="https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/popsicle_200.png" alt="popsicle" className="card-pic" />
+        <img src="./img/popsicle_200.png" alt="popsicle" className="card-pic" />
       </div>
       <div className="splash__text-wrap splash__text-wrap--right">
         <a
@@ -90,7 +90,7 @@ const otherCredits = (
     </div>
     <div className="splash__item splash__item--food">
       <div className="splash__avatar-wrap splash__avatar-wrap--multi">
-        <img src="https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/cupcake_200.png" alt="cupcake" className="card-pic" />
+        <img src="./img/cupcake_200.png" alt="cupcake" className="card-pic" />
       </div>
       <div className="splash__text-wrap splash__text-wrap--right">
         <a
@@ -103,10 +103,10 @@ const otherCredits = (
     </div>
     <div className="splash__item splash__item--food">
       <div className="splash__avatar-wrap splash__avatar-wrap--multi">
-        <img src="https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/hamburger_200.png" alt="hamburger" className="card-pic" />
-        <img src="https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/ice-cream_200.png" alt="ice cream" className="card-pic" />
-        <img src="https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/donut_200.png" alt="donut" className="card-pic" />
-        <img src="https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/fries_200.png" alt="fries" className="card-pic" />
+        <img src="./img/hamburger_200.png" alt="hamburger" className="card-pic" />
+        <img src="./img/ice-cream_200.png" alt="ice cream" className="card-pic" />
+        <img src="./img/donut_200.png" alt="donut" className="card-pic" />
+        <img src="./img/fries_200.png" alt="fries" className="card-pic" />
       </div>
       <div className="splash__text-wrap splash__text-wrap--right">
         <a

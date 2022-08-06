@@ -335,7 +335,7 @@ const drawCell = (cellSize, ctx, cellInput, x, y, candle, key, levelCompleted,
       break;
     case 'staircase':
       if (levelCompleted || difficulty < 2) {
-        img.src = 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/staircase_32_c.png';
+        img.src = './img/staircase_32_c.png?raw=true';
         img.onload = () => {
           ctx.save();
           ctx.clearRect(x, y, cellSize, cellSize);

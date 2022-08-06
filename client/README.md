@@ -22,25 +22,25 @@ Use the arrow keys or W-A-S-D to move through the grid.
 
 #### Health
 
-![ice cream](https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/ice-cream_32.png) ![hamburger](https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/hamburger_32.png) ![donut](https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/donut_32.png) ![fries](https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/fries_32.png)
+![ice cream](https://github.com/rifkegribenes/anti-fascist-heroine-addiction/blob/master/client/src/img/ice-cream_32.png) ![hamburger](https://github.com/rifkegribenes/anti-fascist-heroine-addiction/blob/master/client/src/img/hamburger_32.png) ![donut](https://github.com/rifkegribenes/anti-fascist-heroine-addiction/blob/master/client/src/img/donut_32.png) ![fries](https://github.com/rifkegribenes/anti-fascist-heroine-addiction/blob/master/client/src/img/fries_32.png)
 
 Eat food you find in the grid to stay alive. It takes strength to fight monsters. Walk into a food to eat it.
 
 #### Your team
 
-![misty knight](https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/misty-knight_32_c.png) ![wonder woman](https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/wonder-woman_32_c.png) ![silk](https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/silk_32_c.png) ![la borinqueña](https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/la-borinquena_32_c.png)
+![misty knight](https://github.com/rifkegribenes/anti-fascist-heroine-addiction/blob/master/client/src/img/misty-knight_32_c.png) ![wonder woman](https://github.com/rifkegribenes/anti-fascist-heroine-addiction/blob/master/client/src/img/wonder-woman_32_c.png) ![silk](https://github.com/rifkegribenes/anti-fascist-heroine-addiction/blob/master/client/src/img/silk_32_c.png) ![la borinqueña](https://github.com/rifkegribenes/anti-fascist-heroine-addiction/blob/master/client/src/img/la-borinquena_32_c.png)
 
 Gather a team of superheroes to help you fight monsters. You can’t do it alone! Each member of your team adds attack strength. Walk into a superhero to add her to your team.
 
 #### Monsters
 
-![george bush](https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/bush_32.png) ![mitch mcconnell](https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/mcconnell_32.png) ![ted cruz](https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/cruz_32.png) ![ronald reagan](https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/reagan_32.png)
+![george bush](https://github.com/rifkegribenes/anti-fascist-heroine-addiction/blob/master/client/src/img/bush_32.png) ![mitch mcconnell](https://github.com/rifkegribenes/anti-fascist-heroine-addiction/blob/master/client/src/img/mcconnell_32.png) ![ted cruz](https://github.com/rifkegribenes/anti-fascist-heroine-addiction/blob/master/client/src/img/cruz_32.png) ![ronald reagan](https://github.com/rifkegribenes/anti-fascist-heroine-addiction/blob/master/client/src/img/reagan_32.png)
 
 Each monster your team defeats gives you experience points. It takes 100 XP to level up. You’ll need all the experience you can get to defeat the final monster. Walk into a monster repeatedly until you defeat it... or it defeats you!
 
 #### Staircases
 
-![staircase](https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/staircase_32_c.png) Staircases take you down to the next level of the dungeon. In ‘Medium’ and ‘Hard’ difficulty levels, staircases are hidden until your character has enough XP to level up.
+![staircase](https://github.com/rifkegribenes/anti-fascist-heroine-addiction/blob/master/client/src/img/staircase_32_c.png) Staircases take you down to the next level of the dungeon. In ‘Medium’ and ‘Hard’ difficulty levels, staircases are hidden until your character has enough XP to level up.
 
 #### Winning the game
 

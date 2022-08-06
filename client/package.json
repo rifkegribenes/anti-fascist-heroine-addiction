@@ -6,8 +6,8 @@
   "author": "Sarah Schneider",
   "license": "MIT",
   "scripts": {
-    "start": "NODE_ENV=development webpack-dev-server --inline --content-base . --history-api-fallback",
-    "build": "NODE_ENV=production webpack -p",
+    "start": "react-scripts start",
+    "build": "react-scripts build",
     "test": "eslint src --ext .jsx,.js --fix",
     "watch": "node_modules/webpack/bin/webpack.js --watch --config webpack.config.js --progress --verbose"
   },
@@ -19,14 +19,14 @@
     "babel-preset-env": "^1.5.1",
     "babel-preset-react": "^6.24.1",
     "css-loader": "^0.28.3",
-    "eslint": "^4.18.2",
+    "eslint": "^8.21.0",
     "eslint-config-airbnb": "^15.0.1",
+    "eslint-config-react-app": "^7.0.1",
     "eslint-plugin-import": "^2.3.0",
     "eslint-plugin-jsx-a11y": "^5.0.3",
     "eslint-plugin-react": "^7.0.1",
     "file-loader": "^0.11.2",
     "html-webpack-plugin": "^2.28.0",
-    "node-sass": "^4.9.0",
     "pre-commit": "^1.2.2",
     "sass-loader": "^6.0.5",
     "style-loader": "^0.18.1",
@@ -35,19 +35,34 @@
     "webpack-dev-server": "^3.1.11"
   },
   "dependencies": {
+    "@hot-loader/react-dom": "^17.0.2",
     "createjs": "^1.0.1",
+    "howler": "^2.2.3",
     "immutability-helper": "^2.4.0",
     "prop-types": "^15.5.10",
-    "react": "^15.5.4",
-    "react-dom": "^15.5.4",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
     "react-hot-loader": "3.0.0-beta.6",
-    "react-howler": "^3.6.4",
-    "react-redux": "^5.0.5",
-    "react-router": "^4.1.1",
-    "react-router-dom": "^4.1.1",
+    "react-redux": "^8.0.2",
+    "react-router": "^6.3.0",
+    "react-router-dom": "^6.3.0",
+    "react-scripts": "^5.0.1",
     "react-transition-group": "1.x",
-    "redux": "^3.7.2",
+    "redux": "^4.2.0",
     "request-frame": "^1.5.3",
+    "sass": "^1.54.3",
     "shortid": "^2.2.8"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
   }
 }

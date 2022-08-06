@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { withRouter } from 'react-router';
+import { useParams } from 'react-router-dom'; // <-- import useParams hook
 
 import * as Actions from '../store/actions';
 
@@ -50,5 +50,5 @@ const mapDispatchToProps = dispatch => ({
   actions: bindActionCreators({ ...Actions }, dispatch),
 });
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Item));
+export default connect(mapStateToProps, mapDispatchToProps)(Item);
 

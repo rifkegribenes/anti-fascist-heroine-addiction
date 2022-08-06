@@ -26,7 +26,7 @@ const InfoLeft = (props) => {
   if (heartsArrH.length) {
     healthIndH = heartsArrH.map(() => (
       <span className="info__heart-wrap" key={shortid.generate()}>
-        <img className="info__heart" src="https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/heart.png" alt="" /></span>
+        <img className="info__heart" src="./img/heart.png" alt="" /></span>
         ));
   }
 

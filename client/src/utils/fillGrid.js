@@ -23,7 +23,7 @@ const fillGrid = (gameMap, level, hero, difficulty) => {
   if (level < 3 && difficulty < 2) {
     staircases.push({
       type: 'staircase',
-      cardUrl: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/staircase_200.png',
+      cardUrl: './img/staircase_200.png?raw=true',
     });
   }
 
@@ -68,8 +68,8 @@ const fillGrid = (gameMap, level, hero, difficulty) => {
   const padlock = {
     type: 'padlock',
     name: 'Magical padlock',
-    iconUrl: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/padlock_32.png',
-    cardUrl: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/padlock_200.gif',
+    iconUrl: './img/padlock_32.png?raw=true',
+    cardUrl: './img/padlock_200.gif?raw=true',
     opacity: utils.random(0.4, 0.8),
     level: 3,
     room: 'door',
@@ -80,15 +80,15 @@ const fillGrid = (gameMap, level, hero, difficulty) => {
       {
         type: 'candle',
         name: 'Magical hanukkah candle',
-        iconUrl: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/candle_32.png',
-        cardUrl: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/candle_200.gif',
+        iconUrl: './img/candle_32.png?raw=true',
+        cardUrl: './img/candle_200.gif?raw=true',
         opacity: 1,
       },
       {
         type: 'key',
         name: 'Magical key',
-        iconUrl: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/key_32.png',
-        cardUrl: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/key_200.gif',
+        iconUrl: './img/key_32.png?raw=true',
+        cardUrl: './img/key_200.gif?raw=true',
         opacity: 1,
       },
     ];
@@ -104,8 +104,8 @@ const fillGrid = (gameMap, level, hero, difficulty) => {
       type: 'finalMonster',
       name: 'Donald Trump',
       bio: 'You know who this guy is',
-      iconUrl: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/donald-trump_64.png',
-      cardUrl: 'https://raw.githubusercontent.com/rifkegribenes/dungeon-crawler/master/src/img/donald-trump_200.gif',
+      iconUrl: './img/donald-trump_64.png?raw=true',
+      cardUrl: './img/donald-trump_200.gif?raw=true',
       opacity: 1,
     };
 
