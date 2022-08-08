@@ -1,6 +1,6 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
-import { AppContainer } from 'react-hot-loader';
+import { BrowserRouter } from "react-router-dom";
 import { Provider } from 'react-redux';
 
 import store from './store/store';
@@ -12,10 +12,8 @@ const root = createRoot(document.getElementById("root"));
 
 root.render(
   <Provider store={store}>
-    <AppContainer>
+    <BrowserRouter>
       <App />
-    </AppContainer>
+    </BrowserRouter>
   </Provider>
 );
-
-if (module.hot) module.hot.accept(App, () => render(App));

@@ -4,12 +4,22 @@ import { bindActionCreators } from 'redux';
 
 import * as Actions from '../store/actions';
 import { trapFocus } from '../utils';
+import { Navigate } from "react-router-dom";
 
 class SetDifficulty extends React.Component {
+
+  constructor() { 
+      super()
+      this.nav = this.nav.bind(this);
+    }
 
   componentDidMount() {
     document.getElementById('first').focus();
     trapFocus();
+  }
+
+  nav(path) {
+    this.props.navigate(path);
   }
 
   render() {
@@ -32,7 +42,7 @@ class SetDifficulty extends React.Component {
                 this.props.playSound('movement');
                 this.props.actions.closeModal();
                 this.props.actions.setDifficulty(0);
-                this.props.history.push('/hero-picker');
+                this.props.router.navigate("/hero-picker");
               }}
             ><span className="rainbow">Practice mode</span></button>
           </div>
@@ -43,7 +53,8 @@ class SetDifficulty extends React.Component {
                 this.props.playSound('movement');
                 this.props.actions.closeModal();
                 this.props.actions.setDifficulty(1);
-                this.props.history.push('/hero-picker');
+                console.log('about to navigate');
+                this.props.router.navigate("/hero-picker");
               }}
             ><span className="rainbow">Easy</span></button>
             <button
@@ -52,7 +63,7 @@ class SetDifficulty extends React.Component {
                 this.props.playSound('movement');
                 this.props.actions.closeModal();
                 this.props.actions.setDifficulty(2);
-                this.props.history.push('/hero-picker');
+                this.props.router.navigate("/hero-picker");
               }}
             ><span className="rainbow">Medium</span></button>
             <button
@@ -62,13 +73,13 @@ class SetDifficulty extends React.Component {
                 this.props.playSound('movement');
                 this.props.actions.closeModal();
                 this.props.actions.setDifficulty(3);
-                this.props.history.push('/hero-picker');
+                this.props.router.navigate("/hero-picker");
               }}
             ><span className="rainbow">Hard</span></button>
           </div>
         </div>
       </div>
-    );
+    )
   }
 }
 

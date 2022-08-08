@@ -126,13 +126,13 @@ const About = props => (
     {props.appState.modalType === 'difficulty' &&
       <SetDifficulty
         playSound={props.playSound}
-        history={props.history}
+        navigate={props.navigate}
       />
     }
     {props.appState.modalType === 'sorry' &&
       <Sorry
         playSound={props.playSound}
-        history={props.history}
+        navigate={props.navigate}
       />
     }
     <div className="splash">
@@ -145,7 +145,7 @@ const About = props => (
             className="big-msg__btn big-msg__btn--flex"
             onClick={() => {
               props.playSound('movement');
-              props.history.push('/');
+              navigate('/');
             }}
           ><span className="rainbow">How to play</span></button>
           <button

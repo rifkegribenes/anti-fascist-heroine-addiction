@@ -50,6 +50,7 @@ class HeroPicker extends React.Component {
           id={this.state.items[index]}
           level={level}
           playSound={this.props.playSound}
+          router={this.props.router}
         />,
       );
     }

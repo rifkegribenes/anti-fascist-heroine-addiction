@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { useParams } from 'react-router-dom'; // <-- import useParams hook
+import { Navigate } from 'react-router-dom';
 
 import * as Actions from '../store/actions';
 
@@ -21,9 +21,9 @@ class Item extends React.Component {
         id={this.props.index}
         className={`${className} aria-button`}
         onClick={() => {
-          this.props.playSound('startGame');
+          // this.props.playSound('startGame');
           this.props.actions.setHero(this.props.id);
-          this.props.history.push('/play');
+          this.props.router.navigate("/play");
         }
         }
       >

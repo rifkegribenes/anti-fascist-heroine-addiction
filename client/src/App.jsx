@@ -1,5 +1,10 @@
 import React from 'react';
-import { Routes, Route, BrowserRouter } from 'react-router-dom';
+import {
+  Routes, Route,
+  useLocation,
+  useNavigate,
+  useParams,
+} from "react-router-dom";
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import {Howl} from 'howler';
@@ -13,6 +18,22 @@ import * as Actions from './store/actions';
 import soundManifest from './sounds/asset_manifest.json';
 import imgUrls from './utils/imageManifest';
 import { checkForTouchScreens, preloadImage } from './utils';
+
+function withRouter(Component) {
+  function ComponentWithRouterProp(props) {
+    let location = useLocation();
+    let navigate = useNavigate();
+    let params = useParams();
+    return (
+      <Component
+        {...props}
+        router={{ location, navigate, params }}
+      />
+    );
+  }
+
+  return ComponentWithRouterProp;
+}
 
 class App extends React.Component {
   constructor(props) {
@@ -137,7 +158,6 @@ class App extends React.Component {
   }
 
   render() {
-    console.log(this.props.history);
     const logError = id => console.log(`error: ${id}`);
     const manifest = soundManifest.manifest;
     const onLoad = (id) => {
@@ -177,7 +197,6 @@ class App extends React.Component {
       );
     });
     return (
-      <BrowserRouter>
         <main className="main" id="main">
 {/*          {preloadSounds}*/}
           <Routes>
@@ -185,35 +204,34 @@ class App extends React.Component {
               path="/"
               element={
                 <Splash
-                  history={this.props.history}
                   playSound={this.playSound}
                   loaded={this.state.loadProgress / this.state.totalAssets}
+                  router={this.props.router}
                 />
               }
             />
             <Route
               path="/about"
-              element={<About playSound={this.playSound} />
+              element={<About playSound={this.playSound} router={this.props.router}/>
               }
             />
             <Route
               path="/hero-picker"
-              element={<HeroPicker playSound={this.playSound} />
+              element={<HeroPicker playSound={this.playSound} router={this.props.router}/>
               }
             />
             <Route
               path="/play"
-              element={<Board playSound={this.playSound} />
+              element={<Board playSound={this.playSound} router={this.props.router}/>
               }
             />
             <Route
               path="/gameover"
-              element={<BigMsg playSound={this.playSound} />
+              element={<BigMsg playSound={this.playSound} router={this.props.router}/>
               }
             />
           </Routes>
         </main>
-      </BrowserRouter>
     );
   }
 }
@@ -227,4 +245,4 @@ const mapDispatchToProps = dispatch => ({
   actions: bindActionCreators({ ...Actions }, dispatch),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(App);
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(App));

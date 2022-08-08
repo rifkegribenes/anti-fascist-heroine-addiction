@@ -509,7 +509,7 @@ class Board extends Component {
       // define action for 'you died' screen
       const action = () => {
         this.props.actions.hideMsg();
-        this.props.history.push('/');
+        navigate('/');
         this.props.actions.restart();
       };
       document.getElementById('hero').classList.add('spin');
@@ -531,7 +531,7 @@ class Board extends Component {
           action,
           actionText: 'Try Again',
         });
-        this.props.history.push('/gameover');
+        navigate('/gameover');
       }, 1000);
     });
   }
@@ -621,7 +621,7 @@ class Board extends Component {
     // define action for 'you won' screen
     const action = () => {
       this.props.actions.hideMsg();
-      this.props.history.push('/');
+      navigate('/');
       this.props.actions.restart();
     };
     const messages = [...this.props.appState.messages];
@@ -640,7 +640,7 @@ class Board extends Component {
         action,
         actionText: 'Play Again',
       });
-      this.props.history.push('/gameover');
+      navigate('/gameover');
     }, 1005);
   }
 
@@ -1019,7 +1019,7 @@ class Board extends Component {
                       this.pause().then(() => {
                         console.log('pause resolved, restart');
                         this.props.actions.restart();
-                        this.props.history.push('/');
+                        navigate('/');
                       });
                     }}
                   aria-label="restart game"
